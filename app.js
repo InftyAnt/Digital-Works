@@ -239,6 +239,7 @@ const state = {
   rotateKeyDown: false,
   simulationRunning: false,
   simulationCache: null,
+  macroSimulationPath: [],
   macroViewer: {
     stack: [],
   },
@@ -2257,6 +2258,30 @@ function setSequentialQ(node, value) {
   return changed;
 }
 
+function macroInstanceStateKey(instancePath, nodeId) {
+  return `${instancePath || "macro"}::${nodeId}`;
+}
+
+function restoreMacroSequentialState(instancePath, nodes) {
+  if (!instancePath) return;
+  for (const node of nodes) {
+    if (!SEQUENTIAL_TYPES.has(node.type)) continue;
+    const saved = state.macroInstanceValues.get(macroInstanceStateKey(instancePath, node.id));
+    node.q = signalValue(saved?.q ?? node.q ?? SIGNAL.ZERO);
+    if (FLIP_FLOP_TYPES.has(node.type)) node.lastClock = signalValue(saved?.lastClock ?? node.lastClock ?? SIGNAL.ZERO);
+  }
+}
+
+function saveMacroSequentialState(instancePath, nodes) {
+  if (!instancePath) return;
+  for (const node of nodes) {
+    if (!SEQUENTIAL_TYPES.has(node.type)) continue;
+    const saved = { q: storedQ(node) };
+    if (FLIP_FLOP_TYPES.has(node.type)) saved.lastClock = signalValue(node.lastClock ?? SIGNAL.ZERO);
+    state.macroInstanceValues.set(macroInstanceStateKey(instancePath, node.id), saved);
+  }
+}
+
 function evaluateSrNext(current, sValue, rValue) {
   const s = signalForLogicInput(sValue);
   const r = signalForLogicInput(rValue);
@@ -2391,7 +2416,9 @@ function evaluateGate(type, inputs, node, cableInputs = {}) {
 
 function evaluateMacroNode(node, inputs, cableInputs = {}) {
   const macro = findMacroForViewer(node.macroId);
-  return simulateMacroCircuit(macro, inputs, cableInputs).outputs;
+  const parentPath = state.macroSimulationPath[state.macroSimulationPath.length - 1] || "";
+  const instancePath = parentPath ? `${parentPath}/${node.id}` : node.id;
+  return simulateMacroCircuit(macro, inputs, cableInputs, instancePath).outputs;
 }
 
 function macroInputCacheKey(macro, inputs, cableInputs = {}) {
@@ -2449,7 +2476,7 @@ function applyMacroInputCableValues(cableValues, graph, pinNodes, macroPins, cab
   }
 }
 
-function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}) {
+function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}, instancePath = "") {
   if (!macro?.circuit) return { nodes: [], wires: [], values: new Map(), outputs: {} };
   const internalNodes = (macro.circuit.nodes || []).map((item) => ({ ...item }));
   const internalWires = (macro.circuit.wires || []).map((item) => ({
@@ -2458,6 +2485,7 @@ function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}) {
     to: JSON.parse(JSON.stringify(item.to)),
     points: (item.points || []).map((point) => ({ ...point })),
   }));
+  restoreMacroSequentialState(instancePath, internalNodes);
   const pinNodes = internalNodes.filter((item) => item.type === "PIN" || item.type === "MULTI_PIN" || item.type === "CABLE_PIN");
   const pinByExternal = new Map((macro.pins || []).map((pin) => [pin.id, pin]));
   const pinByInternalId = new Map();
@@ -2465,11 +2493,18 @@ function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}) {
     if (pin.internalNodeId) pinByInternalId.set(pin.internalNodeId, pin);
     if (pin.id) pinByInternalId.set(pin.id, pin);
   }
-  const previous = { nodes: state.nodes, wires: state.wires, values: state.values, macros: state.macros };
+  const previous = {
+    nodes: state.nodes,
+    wires: state.wires,
+    values: state.values,
+    macros: state.macros,
+    macroSimulationPath: [...state.macroSimulationPath],
+  };
 
   state.nodes = internalNodes;
   state.wires = internalWires;
   state.macros = mergeMacroDefinitions(state.macros, macro.circuit.macros || []);
+  state.macroSimulationPath = instancePath ? [...previous.macroSimulationPath, instancePath] : previous.macroSimulationPath;
   const values = new Map();
   for (const external of pinByExternal.values()) {
     const pin = pinNodes.find((item) => item.id === external.internalNodeId || item.id === external.id);
@@ -2507,6 +2542,7 @@ function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}) {
       if (item.type === "Z_SRC") values.set(`${item.id}.out`, SIGNAL.HIGH_Z);
       if (item.type === "CLOCK") values.set(`${item.id}.out`, signalFromBoolean(item.value));
       if (item.type === "PULSE") values.set(`${item.id}.out`, pulseSignal(item));
+      setSequentialOutputs(values, item);
       const itemInputs = {};
       const itemCableInputs = {};
       for (const input of nodeInputs(item)) {
@@ -2550,6 +2586,58 @@ function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}) {
     if (!changed) break;
   }
 
+  const edgePassLimit = internalNodes.length + 4;
+  for (let pass = 0; pass < edgePassLimit; pass += 1) {
+    const graph = buildConnectivity();
+    const hot = groupHotValues(values, graph);
+    const cableValues = groupCableValues(values, graph);
+    applyMacroInputHotValues(hot, graph, pinNodes, macro.pins || [], inputs);
+    applyMacroInputCableValues(cableValues, graph, pinNodes, macro.pins || [], cableInputs);
+    if (!updateFlipFlopStatesFromHot(values, hot, graph)) break;
+    for (let settlePass = 0; settlePass < internalNodes.length + 4; settlePass += 1) {
+      const graph = buildConnectivity();
+      const hot = groupHotValues(values, graph);
+      const cableValues = groupCableValues(values, graph);
+      applyMacroInputHotValues(hot, graph, pinNodes, macro.pins || [], inputs);
+      applyMacroInputCableValues(cableValues, graph, pinNodes, macro.pins || [], cableInputs);
+      let changed = false;
+      for (const item of internalNodes) {
+        if (item.type === "TEST_INPUT" || item.type === "MULTI_TEST_INPUT") continue;
+        if (isLogicSourceType(item.type)) {
+          if (item.type === "INPUT") values.set(`${item.id}.out`, signalFromBoolean(item.value));
+          if (item.type === "MULTI_INPUT") multiBitValues(item).forEach((value, index) => values.set(`${item.id}.bit${index}`, signalFromBoolean(value)));
+          if (isCableSourceNode(item)) {
+            values.set(`${item.id}.out`, signalFromBoolean(cableDataValue(item) !== 0));
+            values.set(`${item.id}.out.__cable`, cableDataValue(item));
+          }
+          if (item.type === "VCC") values.set(`${item.id}.out`, SIGNAL.ONE);
+          if (item.type === "GND") values.set(`${item.id}.out`, SIGNAL.ZERO);
+          if (item.type === "X_SRC") values.set(`${item.id}.out`, SIGNAL.UNKNOWN);
+          if (item.type === "Z_SRC") values.set(`${item.id}.out`, SIGNAL.HIGH_Z);
+          if (item.type === "CLOCK") values.set(`${item.id}.out`, signalFromBoolean(item.value));
+          if (item.type === "PULSE") values.set(`${item.id}.out`, pulseSignal(item));
+          continue;
+        }
+        const itemInputs = {};
+        const itemCableInputs = {};
+        for (const input of nodeInputs(item)) {
+          itemInputs[input] = readInputValue(item.id, input, hot, graph);
+          values.set(`${item.id}.${input}`, itemInputs[input]);
+          itemCableInputs[input] = readCableCompatibleInputValue(item, input, hot, cableValues, graph);
+        }
+        if (item.type === "PIN" || item.type === "MULTI_PIN" || item.type === "CABLE_PIN") {
+          const external = [...pinByExternal.values()].find((pin) => pin.internalNodeId === item.id || pin.id === item.macroPinName);
+          if (external?.direction !== "output") continue;
+        }
+        const outputs = evaluateGate(item.type, itemInputs, item, itemCableInputs);
+        for (const [port, value] of Object.entries(outputs)) {
+          if (setSimValue(values, `${item.id}.${port}`, value)) changed = true;
+        }
+      }
+      if (!changed) break;
+    }
+  }
+
   const graph = buildConnectivity();
   const hot = groupHotValues(values, graph);
   const cableValues = groupCableValues(values, graph);
@@ -2589,6 +2677,8 @@ function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}) {
   state.wires = previous.wires;
   state.values = previous.values;
   state.macros = previous.macros;
+  state.macroSimulationPath = previous.macroSimulationPath;
+  saveMacroSequentialState(instancePath, internalNodes);
   return { nodes: internalNodes, wires: internalWires, values, outputs };
 }
 
@@ -2603,6 +2693,10 @@ function setSequentialOutputs(values, node) {
 function updateFlipFlopStates(values) {
   const graph = buildConnectivity();
   const hot = groupHotValues(values, graph);
+  return updateFlipFlopStatesFromHot(values, hot, graph);
+}
+
+function updateFlipFlopStatesFromHot(values, hot, graph) {
   let changed = false;
   for (const node of state.nodes) {
     if (!FLIP_FLOP_TYPES.has(node.type)) continue;

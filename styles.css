@@ -426,6 +426,31 @@ button.active svg {
   gap: 4px;
 }
 
+.signal-choice-field {
+  grid-template-columns: 1fr auto;
+}
+
+.signal-choice-options {
+  display: grid;
+  grid-template-columns: repeat(3, 28px);
+  gap: 4px;
+}
+
+.signal-choice-options button,
+.frequency-options button {
+  display: grid;
+  place-items: center;
+  padding: 5px 6px;
+  text-align: center;
+}
+
+.signal-choice-options button.active,
+.frequency-options button.active {
+  border-color: var(--accent);
+  background: rgba(8, 127, 115, 0.12);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
 .dialog-actions {
   display: flex;
   justify-content: flex-end;

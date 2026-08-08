@@ -1391,6 +1391,38 @@ function appendPulseControls(node) {
   fanInMenu.appendChild(frequencyLabel);
 }
 
+function appendSignalChoiceControls({ title, value, onSelect }) {
+  const label = document.createElement("div");
+  label.className = "menu-field signal-choice-field";
+  label.textContent = title;
+  const options = document.createElement("div");
+  options.className = "signal-choice-options";
+  for (const signal of [SIGNAL.ZERO, SIGNAL.ONE, SIGNAL.UNKNOWN]) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = signal;
+    button.classList.toggle("active", signalValue(value) === signal);
+    button.addEventListener("click", () => onSelect(signal));
+    options.appendChild(button);
+  }
+  label.appendChild(options);
+  fanInMenu.appendChild(label);
+}
+
+function appendSequentialStateControls(node) {
+  appendSignalChoiceControls({
+    title: "Current Q",
+    value: storedQ(node),
+    onSelect: (signal) => {
+      recordUndo();
+      setSequentialQ(node, signal);
+      if (FLIP_FLOP_TYPES.has(node.type)) node.lastClock = SIGNAL.ZERO;
+      hideFanInMenu();
+      render();
+    },
+  });
+}
+
 function positionContextMenu(clientX, clientY) {
   const margin = 8;
   fanInMenu.style.zIndex = String(modalZIndex + 1);
@@ -1414,6 +1446,7 @@ function showNodeContextMenu(node, clientX, clientY) {
   if (isCableSourceNode(node)) appendCableSwitchControls(node);
   if (node?.type === "CLOCK") appendClockFrequencyControls(node);
   if (node?.type === "PULSE") appendPulseControls(node);
+  if (SEQUENTIAL_TYPES.has(node?.type)) appendSequentialStateControls(node);
   if (node?.type === "MULTI_INPUT" || node?.type === "MULTI_TEST_INPUT" || node?.type === "BUS") appendMultiBitControls(node);
   if (node?.type === "MULTI_OUTPUT" || node?.type === "MULTI_PIN") appendMultiBitControls(node);
   if (node?.type === "INPUT" || node?.type === "MULTI_INPUT" || isCableSourceNode(node) || node?.type === "TEST_INPUT" || node?.type === "MULTI_TEST_INPUT" || node?.type === "OUTPUT" || node?.type === "MULTI_OUTPUT") appendOnColorControl(node);
@@ -4493,6 +4526,12 @@ function toggleSimulationRunning() {
   setSimulationRunning(!state.simulationRunning);
 }
 
+function resetSimulation() {
+  setSimulationRunning(false);
+  resetClockTickBaselines();
+  render();
+}
+
 function appendGridToSvg(svg, prefix, bounds) {
   const defs = createSvg("defs");
   const minorId = `${prefix}-minor-grid`;
@@ -4722,7 +4761,7 @@ function createNodeAt(type, center, options = {}) {
     node.segments = cableSegments({ segments: options.segments });
   }
   if (SEQUENTIAL_TYPES.has(type)) {
-    node.q = SIGNAL.ZERO;
+    node.q = signalValue(options.q ?? SIGNAL.ZERO);
     if (FLIP_FLOP_TYPES.has(type)) node.lastClock = SIGNAL.ZERO;
   }
   if (type === "BUS") {
@@ -7480,6 +7519,11 @@ function loadCircuitData(data, file = null, handle = null) {
   state.fileName = file?.name || handle?.name || "";
   state.fileHandle = handle || null;
   state.nodes = cloneData(data.nodes);
+  for (const node of state.nodes) {
+    if (!SEQUENTIAL_TYPES.has(node.type)) continue;
+    node.q = signalValue(node.q ?? SIGNAL.ZERO);
+    if (FLIP_FLOP_TYPES.has(node.type)) node.lastClock = signalValue(node.lastClock ?? SIGNAL.ZERO);
+  }
   state.wires = data.wires;
   state.macroInstanceValues = new Map();
   syncJunctionBitLengthsFromWires();
@@ -8271,6 +8315,7 @@ document.getElementById("reset-view").addEventListener("click", () => {
   state.zoom = DEFAULT_ZOOM;
   render();
 });
+document.getElementById("reset-simulation").addEventListener("click", resetSimulation);
 
 document.getElementById("settings-open").addEventListener("click", openSettings);
 document.getElementById("settings-close").addEventListener("click", closeSettings);

@@ -12,6 +12,9 @@ const DEFAULT_X_COLOR = "#d08a00";
 const DEFAULT_Z_COLOR = "#0b73b7";
 const DEFAULT_DATA_ARROW_COLOR = "#0b73b7";
 const SETTINGS_STORAGE_KEY = "digitalWorksPrototype.settings.v1";
+const APP_CLIPBOARD_MARKER = "DigitalWorks.clipboard";
+const CIRCUIT_CLIPBOARD_STORAGE_KEY = "digitalWorksPrototype.clipboard.circuit.v1";
+const TEMPLATE_CLIPBOARD_STORAGE_KEY = "digitalWorksPrototype.clipboard.template.v1";
 const DESIGN_FILE_PICKER_ID = "digital-works-design";
 const TEMPLATE_VIEW_W = 144;
 const TEMPLATE_VIEW_H = 96;
@@ -6165,6 +6168,66 @@ function cloneData(data) {
   return JSON.parse(JSON.stringify(data));
 }
 
+function appClipboardStorageKey(kind) {
+  return kind === "template" ? TEMPLATE_CLIPBOARD_STORAGE_KEY : CIRCUIT_CLIPBOARD_STORAGE_KEY;
+}
+
+function encodeAppClipboard(kind, data) {
+  return JSON.stringify({
+    app: APP_CLIPBOARD_MARKER,
+    kind,
+    version: 1,
+    data,
+  });
+}
+
+function parseAppClipboard(text, kind) {
+  if (typeof text !== "string" || !text.trim()) return null;
+  try {
+    const payload = JSON.parse(text);
+    if (payload?.app !== APP_CLIPBOARD_MARKER || payload.kind !== kind) return null;
+    if (kind === "circuit") {
+      const nodes = Array.isArray(payload.data?.nodes) ? payload.data.nodes : [];
+      const wires = Array.isArray(payload.data?.wires) ? payload.data.wires : [];
+      return { nodes, wires };
+    }
+    return payload.data || null;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function writeAppClipboard(kind, data) {
+  const text = encodeAppClipboard(kind, data);
+  try {
+    localStorage.setItem(appClipboardStorageKey(kind), text);
+  } catch (error) {
+    // Clipboard write can still succeed even if persistent fallback storage is blocked.
+  }
+  try {
+    if (!navigator.clipboard?.writeText) return false;
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+async function readAppClipboard(kind) {
+  try {
+    if (navigator.clipboard?.readText) {
+      return parseAppClipboard(await navigator.clipboard.readText(), kind);
+    }
+  } catch (error) {
+    // Fall back to same-origin storage when browser clipboard reads are denied.
+  }
+  try {
+    return parseAppClipboard(localStorage.getItem(appClipboardStorageKey(kind)), kind);
+  } catch (error) {
+    return null;
+  }
+}
+
 function resetTemplateState() {
   state.template.polygon = [];
   state.template.draft = [];
@@ -6566,12 +6629,17 @@ function selectedTemplateData() {
   return null;
 }
 
-function copyTemplateSelection() {
+async function copyTemplateSelection() {
   const data = selectedTemplateData();
-  if (data) state.template.clipboard = data;
+  if (!data) return false;
+  state.template.clipboard = data;
+  await writeAppClipboard("template", data);
+  return true;
 }
 
-function pasteTemplateSelection() {
+async function pasteTemplateSelection() {
+  const clipboardData = await readAppClipboard("template");
+  if (clipboardData) state.template.clipboard = clipboardData;
   if (!state.template.clipboard) return;
   recordTemplateUndo();
   const data = cloneData(state.template.clipboard);
@@ -6632,9 +6700,9 @@ function pasteTemplateSelection() {
   renderTemplateEditor();
 }
 
-function cutTemplateSelection() {
+async function cutTemplateSelection() {
   if (!state.template.selected) return;
-  copyTemplateSelection();
+  await copyTemplateSelection();
   deleteSelectedTemplateObject();
 }
 
@@ -7314,11 +7382,12 @@ function deleteSelection({ record = true } = {}) {
   render();
 }
 
-function cutSelection() {
+async function cutSelection() {
   if (!selectedCount()) return;
   recordUndo();
-  copySelection();
+  await copySelection({ showStatus: false });
   deleteSelection({ record: false });
+  statusEl.textContent = "Cut selection";
 }
 
 function selectedClipboardData() {
@@ -7334,12 +7403,13 @@ function selectedClipboardData() {
   return { nodes, wires };
 }
 
-function copySelection() {
+async function copySelection({ showStatus = true } = {}) {
   if (!selectedCount()) return;
   const data = selectedClipboardData();
   if (!data.nodes.length && !data.wires.length) return;
   state.clipboard = data;
-  statusEl.textContent = `Copied ${data.nodes.length} components and ${data.wires.length} wires`;
+  await writeAppClipboard("circuit", data);
+  if (showStatus) statusEl.textContent = `Copied ${data.nodes.length} components and ${data.wires.length} wires`;
 }
 
 function remapEndpoint(endpoint, nodeIdMap) {
@@ -7348,12 +7418,15 @@ function remapEndpoint(endpoint, nodeIdMap) {
   return copy;
 }
 
-function pasteSelection() {
+async function pasteSelection() {
+  const clipboardData = await readAppClipboard("circuit");
+  if (clipboardData) state.clipboard = clipboardData;
   if (!state.clipboard) return;
   recordUndo();
   const nodeIdMap = new Map();
   const wireIdMap = new Map();
-  const pastedNodes = state.clipboard.nodes.map((node) => {
+  const sourceClipboard = state.clipboard;
+  const pastedNodes = sourceClipboard.nodes.map((node) => {
     const copy = cloneData(node);
     const nextId = uid(copy.type?.toLowerCase?.() || "node");
     nodeIdMap.set(copy.id, nextId);
@@ -7362,7 +7435,7 @@ function pasteSelection() {
     copy.y += 1;
     return copy;
   });
-  const pastedWires = state.clipboard.wires.map((wire) => {
+  const pastedWires = sourceClipboard.wires.map((wire) => {
     const copy = cloneData(wire);
     const nextId = uid("wire");
     wireIdMap.set(copy.id, nextId);
@@ -7378,8 +7451,8 @@ function pasteSelection() {
   }).filter((wire) => {
     const from = normalizeEndpoint(wire.from, "output");
     const to = normalizeEndpoint(wire.to, "input");
-    const fromOk = from.kind !== "port" || nodeIdMap.has(state.clipboard.nodes.find((node) => nodeIdMap.get(node.id) === from.nodeId)?.id);
-    const toOk = to.kind !== "port" || nodeIdMap.has(state.clipboard.nodes.find((node) => nodeIdMap.get(node.id) === to.nodeId)?.id);
+    const fromOk = from.kind !== "port" || nodeIdMap.has(sourceClipboard.nodes.find((node) => nodeIdMap.get(node.id) === from.nodeId)?.id);
+    const toOk = to.kind !== "port" || nodeIdMap.has(sourceClipboard.nodes.find((node) => nodeIdMap.get(node.id) === to.nodeId)?.id);
     return fromOk && toOk;
   });
 
@@ -8133,17 +8206,17 @@ document.addEventListener("keydown", (event) => {
       }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "x") {
         event.preventDefault();
-        cutTemplateSelection();
+        void cutTemplateSelection();
         return;
       }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c") {
         event.preventDefault();
-        copyTemplateSelection();
+        void copyTemplateSelection();
         return;
       }
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "v") {
         event.preventDefault();
-        pasteTemplateSelection();
+        void pasteTemplateSelection();
         return;
       }
       if (!event.ctrlKey && !event.metaKey && !event.altKey && (event.key === "z" || event.key === "Z")) {
@@ -8203,17 +8276,17 @@ document.addEventListener("keydown", (event) => {
   }
   if (!editingText && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "x") {
     event.preventDefault();
-    cutSelection();
+    void cutSelection();
     return;
   }
   if (!editingText && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "c") {
     event.preventDefault();
-    copySelection();
+    void copySelection();
     return;
   }
   if (!editingText && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "v") {
     event.preventDefault();
-    pasteSelection();
+    void pasteSelection();
     return;
   }
   if (event.code === "Space") {

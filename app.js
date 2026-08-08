@@ -4130,6 +4130,19 @@ function appendSelectionCornerHandles(parent, bounds, className = "selection-han
   }
 }
 
+function appendSelectionPointHandles(parent, points, className = "selection-handle") {
+  const handle = GRID;
+  for (const point of points || []) {
+    parent.appendChild(createSvg("rect", {
+      class: className,
+      x: point.x - handle / 2,
+      y: point.y - handle / 2,
+      width: handle,
+      height: handle,
+    }));
+  }
+}
+
 function renderSelectionHandles(node) {
   const bounds = nodeBounds(node);
   appendSelectionCornerHandles(selectionOverlayLayer, {
@@ -7117,6 +7130,7 @@ function appendLinePinGlyph(parent, pin, className = "template-pin", polygon = s
       "data-template-pin-id": pin.id,
     }));
   }
+  return geometry;
 }
 
 function appendMacroLinePinMarker(parent, nodeOrigin, pin, macro, className = "macro-pin-marker") {
@@ -7225,6 +7239,7 @@ function renderTemplateEditor() {
   const polygon = state.template.polygon;
   const draft = state.template.draft;
   const selectedBounds = [];
+  const selectedLineHandles = [];
   if (polygon.length >= 3) {
     templateCanvas.appendChild(createSvg("polygon", {
       class: `template-body ${templateSelectionHas("polygon") ? "selected" : ""}`,
@@ -7287,9 +7302,9 @@ function renderTemplateEditor() {
       continue;
     }
     if (templatePinShape(pin) === "line") {
-      appendLinePinGlyph(templateCanvas, pin, pinClasses);
+      const geometry = appendLinePinGlyph(templateCanvas, pin, pinClasses);
       if (templateSelectionHas("pin", pin.id)) {
-        selectedBounds.push(templatePinPixelBounds(pin));
+        selectedLineHandles.push(geometry);
       }
       if (pin.label) {
         templateCanvas.appendChild(createSvg("text", {
@@ -7359,6 +7374,7 @@ function renderTemplateEditor() {
     }));
   }
   for (const bounds of selectedBounds) appendSelectionCornerHandles(templateCanvas, bounds);
+  for (const geometry of selectedLineHandles) appendSelectionPointHandles(templateCanvas, [geometry.start, geometry.end]);
   templateStatus.textContent = state.template.polygon.length
     ? "Right-click a template pin to associate it with the circuit pin that opened this editor."
     : "Click Polygon, then click points. Click the first point again to close.";

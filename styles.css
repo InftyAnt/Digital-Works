@@ -675,8 +675,17 @@ button.active svg {
 }
 
 .template-line-pin.selected {
+  stroke: #e6362e;
   stroke-width: 4;
   stroke-dasharray: 8 6;
+}
+
+.template-line-pin.linked.selected {
+  stroke: #8b8f95;
+}
+
+.template-line-pin.active-source.selected {
+  stroke: #49b86f;
 }
 
 .template-cable-pin {

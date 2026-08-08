@@ -640,6 +640,27 @@ button.active svg {
   stroke-width: 1;
 }
 
+.template-line-pin {
+  fill: none;
+  stroke: #e6362e;
+  stroke-width: 4;
+  stroke-linecap: butt;
+}
+
+.template-line-pin.linked {
+  stroke: #8b8f95;
+}
+
+.template-line-pin.active-source {
+  stroke: #49b86f;
+}
+
+.template-pin-hitbox {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 0;
+}
+
 .template-pin.linked {
   fill: #8b8f95;
 }
@@ -651,6 +672,11 @@ button.active svg {
 .template-pin.selected {
   stroke: var(--accent);
   stroke-width: 3;
+}
+
+.template-line-pin.selected {
+  stroke: var(--accent);
+  stroke-width: 6;
 }
 
 .template-cable-pin {
@@ -948,6 +974,12 @@ button.active svg {
   stroke: var(--part-stroke);
   stroke-width: 1.5;
   pointer-events: none;
+}
+
+.macro-pin-marker.template-line-pin {
+  fill: none;
+  stroke: var(--part-stroke);
+  stroke-width: 4;
 }
 
 .macro-pin-label {

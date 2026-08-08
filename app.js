@@ -4033,6 +4033,8 @@ function renderNodeShape(group, node) {
       const pinMarkerSize = GRID * PIN_VISUAL_CELLS;
       if (Math.max(1, Math.round(Number(pin.bitLength || 1))) > 1) {
         appendCablePinGlyph(group, pinX, pinY, "macro-pin-marker");
+      } else if (pin.shape === "line") {
+        appendMacroLinePinMarker(group, pinX, pinY, macroPinLineAxis(pin, nodeSize(node)));
       } else {
         group.appendChild(createSvg("rect", {
           class: "macro-pin-marker",
@@ -4808,6 +4810,7 @@ function templatePinForSource(source, position, sourcePort = "") {
     direction: "input",
     kind: isCable ? "cable" : "pin",
     bitLength: isCable ? multiBitCount(source) : 1,
+    shape: "box",
     x: position.x,
     y: position.y,
     sourcePinId: source.id,
@@ -4823,12 +4826,17 @@ function templatePinBitLength(pin) {
   return Math.max(1, Math.round(Number(pin?.bitLength || 1)));
 }
 
+function templatePinShape(pin) {
+  return pin?.shape === "line" ? "line" : "box";
+}
+
 function normalizeTemplatePin(pin) {
   const bitLength = templatePinBitLength(pin);
   return {
     ...pin,
     kind: pin?.kind === "cable" || bitLength > 1 ? "cable" : "pin",
     bitLength,
+    shape: templatePinKind({ ...pin, bitLength }) === "cable" ? "box" : templatePinShape(pin),
   };
 }
 
@@ -6456,6 +6464,7 @@ function restoreTemplateFromCachedMacro() {
       direction: pin.direction || "input",
       kind: Number(pin.bitLength || 1) > 1 ? "cable" : "pin",
       bitLength: Math.max(1, Math.round(Number(pin.bitLength || 1))),
+      shape: pin.shape === "line" ? "line" : "box",
       x: pin.x,
       y: pin.y,
       sourcePinId: pin.internalNodeId || null,
@@ -6856,7 +6865,10 @@ function mirrorSelectedTemplateObject(axis) {
 }
 
 function templateHasPendingShadow() {
-  return state.template.tool === "pin" || state.template.tool === "multi-pin" || state.template.tool === "cable-pin";
+  return state.template.tool === "pin"
+    || state.template.tool === "line-pin"
+    || state.template.tool === "multi-pin"
+    || state.template.tool === "cable-pin";
 }
 
 function rotateTemplatePendingByQuarters(quarters) {
@@ -7000,9 +7012,77 @@ function appendCablePinGlyph(parent, cx, cy, className = "template-pin") {
   }));
 }
 
+function pinLineAxisFromBounds(pin, bounds) {
+  if (!bounds) return "horizontal";
+  const distances = [
+    { axis: "horizontal", value: Math.abs(pin.x - bounds.minX) },
+    { axis: "horizontal", value: Math.abs(pin.x - bounds.maxX) },
+    { axis: "vertical", value: Math.abs(pin.y - bounds.minY) },
+    { axis: "vertical", value: Math.abs(pin.y - bounds.maxY) },
+  ];
+  distances.sort((a, b) => a.value - b.value);
+  return distances[0]?.axis || "horizontal";
+}
+
+function appendLinePinGlyph(parent, pin, className = "template-pin", bounds = templateBounds()) {
+  const cx = pin.x * GRID;
+  const cy = pin.y * GRID;
+  const length = GRID * PIN_VISUAL_CELLS;
+  const axis = pinLineAxisFromBounds(pin, bounds);
+  const half = length / 2;
+  const lineAttrs = axis === "vertical"
+    ? { x1: cx, y1: cy - half, x2: cx, y2: cy + half }
+    : { x1: cx - half, y1: cy, x2: cx + half, y2: cy };
+  parent.appendChild(createSvg("line", {
+    class: `${className} template-line-pin`,
+    ...lineAttrs,
+    "data-template-pin-id": pin.id,
+  }));
+  if (!className.includes("template-pending-shadow")) {
+    parent.appendChild(createSvg("rect", {
+      class: "template-pin template-pin-hitbox",
+      x: cx - length / 2,
+      y: cy - length / 2,
+      width: length,
+      height: length,
+      "data-template-pin-id": pin.id,
+    }));
+  }
+}
+
+function appendMacroLinePinMarker(parent, cx, cy, axis, className = "macro-pin-marker") {
+  const length = GRID * PIN_VISUAL_CELLS;
+  const half = length / 2;
+  const lineAttrs = axis === "vertical"
+    ? { x1: cx, y1: cy - half, x2: cx, y2: cy + half }
+    : { x1: cx - half, y1: cy, x2: cx + half, y2: cy };
+  parent.appendChild(createSvg("line", {
+    class: `${className} template-line-pin`,
+    ...lineAttrs,
+  }));
+}
+
+function macroPinLineAxis(pin, size) {
+  const position = macroPinPosition(pin, size);
+  return pinLineAxisFromBounds(position, {
+    minX: 0,
+    minY: 0,
+    maxX: size.w,
+    maxY: size.h,
+  });
+}
+
 function appendTemplatePendingShadow() {
   if (!state.template.pointer || !templateHasPendingShadow()) return;
   const pinMarkerSize = GRID * PIN_VISUAL_CELLS;
+  if (state.template.tool === "line-pin") {
+    appendLinePinGlyph(
+      templateCanvas,
+      { ...state.template.pointer, id: "" },
+      "template-pin template-pending-shadow",
+    );
+    return;
+  }
   if (state.template.tool === "pin") {
     templateCanvas.appendChild(createSvg("rect", {
       class: "template-pin template-pending-shadow",
@@ -7115,12 +7195,13 @@ function renderTemplateEditor() {
   for (const pin of state.template.pins) {
     const pinMarkerSize = GRID * PIN_VISUAL_CELLS;
     const activeSource = Boolean(state.template.sourcePinId && pin.sourcePinId === state.template.sourcePinId);
+    const pinClasses = `template-pin ${pin.sourcePinId ? "linked" : ""} ${activeSource ? "active-source" : ""} ${templateSelectionHas("pin", pin.id) ? "selected" : ""}`;
     if (templatePinKind(pin) === "cable") {
       appendCablePinGlyph(
         templateCanvas,
         pin.x * GRID,
         pin.y * GRID,
-        `template-pin ${pin.sourcePinId ? "linked" : ""} ${activeSource ? "active-source" : ""} ${templateSelectionHas("pin", pin.id) ? "selected" : ""}`,
+        pinClasses,
       );
       templateCanvas.lastChild.previousSibling.setAttribute("data-template-pin-id", pin.id);
       templateCanvas.lastChild.setAttribute("data-template-pin-id", pin.id);
@@ -7136,8 +7217,23 @@ function renderTemplateEditor() {
       }
       continue;
     }
+    if (templatePinShape(pin) === "line") {
+      appendLinePinGlyph(templateCanvas, pin, pinClasses);
+      if (templateSelectionHas("pin", pin.id)) {
+        selectedBounds.push(templatePinPixelBounds(pin));
+      }
+      if (pin.label) {
+        templateCanvas.appendChild(createSvg("text", {
+          class: "template-pin-label",
+          x: pin.x * GRID + GRID * 0.35,
+          y: pin.y * GRID,
+        }));
+        templateCanvas.lastChild.textContent = pin.label;
+      }
+      continue;
+    }
     const rect = createSvg("rect", {
-      class: `template-pin ${pin.sourcePinId ? "linked" : ""} ${activeSource ? "active-source" : ""} ${templateSelectionHas("pin", pin.id) ? "selected" : ""}`,
+      class: pinClasses,
       x: pin.x * GRID - pinMarkerSize / 2,
       y: pin.y * GRID - pinMarkerSize / 2,
       width: pinMarkerSize,
@@ -7204,6 +7300,7 @@ function updateTemplateToolButtons() {
     "template-tool-polygon": "polygon",
     "template-tool-rectangle": "rectangle",
     "template-tool-pin": "pin",
+    "template-tool-line-pin": "line-pin",
     "template-tool-multi-pin": "multi-pin",
     "template-tool-cable-pin": "cable-pin",
     "template-tool-text": "text",
@@ -7300,6 +7397,22 @@ function showTemplatePinContextMenu(pinId, clientX, clientY) {
     unlinkTemplatePinOrGroup(pinId);
   });
   fanInMenu.appendChild(unlinkButton);
+
+  if (templatePinKind(pin) !== "cable") {
+    const shapeButton = document.createElement("button");
+    shapeButton.type = "button";
+    const nextShape = templatePinShape(pin) === "line" ? "box" : "line";
+    shapeButton.textContent = nextShape === "line" ? "Use Line Shape" : "Use Box Shape";
+    shapeButton.addEventListener("click", () => {
+      hideFanInMenu();
+      recordTemplateUndo();
+      for (const item of group) {
+        if (templatePinKind(item) !== "cable") item.shape = nextShape;
+      }
+      renderTemplateEditor();
+    });
+    fanInMenu.appendChild(shapeButton);
+  }
   positionContextMenu(clientX, clientY);
 }
 
@@ -7714,6 +7827,7 @@ function macroFromCircuit(options = {}) {
         internalNodeId: pin.sourcePinId,
         internalPort: pin.sourcePort || "",
         bitLength: source?.type === "CABLE_PIN" ? multiBitCount(source) : templatePinBitLength(pin),
+        shape: templatePinKind(pin) === "cable" ? "box" : templatePinShape(pin),
         x: pin.x - bounds.minX,
         y: pin.y - bounds.minY,
       };
@@ -8445,6 +8559,11 @@ document.getElementById("template-tool-pin").addEventListener("click", () => {
   state.template.pendingOptions = {};
   renderTemplateEditor();
 });
+document.getElementById("template-tool-line-pin").addEventListener("click", () => {
+  state.template.tool = "line-pin";
+  state.template.pendingOptions = {};
+  renderTemplateEditor();
+});
 document.getElementById("template-tool-multi-pin").addEventListener("click", async () => {
   const source = findNode(state.template.sourcePinId);
   const defaultBits = source?.type === "MULTI_PIN" ? multiBitCount(source) : 4;
@@ -8501,6 +8620,27 @@ templateCanvas.addEventListener("pointerdown", async (event) => {
       direction: "input",
       kind: "pin",
       bitLength: 1,
+      shape: "box",
+      x: point.x,
+      y: point.y,
+      sourcePinId: null,
+      sourcePort: "",
+    };
+    state.template.pins.push(pin);
+    state.template.selected = { type: "pin", id: pin.id };
+    state.template.tool = "select";
+    renderTemplateEditor();
+    return;
+  }
+  if (state.template.tool === "line-pin") {
+    recordTemplateUndo();
+    const pin = {
+      id: uid("template-pin"),
+      label: "",
+      direction: "input",
+      kind: "pin",
+      bitLength: 1,
+      shape: "line",
       x: point.x,
       y: point.y,
       sourcePinId: null,

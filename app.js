@@ -6638,8 +6638,10 @@ async function copyTemplateSelection() {
 }
 
 async function pasteTemplateSelection() {
-  const clipboardData = await readAppClipboard("template");
-  if (clipboardData) state.template.clipboard = clipboardData;
+  if (!state.template.clipboard) {
+    const clipboardData = await readAppClipboard("template");
+    if (clipboardData) state.template.clipboard = clipboardData;
+  }
   if (!state.template.clipboard) return;
   recordTemplateUndo();
   const data = cloneData(state.template.clipboard);
@@ -7419,8 +7421,10 @@ function remapEndpoint(endpoint, nodeIdMap) {
 }
 
 async function pasteSelection() {
-  const clipboardData = await readAppClipboard("circuit");
-  if (clipboardData) state.clipboard = clipboardData;
+  if (!state.clipboard) {
+    const clipboardData = await readAppClipboard("circuit");
+    if (clipboardData) state.clipboard = clipboardData;
+  }
   if (!state.clipboard) return;
   recordUndo();
   const nodeIdMap = new Map();

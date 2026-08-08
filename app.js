@@ -6428,11 +6428,7 @@ function pointInPolygonOrOnEdge(point, polygon) {
 function templatePinOutsideBody(pin) {
   if (state.template.polygon.length < 3) return false;
   if (pointInPolygonOrOnEdge({ x: pin.x, y: pin.y }, state.template.polygon)) return false;
-  if (templatePinKind(pin) !== "cable" && templatePinShape(pin) === "line") {
-    const bounds = templateBounds();
-    const axis = pinLineAxisFromBounds(pin, bounds);
-    return !pinLineBoundaryIntersections(pin, axis, state.template.polygon).length;
-  }
+  if (templatePinKind(pin) !== "cable" && templatePinShape(pin) === "line") return false;
   return true;
 }
 
@@ -7207,10 +7203,30 @@ function pinLineBoundaryPoint(pin, axis, polygon, bounds) {
     : { x: pin.x, y: sign < 0 ? bounds.minY : bounds.maxY };
 }
 
+function closestPointOnTemplateSegment(point, a, b) {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const lengthSquared = dx * dx + dy * dy;
+  if (!lengthSquared) return { point: { x: a.x, y: a.y }, distance: Math.hypot(point.x - a.x, point.y - a.y) };
+  const t = Math.max(0, Math.min(1, ((point.x - a.x) * dx + (point.y - a.y) * dy) / lengthSquared));
+  const closest = { x: a.x + dx * t, y: a.y + dy * t };
+  return { point: closest, distance: Math.hypot(point.x - closest.x, point.y - closest.y) };
+}
+
+function closestTemplatePolygonPoint(point, polygon) {
+  if (!Array.isArray(polygon) || polygon.length < 2) return null;
+  let best = null;
+  for (let index = 0; index < polygon.length; index += 1) {
+    const candidate = closestPointOnTemplateSegment(point, polygon[index], polygon[(index + 1) % polygon.length]);
+    if (!best || candidate.distance < best.distance) best = candidate;
+  }
+  return best?.point || null;
+}
+
 function linePinGeometry(pin, polygon, bounds) {
   const axis = pinLineAxisFromBounds(pin, bounds);
   const sign = pinLineSign(pin, axis, bounds);
-  const boundary = pinLineBoundaryPoint(pin, axis, polygon, bounds);
+  const boundary = closestTemplatePolygonPoint(pin, polygon) || pinLineBoundaryPoint(pin, axis, polygon, bounds);
   const start = { x: boundary.x * GRID, y: boundary.y * GRID };
   let end = { x: pin.x * GRID, y: pin.y * GRID };
   if (Math.hypot(end.x - start.x, end.y - start.y) < GRID * 0.2) {

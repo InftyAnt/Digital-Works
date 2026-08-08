@@ -2697,6 +2697,9 @@ function simulate() {
     return;
   }
 
+  // Time-based sources are sampled into `values` before this point. Settle all
+  // combinational/data paths first so a simultaneous data+clock change is seen
+  // by flip-flops as "data arrived before the clock edge".
   settleCircuitValues(values);
   const edgePassLimit = state.nodes.length + 4;
   for (let pass = 0; pass < edgePassLimit; pass += 1) {

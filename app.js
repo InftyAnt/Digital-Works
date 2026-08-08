@@ -4034,7 +4034,7 @@ function renderNodeShape(group, node) {
       if (Math.max(1, Math.round(Number(pin.bitLength || 1))) > 1) {
         appendCablePinGlyph(group, pinX, pinY, "macro-pin-marker");
       } else if (pin.shape === "line") {
-        appendMacroLinePinMarker(group, pinX, pinY, macroPinLineAxis(pin, nodeSize(node)));
+        appendMacroLinePinMarker(group, { x: px, y: py }, pin, macro);
       } else {
         group.appendChild(createSvg("rect", {
           class: "macro-pin-marker",
@@ -6395,7 +6395,14 @@ function pointInPolygonOrOnEdge(point, polygon) {
 }
 
 function templatePinOutsideBody(pin) {
-  return state.template.polygon.length >= 3 && !pointInPolygonOrOnEdge({ x: pin.x, y: pin.y }, state.template.polygon);
+  if (state.template.polygon.length < 3) return false;
+  if (pointInPolygonOrOnEdge({ x: pin.x, y: pin.y }, state.template.polygon)) return false;
+  if (templatePinKind(pin) !== "cable" && templatePinShape(pin) === "line") {
+    const bounds = templateBounds();
+    const axis = pinLineAxisFromBounds(pin, bounds);
+    return !pinLineBoundaryIntersections(pin, axis, state.template.polygon).length;
+  }
+  return true;
 }
 
 function inferCircuitPinDirection(source, sourcePort = "") {
@@ -7024,52 +7031,114 @@ function pinLineAxisFromBounds(pin, bounds) {
   return distances[0]?.axis || "horizontal";
 }
 
-function appendLinePinGlyph(parent, pin, className = "template-pin", bounds = templateBounds()) {
-  const cx = pin.x * GRID;
-  const cy = pin.y * GRID;
-  const length = GRID * PIN_VISUAL_CELLS;
+function pinLineSign(pin, axis, bounds) {
+  if (!bounds) return 1;
+  const center = axis === "vertical"
+    ? (bounds.minY + bounds.maxY) / 2
+    : (bounds.minX + bounds.maxX) / 2;
+  const value = axis === "vertical" ? pin.y : pin.x;
+  return value < center ? -1 : 1;
+}
+
+function pinLineBoundaryIntersections(pin, axis, polygon) {
+  const intersections = [];
+  if (Array.isArray(polygon) && polygon.length >= 3) {
+    for (let index = 0; index < polygon.length; index += 1) {
+      const a = polygon[index];
+      const b = polygon[(index + 1) % polygon.length];
+      if (axis === "horizontal") {
+        const y = pin.y;
+        if (Math.abs(a.y - b.y) < 0.0001) {
+          if (Math.abs(y - a.y) < 0.0001) intersections.push(a.x, b.x);
+          continue;
+        }
+        if (y < Math.min(a.y, b.y) - 0.0001 || y > Math.max(a.y, b.y) + 0.0001) continue;
+        intersections.push(a.x + ((y - a.y) * (b.x - a.x)) / (b.y - a.y));
+      } else {
+        const x = pin.x;
+        if (Math.abs(a.x - b.x) < 0.0001) {
+          if (Math.abs(x - a.x) < 0.0001) intersections.push(a.y, b.y);
+          continue;
+        }
+        if (x < Math.min(a.x, b.x) - 0.0001 || x > Math.max(a.x, b.x) + 0.0001) continue;
+        intersections.push(a.y + ((x - a.x) * (b.y - a.y)) / (b.x - a.x));
+      }
+    }
+  }
+  return intersections;
+}
+
+function pinLineBoundaryPoint(pin, axis, polygon, bounds) {
+  const sign = pinLineSign(pin, axis, bounds);
+  const intersections = pinLineBoundaryIntersections(pin, axis, polygon);
+  if (intersections.length) {
+    const edgeValue = sign < 0 ? Math.min(...intersections) : Math.max(...intersections);
+    return axis === "horizontal" ? { x: edgeValue, y: pin.y } : { x: pin.x, y: edgeValue };
+  }
+  if (!bounds) return { x: pin.x, y: pin.y };
+  return axis === "horizontal"
+    ? { x: sign < 0 ? bounds.minX : bounds.maxX, y: pin.y }
+    : { x: pin.x, y: sign < 0 ? bounds.minY : bounds.maxY };
+}
+
+function linePinGeometry(pin, polygon, bounds) {
   const axis = pinLineAxisFromBounds(pin, bounds);
-  const half = length / 2;
-  const lineAttrs = axis === "vertical"
-    ? { x1: cx, y1: cy - half, x2: cx, y2: cy + half }
-    : { x1: cx - half, y1: cy, x2: cx + half, y2: cy };
+  const sign = pinLineSign(pin, axis, bounds);
+  const boundary = pinLineBoundaryPoint(pin, axis, polygon, bounds);
+  const start = { x: boundary.x * GRID, y: boundary.y * GRID };
+  let end = { x: pin.x * GRID, y: pin.y * GRID };
+  if (Math.hypot(end.x - start.x, end.y - start.y) < GRID * 0.2) {
+    const length = GRID * PIN_VISUAL_CELLS;
+    end = axis === "vertical"
+      ? { x: start.x, y: start.y + sign * length }
+      : { x: start.x + sign * length, y: start.y };
+  }
+  return { axis, start, end };
+}
+
+function appendLinePinGlyph(parent, pin, className = "template-pin", polygon = state.template.polygon, bounds = templateBounds()) {
+  const geometry = linePinGeometry(pin, polygon, bounds);
   parent.appendChild(createSvg("line", {
     class: `${className} template-line-pin`,
-    ...lineAttrs,
+    x1: geometry.start.x,
+    y1: geometry.start.y,
+    x2: geometry.end.x,
+    y2: geometry.end.y,
     "data-template-pin-id": pin.id,
   }));
   if (!className.includes("template-pending-shadow")) {
+    const padding = GRID * 0.35;
     parent.appendChild(createSvg("rect", {
       class: "template-pin template-pin-hitbox",
-      x: cx - length / 2,
-      y: cy - length / 2,
-      width: length,
-      height: length,
+      x: Math.min(geometry.start.x, geometry.end.x) - padding,
+      y: Math.min(geometry.start.y, geometry.end.y) - padding,
+      width: Math.max(Math.abs(geometry.end.x - geometry.start.x), GRID * 0.2) + padding * 2,
+      height: Math.max(Math.abs(geometry.end.y - geometry.start.y), GRID * 0.2) + padding * 2,
       "data-template-pin-id": pin.id,
     }));
   }
 }
 
-function appendMacroLinePinMarker(parent, cx, cy, axis, className = "macro-pin-marker") {
-  const length = GRID * PIN_VISUAL_CELLS;
-  const half = length / 2;
-  const lineAttrs = axis === "vertical"
-    ? { x1: cx, y1: cy - half, x2: cx, y2: cy + half }
-    : { x1: cx - half, y1: cy, x2: cx + half, y2: cy };
+function appendMacroLinePinMarker(parent, nodeOrigin, pin, macro, className = "macro-pin-marker") {
+  const size = macro?.size || { w: NODE_SIZES.MACRO?.w || 6, h: NODE_SIZES.MACRO?.h || 5 };
+  const position = macroPinPosition(pin, size);
+  const polygon = macro?.polygon?.length
+    ? macro.polygon
+    : [{ x: 0, y: 0 }, { x: size.w, y: 0 }, { x: size.w, y: size.h }, { x: 0, y: size.h }];
+  const bounds = {
+    minX: Math.min(...polygon.map((point) => point.x)),
+    minY: Math.min(...polygon.map((point) => point.y)),
+    maxX: Math.max(...polygon.map((point) => point.x)),
+    maxY: Math.max(...polygon.map((point) => point.y)),
+  };
+  const geometry = linePinGeometry({ ...pin, ...position }, polygon, bounds);
   parent.appendChild(createSvg("line", {
     class: `${className} template-line-pin`,
-    ...lineAttrs,
+    x1: nodeOrigin.x + geometry.start.x,
+    y1: nodeOrigin.y + geometry.start.y,
+    x2: nodeOrigin.x + geometry.end.x,
+    y2: nodeOrigin.y + geometry.end.y,
   }));
-}
-
-function macroPinLineAxis(pin, size) {
-  const position = macroPinPosition(pin, size);
-  return pinLineAxisFromBounds(position, {
-    minX: 0,
-    minY: 0,
-    maxX: size.w,
-    maxY: size.h,
-  });
 }
 
 function appendTemplatePendingShadow() {

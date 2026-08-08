@@ -1943,6 +1943,22 @@ function boundsContains(container, item) {
     && item.maxY <= container.maxY;
 }
 
+function boundsContainPoint(bounds, point) {
+  return point.x >= bounds.minX
+    && point.x <= bounds.maxX
+    && point.y >= bounds.minY
+    && point.y <= bounds.maxY;
+}
+
+function topMacroAtGridPoint(point) {
+  for (let index = state.nodes.length - 1; index >= 0; index -= 1) {
+    const node = state.nodes[index];
+    if (node.type !== "MACRO") continue;
+    if (boundsContainPoint(nodeBounds(node), point)) return node;
+  }
+  return null;
+}
+
 function selectInBounds(bounds) {
   const nodeIds = state.nodes.filter((node) => boundsContains(bounds, nodeBounds(node))).map((node) => node.id);
   const wireIds = state.wires.filter((wire) => {
@@ -2476,7 +2492,7 @@ function applyMacroInputCableValues(cableValues, graph, pinNodes, macroPins, cab
   }
 }
 
-function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}, instancePath = "") {
+function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}, instancePath = "", options = {}) {
   if (!macro?.circuit) return { nodes: [], wires: [], values: new Map(), outputs: {} };
   const internalNodes = (macro.circuit.nodes || []).map((item) => ({ ...item }));
   const internalWires = (macro.circuit.wires || []).map((item) => ({
@@ -2678,7 +2694,7 @@ function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}, instancePath
   state.values = previous.values;
   state.macros = previous.macros;
   state.macroSimulationPath = previous.macroSimulationPath;
-  saveMacroSequentialState(instancePath, internalNodes);
+  if (!options.readOnly) saveMacroSequentialState(instancePath, internalNodes);
   return { nodes: internalNodes, wires: internalWires, values, outputs };
 }
 
@@ -4714,6 +4730,7 @@ function openMacroViewerForNode(node) {
   state.macroViewer.stack = [{
     macro,
     inputs: inputValuesForNode(node),
+    instancePath: node.id,
     title: macro.name || "Macro",
   }];
   bringModalToFront(macroViewModal);
@@ -4724,7 +4741,7 @@ function openMacroViewerForNode(node) {
 function renderMacroViewer() {
   const frame = state.macroViewer.stack[state.macroViewer.stack.length - 1];
   if (!frame) return;
-  const result = simulateMacroCircuit(frame.macro, frame.inputs);
+  const result = simulateMacroCircuit(frame.macro, frame.inputs, {}, frame.instancePath || "", { readOnly: true });
   state.macroViewer.currentResult = result;
   const previous = { nodes: state.nodes, wires: state.wires, values: state.values, macros: state.macros };
   state.nodes = result.nodes;
@@ -8590,7 +8607,10 @@ canvas.addEventListener("contextmenu", (event) => {
 });
 
 canvas.addEventListener("dblclick", (event) => {
-  const node = nodeFromEventTarget(event.target);
+  const targetNode = nodeFromEventTarget(event.target);
+  const node = targetNode?.type === "MACRO"
+    ? targetNode
+    : topMacroAtGridPoint(screenToGrid(event.clientX, event.clientY));
   if (node?.type === "MACRO") openMacroViewerForNode(node);
 });
 
@@ -9269,6 +9289,7 @@ macroViewCanvas.addEventListener("dblclick", (event) => {
   state.macroViewer.stack.push({
     macro,
     inputs: inputValuesForNode(node, result.values),
+    instancePath: `${state.macroViewer.stack[state.macroViewer.stack.length - 1]?.instancePath || ""}/${node.id}`,
     title: macro.name || "Macro",
   });
   renderMacroViewer();

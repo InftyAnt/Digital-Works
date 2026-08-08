@@ -7180,18 +7180,12 @@ function pinLineBoundaryIntersections(pin, axis, polygon) {
       const b = polygon[(index + 1) % polygon.length];
       if (axis === "horizontal") {
         const y = pin.y;
-        if (Math.abs(a.y - b.y) < 0.0001) {
-          if (Math.abs(y - a.y) < 0.0001) intersections.push(a.x, b.x);
-          continue;
-        }
+        if (Math.abs(a.y - b.y) < 0.0001) continue;
         if (y < Math.min(a.y, b.y) - 0.0001 || y > Math.max(a.y, b.y) + 0.0001) continue;
         intersections.push(a.x + ((y - a.y) * (b.x - a.x)) / (b.y - a.y));
       } else {
         const x = pin.x;
-        if (Math.abs(a.x - b.x) < 0.0001) {
-          if (Math.abs(x - a.x) < 0.0001) intersections.push(a.y, b.y);
-          continue;
-        }
+        if (Math.abs(a.x - b.x) < 0.0001) continue;
         if (x < Math.min(a.x, b.x) - 0.0001 || x > Math.max(a.x, b.x) + 0.0001) continue;
         intersections.push(a.y + ((x - a.x) * (b.y - a.y)) / (b.x - a.x));
       }

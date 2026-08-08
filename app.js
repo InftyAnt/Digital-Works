@@ -4,32 +4,63 @@ const MIN_STANDARD_ZOOM = 0.35;
 const DEFAULT_ZOOM = MIN_STANDARD_ZOOM;
 const MIN_ZOOM = MIN_STANDARD_ZOOM / 5;
 const MAX_ZOOM = 2.5;
+const CIRCUIT_STROKE = 3;
+const WIRE_POINT_CAP_RADIUS = CIRCUIT_STROKE / 2;
 const DEFAULT_HOT_COLOR = "#d54d3f";
 const DEFAULT_COLD_COLOR = "#CCCCCC";
+const DEFAULT_X_COLOR = "#d08a00";
+const DEFAULT_Z_COLOR = "#0b73b7";
+const DEFAULT_DATA_ARROW_COLOR = "#0b73b7";
 const SETTINGS_STORAGE_KEY = "digitalWorksPrototype.settings.v1";
-const TEMPLATE_VIEW_W = 48;
-const TEMPLATE_VIEW_H = 32;
+const DESIGN_FILE_PICKER_ID = "digital-works-design";
+const TEMPLATE_VIEW_W = 144;
+const TEMPLATE_VIEW_H = 96;
 const TEMPLATE_MIN_ZOOM = MIN_ZOOM;
 const TEMPLATE_MAX_ZOOM = 4;
+const GRID_BOUNDARY_PX = {
+  minX: -32000,
+  minY: -32000,
+  maxX: 32000,
+  maxY: 32000,
+};
 
 // Every component is placed on the logical grid, not raw pixels.
 // Width and height are measured in grid cells so zoom/pan never changes the circuit model.
 const NODE_SIZES = {
   INPUT: { w: 2, h: 2 },
   MULTI_INPUT: { w: 8, h: 5 },
+  CABLE_SWITCH: { w: 6, h: 6 },
+  CABLE_TEST_SWITCH: { w: 6, h: 6 },
+  CABLE_OUTPUT: { w: 6, h: 6 },
+  CABLE_TO_BUS: { w: 6, h: 8 },
+  BUS_TO_CABLE: { w: 6, h: 8 },
+  CABLE_MERGER: { w: 6, h: 6 },
+  CABLE_DIVIDER: { w: 6, h: 6 },
   TEST_INPUT: { w: 2, h: 2 },
   MULTI_TEST_INPUT: { w: 8, h: 5 },
   MULTI_OUTPUT: { w: 8, h: 2 },
   MULTI_PIN: { w: 8, h: 4 },
   BUS: { w: 8, h: 2 },
   OUTPUT: { w: 2, h: 2 },
-  VCC: { w: 2, h: 2 },
-  GND: { w: 2, h: 2 },
+  VCC: { w: 4, h: 4 },
+  GND: { w: 4, h: 4 },
+  X_SRC: { w: 4, h: 4 },
+  Z_SRC: { w: 4, h: 4 },
+  CLOCK: { w: 4, h: 4 },
+  PULSE: { w: 6, h: 4 },
   PIN: { w: PIN_VISUAL_CELLS, h: PIN_VISUAL_CELLS },
+  CABLE_PIN: { w: 2, h: 4 },
   TEXT: { w: 4, h: 1 },
   JUNCTION: { w: 1, h: 1 },
   NOT: { w: 10, h: 3 },
   BUFFER: { w: 10, h: 3 },
+  TRISTATE: { w: 10, h: 5 },
+  SR_LATCH: { w: 16, h: 16 },
+  D_LATCH: { w: 16, h: 16 },
+  SR_FF: { w: 16, h: 16 },
+  D_FF: { w: 16, h: 16 },
+  JK_FF: { w: 16, h: 16 },
+  T_FF: { w: 16, h: 16 },
   AND: { w: 12, h: 6 },
   OR: { w: 12, h: 6 },
   XOR: { w: 12, h: 6 },
@@ -44,6 +75,13 @@ const NODE_SIZES = {
 const GATE_META = {
   INPUT: { label: "IN", inputs: [], outputs: ["out"] },
   MULTI_INPUT: { label: "MULTI IN", inputs: [], outputs: [] },
+  CABLE_SWITCH: { label: "CABLE SW", inputs: [], outputs: ["out"] },
+  CABLE_TEST_SWITCH: { label: "CABLE TEST", inputs: [], outputs: ["out"] },
+  CABLE_OUTPUT: { label: "CABLE OUT", inputs: ["in"], outputs: [] },
+  CABLE_TO_BUS: { label: "CABLE BUS", inputs: ["in"], outputs: [] },
+  BUS_TO_CABLE: { label: "BUS CABLE", inputs: [], outputs: ["out"] },
+  CABLE_MERGER: { label: "CABLE MERGE", inputs: [], outputs: ["out"] },
+  CABLE_DIVIDER: { label: "CABLE DIVIDE", inputs: ["in"], outputs: [] },
   TEST_INPUT: { label: "TEST", inputs: [], outputs: ["out"] },
   MULTI_TEST_INPUT: { label: "MULTI TEST", inputs: [], outputs: [] },
   MULTI_OUTPUT: { label: "MULTI LED", inputs: [], outputs: [] },
@@ -51,12 +89,24 @@ const GATE_META = {
   OUTPUT: { label: "LED", inputs: ["in"], outputs: [] },
   VCC: { label: "VCC", inputs: [], outputs: ["out"] },
   GND: { label: "GND", inputs: [], outputs: ["out"] },
+  X_SRC: { label: "X", inputs: [], outputs: ["out"] },
+  Z_SRC: { label: "Z", inputs: [], outputs: ["out"] },
+  CLOCK: { label: "CLK", inputs: [], outputs: ["out"] },
+  PULSE: { label: "PULSE", inputs: [], outputs: ["out"] },
   PIN: { label: "PIN", inputs: ["in"], outputs: ["out"] },
+  CABLE_PIN: { label: "CABLE PIN", inputs: ["in"], outputs: ["out"] },
   MULTI_PIN: { label: "MULTI PIN", inputs: [], outputs: [] },
   TEXT: { label: "TEXT", inputs: [], outputs: [] },
   JUNCTION: { label: "JUNCTION", inputs: ["in"], outputs: ["out"] },
   NOT: { label: "NOT", inputs: ["in"], outputs: ["out"] },
   BUFFER: { label: "BUF", inputs: ["in"], outputs: ["out"] },
+  TRISTATE: { label: "TRI", inputs: ["in", "en"], outputs: ["out"] },
+  SR_LATCH: { label: "SR", inputs: ["s", "r", "en"], outputs: ["q", "qbar"] },
+  D_LATCH: { label: "D", inputs: ["d", "en"], outputs: ["q", "qbar"] },
+  SR_FF: { label: "SR", inputs: ["s", "r", "clk"], outputs: ["q", "qbar"] },
+  D_FF: { label: "D", inputs: ["d", "clk"], outputs: ["q", "qbar"] },
+  JK_FF: { label: "JK", inputs: ["j", "k", "clk"], outputs: ["q", "qbar"] },
+  T_FF: { label: "T", inputs: ["t", "clk"], outputs: ["q", "qbar"] },
   AND: { label: "AND", inputs: ["a", "b"], outputs: ["out"] },
   OR: { label: "OR", inputs: ["a", "b"], outputs: ["out"] },
   XOR: { label: "XOR", inputs: ["a", "b"], outputs: ["out"] },
@@ -68,6 +118,15 @@ const GATE_META = {
 
 const FAN_IN_PORTS = ["a", "b", "c", "d"];
 const FAN_IN_TYPES = new Set(["AND", "NAND", "OR", "NOR", "XOR", "XNOR"]);
+const LATCH_TYPES = new Set(["SR_LATCH", "D_LATCH"]);
+const FLIP_FLOP_TYPES = new Set(["SR_FF", "D_FF", "JK_FF", "T_FF"]);
+const SEQUENTIAL_TYPES = new Set([...LATCH_TYPES, ...FLIP_FLOP_TYPES]);
+const SIGNAL = Object.freeze({
+  ZERO: "0",
+  ONE: "1",
+  UNKNOWN: "X",
+  HIGH_Z: "Z",
+});
 const DEFAULT_TEXT_SETTINGS = {
   text: "Text",
   w: NODE_SIZES.TEXT.w,
@@ -83,13 +142,28 @@ const DEFAULT_SETTINGS = {
   wireColdColor: DEFAULT_COLD_COLOR,
   inputHotColor: DEFAULT_HOT_COLOR,
   outputHotColor: DEFAULT_HOT_COLOR,
+  xSignalColor: DEFAULT_X_COLOR,
+  zSignalColor: DEFAULT_Z_COLOR,
+  orderArrowColor: DEFAULT_HOT_COLOR,
+  dataArrowColor: DEFAULT_DATA_ARROW_COLOR,
+  orderArrowDirection: "lsb-to-msb",
+  dataArrowDirection: "left-to-right",
+  arrowScale: 1,
   textDefaults: { ...DEFAULT_TEXT_SETTINGS },
 };
 
 function normalizeSettings(settings = {}) {
+  const arrowScale = Math.min(2, Math.max(0.5, Number(settings.arrowScale ?? DEFAULT_SETTINGS.arrowScale)));
   return {
     ...DEFAULT_SETTINGS,
     ...settings,
+    xSignalColor: typeof settings.xSignalColor === "string" && settings.xSignalColor.startsWith("#") ? settings.xSignalColor : DEFAULT_SETTINGS.xSignalColor,
+    zSignalColor: typeof settings.zSignalColor === "string" && settings.zSignalColor.startsWith("#") ? settings.zSignalColor : DEFAULT_SETTINGS.zSignalColor,
+    orderArrowColor: typeof settings.orderArrowColor === "string" && settings.orderArrowColor.startsWith("#") ? settings.orderArrowColor : DEFAULT_SETTINGS.orderArrowColor,
+    dataArrowColor: typeof settings.dataArrowColor === "string" && settings.dataArrowColor.startsWith("#") ? settings.dataArrowColor : DEFAULT_SETTINGS.dataArrowColor,
+    orderArrowDirection: settings.orderArrowDirection === "msb-to-lsb" ? "msb-to-lsb" : DEFAULT_SETTINGS.orderArrowDirection,
+    dataArrowDirection: settings.dataArrowDirection === "right-to-left" ? "right-to-left" : DEFAULT_SETTINGS.dataArrowDirection,
+    arrowScale,
     textDefaults: {
       ...DEFAULT_TEXT_SETTINGS,
       ...(settings.textDefaults || {}),
@@ -121,10 +195,13 @@ const state = {
   clipboard: null,
   fileHandle: null,
   fileName: "",
+  savedPayloadText: "",
+  skipUnloadWarning: false,
   undoStack: [],
   redoStack: [],
   pendingPart: null,
   pendingPartOptions: null,
+  scaleKeyDown: false,
   macros: [],
   template: {
     polygon: [],
@@ -149,12 +226,14 @@ const state = {
   zoom: DEFAULT_ZOOM,
   drag: null,
   wireStart: null,
+  wireStartSnapshot: null,
   wirePoints: [],
   busStart: null,
   pointerGrid: { x: 0, y: 0 },
   attachCandidate: null,
   spaceDown: false,
   rotateKeyDown: false,
+  simulationRunning: false,
   simulationCache: null,
   macroViewer: {
     stack: [],
@@ -166,9 +245,11 @@ const canvas = document.getElementById("canvas");
 const viewport = document.getElementById("viewport");
 const nodesLayer = document.getElementById("nodes");
 const wiresLayer = document.getElementById("wires");
+const junctionOverlayLayer = document.getElementById("junction-overlay");
 const wirePreviewLayer = document.getElementById("wire-preview");
 const selectionOverlayLayer = document.getElementById("selection-overlay");
 const statusEl = document.getElementById("status");
+const simulationRunToggle = document.getElementById("simulation-run-toggle");
 const attachLabel = document.getElementById("attach-label");
 const selectionPanel = document.getElementById("selection-panel");
 const settingsModal = document.getElementById("settings-modal");
@@ -176,6 +257,13 @@ const wireHotColorInput = document.getElementById("wire-hot-color");
 const wireColdColorInput = document.getElementById("wire-cold-color");
 const inputHotColorInput = document.getElementById("input-hot-color");
 const outputHotColorInput = document.getElementById("output-hot-color");
+const xSignalColorInput = document.getElementById("x-signal-color");
+const zSignalColorInput = document.getElementById("z-signal-color");
+const orderArrowColorInput = document.getElementById("order-arrow-color");
+const dataArrowColorInput = document.getElementById("data-arrow-color");
+const orderArrowDirectionInput = document.getElementById("order-arrow-direction");
+const dataArrowDirectionInput = document.getElementById("data-arrow-direction");
+const arrowScaleInput = document.getElementById("arrow-scale");
 const textDefaultContentInput = document.getElementById("text-default-content");
 const textDefaultSizeInput = document.getElementById("text-default-size");
 const textDefaultColorInput = document.getElementById("text-default-color");
@@ -203,7 +291,13 @@ const dimensionModalTitle = document.getElementById("dimension-modal-title");
 const dimensionWidthInput = document.getElementById("dimension-width");
 const dimensionHeightInput = document.getElementById("dimension-height");
 const dimensionCancel = document.getElementById("dimension-cancel");
+const cableSwitchModal = document.getElementById("cable-switch-modal");
+const cableSwitchForm = document.getElementById("cable-switch-form");
+const cableSwitchBitsInput = document.getElementById("cable-switch-bits");
+const cableSwitchDataInput = document.getElementById("cable-switch-data");
+const cableSwitchCancel = document.getElementById("cable-switch-cancel");
 let settingsDraft = normalizeSettings();
+let physicalZoomModifierDown = false;
 const fanInMenu = document.createElement("div");
 fanInMenu.className = "fan-in-menu";
 fanInMenu.hidden = true;
@@ -228,7 +322,30 @@ function screenToGrid(clientX, clientY) {
   return { x: Math.round(x), y: Math.round(y) };
 }
 
+function screenToGridRaw(clientX, clientY) {
+  const rect = canvas.getBoundingClientRect();
+  return {
+    x: (clientX - rect.left - state.pan.x) / (GRID * state.zoom),
+    y: (clientY - rect.top - state.pan.y) / (GRID * state.zoom),
+  };
+}
+
+function clampAxisPan(currentPan, viewportSize, minWorld, maxWorld, zoom) {
+  const minPan = viewportSize - maxWorld * zoom;
+  const maxPan = -minWorld * zoom;
+  if (minPan > maxPan) return (minPan + maxPan) / 2;
+  return Math.min(maxPan, Math.max(minPan, currentPan));
+}
+
+function clampPanToGridBoundary() {
+  const rect = canvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  state.pan.x = clampAxisPan(state.pan.x, rect.width, GRID_BOUNDARY_PX.minX, GRID_BOUNDARY_PX.maxX, state.zoom);
+  state.pan.y = clampAxisPan(state.pan.y, rect.height, GRID_BOUNDARY_PX.minY, GRID_BOUNDARY_PX.maxY, state.zoom);
+}
+
 function setViewportTransform() {
+  clampPanToGridBoundary();
   viewport.setAttribute("transform", `translate(${state.pan.x} ${state.pan.y}) scale(${state.zoom})`);
   canvas.classList.toggle("hide-minor-grid", state.zoom < MIN_STANDARD_ZOOM);
 }
@@ -243,6 +360,52 @@ function multiBitCount(node) {
 
 function multiBitPorts(node) {
   return Array.from({ length: multiBitCount(node) }, (_, index) => `bit${index}`);
+}
+
+function cableSegments(node) {
+  const raw = Array.isArray(node?.segments) && node.segments.length ? node.segments : [4, 4];
+  return raw
+    .map((value) => Math.round(Number(value)))
+    .filter((value) => Number.isFinite(value) && value > 0)
+    .map((value) => Math.min(32, value));
+}
+
+function cableSegmentTotalBits(node) {
+  return cableSegments(node).reduce((sum, bits) => sum + bits, 0);
+}
+
+function cableSegmentPorts(node) {
+  return cableSegments(node).map((_, index) => `part${index}`);
+}
+
+function cableMergeSplitSpacing() {
+  return 4;
+}
+
+function cableMergeSplitHeight(node) {
+  return Math.max(4, (cableSegments(node).length - 1) * cableMergeSplitSpacing() + 2);
+}
+
+function cableSegmentLocalY(node, index) {
+  const size = nodeSize(node);
+  const segments = cableSegments(node);
+  return size.h / 2 - ((segments.length - 1) * cableMergeSplitSpacing()) / 2 + index * cableMergeSplitSpacing();
+}
+
+function isCableMergeSplitType(type) {
+  return type === "CABLE_MERGER" || type === "CABLE_DIVIDER";
+}
+
+function arrowScale() {
+  return Math.min(2, Math.max(0.5, Number(state.settings.arrowScale ?? DEFAULT_SETTINGS.arrowScale)));
+}
+
+function orderArrowColor() {
+  return normalizeSettings(state.settings).orderArrowColor;
+}
+
+function dataArrowColor() {
+  return normalizeSettings(state.settings).dataArrowColor;
 }
 
 function busInputs(node) {
@@ -264,6 +427,130 @@ function setMultiBitValue(node, index, value) {
   const values = multiBitValues(node);
   values[index] = Boolean(value);
   node.values = values;
+}
+
+function isCableSourceType(type) {
+  return type === "CABLE_SWITCH" || type === "CABLE_TEST_SWITCH";
+}
+
+function isCableSourceNode(node) {
+  return Boolean(node && isCableSourceType(node.type));
+}
+
+function isLogicSourceType(type) {
+  return type === "INPUT" || type === "TEST_INPUT" || type === "VCC" || type === "GND" || type === "X_SRC" || type === "Z_SRC" || type === "CLOCK" || type === "PULSE";
+}
+
+function isSinglePortIndicatorType(type) {
+  return isLogicSourceType(type) || type === "OUTPUT";
+}
+
+function clockFrequency(node) {
+  const hz = Number(node?.clockHz ?? 1);
+  return [1, 2, 5, 10].includes(hz) ? hz : 1;
+}
+
+function pulseFrequency(node) {
+  const hz = Number(node?.pulseHz ?? node?.clockHz ?? 1);
+  return [1, 2, 5, 10].includes(hz) ? hz : 1;
+}
+
+function normalizePulsePattern(value) {
+  const pattern = String(value ?? "10").toUpperCase().replace(/[^01XZ]/g, "");
+  return pattern || "10";
+}
+
+function pulseSignal(node) {
+  const pattern = normalizePulsePattern(node?.pulsePattern);
+  const index = Math.max(0, Math.trunc(Number(node?.pulseIndex || 0))) % pattern.length;
+  return signalValue(pattern[index]);
+}
+
+function cableDataValue(node) {
+  const value = Math.trunc(Number(node.data ?? 0));
+  return Number.isFinite(value) ? Math.max(0, value) : 0;
+}
+
+function clampCableValueToBits(value, bits) {
+  const width = Math.min(32, Math.max(0, bits));
+  const modulo = 2 ** width;
+  if (!modulo) return 0;
+  return Math.max(0, Math.trunc(Number(value || 0))) % modulo;
+}
+
+function cableMergerValue(node, cableInputs = {}) {
+  let value = 0;
+  for (const [index, bits] of cableSegments(node).entries()) {
+    const partValue = clampCableValueToBits(cableInputs[`part${index}`], bits);
+    value = value * 2 ** bits + partValue;
+  }
+  return value;
+}
+
+function cableDividerValue(node, index, cableInputs = {}) {
+  const segments = cableSegments(node);
+  const inputValue = clampCableValueToBits(cableInputs.in, cableSegmentTotalBits(node));
+  const lowerBits = segments.slice(index + 1).reduce((sum, bits) => sum + bits, 0);
+  return clampCableValueToBits(Math.floor(inputValue / 2 ** lowerBits), segments[index] || 1);
+}
+
+function normalizedPositiveBitLength(value, fallback = 1) {
+  const bits = Math.round(Number(value));
+  return Number.isFinite(bits) && bits >= 1 ? Math.min(32, bits) : fallback;
+}
+
+function directJunctionBitLength(node) {
+  return normalizedPositiveBitLength(node?.bitLength ?? node?.bits, 0);
+}
+
+function endpointNodeId(endpoint) {
+  return endpoint?.kind === "port" ? endpoint.nodeId : endpoint?.nodeId || null;
+}
+
+function endpointRawBitLength(endpoint) {
+  return normalizedPositiveBitLength(endpoint?.bitLength, 0);
+}
+
+function inferJunctionBitLength(node) {
+  const storedBits = directJunctionBitLength(node);
+  let inferredBits = 0;
+  for (const wire of state.wires) {
+    if (endpointNodeId(wire.from) !== node.id && endpointNodeId(wire.to) !== node.id) continue;
+    inferredBits = Math.max(
+      inferredBits,
+      normalizedPositiveBitLength(wire.bitLength, 0),
+      endpointRawBitLength(wire.from),
+      endpointRawBitLength(wire.to),
+    );
+  }
+  if (storedBits && !(storedBits === 1 && inferredBits > 1)) return storedBits;
+  return inferredBits || 1;
+}
+
+function portBitLength(node, port) {
+  if (!node) return 1;
+  if (isCableSourceNode(node) && port === "out") return multiBitCount(node);
+  if (node.type === "CABLE_OUTPUT" && port === "in") return multiBitCount(node);
+  if (node.type === "CABLE_TO_BUS" && port === "in") return multiBitCount(node);
+  if (node.type === "BUS_TO_CABLE" && port === "out") return multiBitCount(node);
+  if (node.type === "CABLE_MERGER") {
+    if (port === "out") return cableSegmentTotalBits(node);
+    const index = Math.max(0, Number(String(port).replace("part", "")) || 0);
+    return cableSegments(node)[index] || 1;
+  }
+  if (node.type === "CABLE_DIVIDER") {
+    if (port === "in") return cableSegmentTotalBits(node);
+    const index = Math.max(0, Number(String(port).replace("part", "")) || 0);
+    return cableSegments(node)[index] || 1;
+  }
+  if (node.type === "CABLE_PIN" && (port === "in" || port === "out")) return multiBitCount(node);
+  if (node.type === "JUNCTION" && (port === "in" || port === "out")) return inferJunctionBitLength(node);
+  if (node.type === "MACRO") {
+    const macro = findMacroForViewer(node.macroId);
+    const pin = (macro?.pins || []).find((item) => item.id === port);
+    return Math.max(1, Math.round(Number(pin?.bitLength || 1)));
+  }
+  return 1;
 }
 
 function normalizeRotationOption(value) {
@@ -388,7 +675,7 @@ function templatePinsForAssignmentState() {
 }
 
 function circuitPinAssigned(node) {
-  if (!node || (node.type !== "PIN" && node.type !== "MULTI_PIN")) return false;
+  if (!node || (node.type !== "PIN" && node.type !== "MULTI_PIN" && node.type !== "CABLE_PIN")) return false;
   return templatePinsForAssignmentState().some((pin) => pin.sourcePinId === node.id);
 }
 
@@ -472,6 +759,8 @@ function transformLocalPoint(point, node, size = nodeSize(node)) {
 function nodeSize(node) {
   if (node.type === "MACRO") return node.size || { w: 6, h: 4 };
   if (node.type === "MULTI_INPUT" || node.type === "MULTI_TEST_INPUT") return { w: multiBitCount(node) * 2, h: 5 };
+  if (node.type === "CABLE_TO_BUS" || node.type === "BUS_TO_CABLE") return { w: 6, h: multiBitCount(node) * 2 };
+  if (isCableMergeSplitType(node.type)) return { w: 6, h: cableMergeSplitHeight(node) };
   if (node.type === "MULTI_OUTPUT") return { w: multiBitCount(node) * 2, h: 3 };
   if (node.type === "MULTI_PIN") return { w: multiBitCount(node) * 2, h: 4 };
   if (node.type === "BUS") {
@@ -484,8 +773,14 @@ function nodeSize(node) {
 
 function nodeInputs(node) {
   if (isFanInGate(node)) return FAN_IN_PORTS.slice(0, gateFanIn(node));
+  if (node.type === "CABLE_TO_BUS") return ["in"];
+  if (node.type === "BUS_TO_CABLE") return multiBitPorts(node);
+  if (node.type === "CABLE_MERGER") return cableSegmentPorts(node);
+  if (node.type === "CABLE_DIVIDER") return ["in"];
+  if (node.type === "CABLE_OUTPUT") return ["in"];
   if (node.type === "MULTI_OUTPUT") return multiBitPorts(node);
   if (node.type === "MULTI_PIN") return multiBitPorts(node).map((port) => `${port}in`);
+  if (node.type === "CABLE_PIN") return ["in"];
   if (node.type === "BUS") return busInputs(node);
   if (node.type === "MACRO") return macroPorts(node, "input").map((pin) => pin.id);
   return GATE_META[node.type].inputs;
@@ -493,7 +788,12 @@ function nodeInputs(node) {
 
 function nodeOutputs(node) {
   if (node.type === "MULTI_INPUT" || node.type === "MULTI_TEST_INPUT") return multiBitPorts(node);
+  if (node.type === "CABLE_TO_BUS") return multiBitPorts(node);
+  if (node.type === "BUS_TO_CABLE") return ["out"];
+  if (node.type === "CABLE_MERGER") return ["out"];
+  if (node.type === "CABLE_DIVIDER") return cableSegmentPorts(node);
   if (node.type === "MULTI_PIN") return multiBitPorts(node).map((port) => `${port}out`);
+  if (node.type === "CABLE_PIN") return ["out"];
   if (node.type === "BUS") return busOutputs(node);
   if (node.type === "MACRO") return macroPorts(node, "output").map((pin) => pin.id);
   return GATE_META[node.type].outputs;
@@ -520,6 +820,7 @@ function createMacroInstanceDefinition(macro) {
 }
 
 function hideFanInMenu() {
+  busToolMenuDraft = null;
   fanInMenu.hidden = true;
   fanInMenu.replaceChildren();
 }
@@ -692,7 +993,10 @@ function applyTextDefaults(target, textValue = state.settings.textDefaults.text)
 }
 
 let pendingTextRequest = null;
+let pendingTextValidator = null;
 let pendingDimensionRequest = null;
+let pendingCableSwitchRequest = null;
+let busToolMenuDraft = null;
 let modalZIndex = 100;
 
 function bringModalToFront(modal) {
@@ -705,7 +1009,7 @@ function registerStackedModal(modal) {
 }
 
 function openModals() {
-  return [settingsModal, templateModal, macroViewModal, textModal, dimensionModal]
+  return [settingsModal, templateModal, macroViewModal, textModal, dimensionModal, cableSwitchModal]
     .filter((modal) => modal && !modal.hidden);
 }
 
@@ -714,9 +1018,15 @@ function topOpenModal() {
     .sort((a, b) => Number(b.style.zIndex || 100) - Number(a.style.zIndex || 100))[0] || null;
 }
 
-function requestTextValue({ title = "Text", value = "Text" } = {}) {
+function requestTextValue({ title = "Text", value = "Text", inputType = "text", min = "", max = "", step = "", validate = null } = {}) {
   if (pendingTextRequest) pendingTextRequest(null);
+  pendingTextValidator = validate;
   textModalTitle.textContent = title;
+  textModalInput.type = inputType;
+  textModalInput.min = min;
+  textModalInput.max = max;
+  textModalInput.step = step;
+  textModalInput.setCustomValidity("");
   textModalInput.value = value || "";
   bringModalToFront(textModal);
   textModal.hidden = false;
@@ -731,6 +1041,7 @@ function finishTextRequest(value) {
   if (!pendingTextRequest) return;
   const resolve = pendingTextRequest;
   pendingTextRequest = null;
+  pendingTextValidator = null;
   textModal.hidden = true;
   resolve(value);
 }
@@ -760,6 +1071,48 @@ function finishDimensionRequest(value) {
   pendingDimensionRequest = null;
   dimensionModal.hidden = true;
   resolve(value);
+}
+
+function requestCableSwitchConfig({ bits = 4, data = 0 } = {}) {
+  if (pendingCableSwitchRequest) pendingCableSwitchRequest(null);
+  cableSwitchBitsInput.value = String(bits);
+  cableSwitchDataInput.value = String(data);
+  cableSwitchBitsInput.setCustomValidity("");
+  cableSwitchDataInput.setCustomValidity("");
+  bringModalToFront(cableSwitchModal);
+  cableSwitchModal.hidden = false;
+  cableSwitchBitsInput.focus();
+  cableSwitchBitsInput.select();
+  return new Promise((resolve) => {
+    pendingCableSwitchRequest = resolve;
+  });
+}
+
+function finishCableSwitchRequest(value) {
+  if (!pendingCableSwitchRequest) return;
+  const resolve = pendingCableSwitchRequest;
+  pendingCableSwitchRequest = null;
+  cableSwitchModal.hidden = true;
+  resolve(value);
+}
+
+function parseCableSwitchConfig() {
+  cableSwitchBitsInput.setCustomValidity("");
+  cableSwitchDataInput.setCustomValidity("");
+  const bits = Math.round(Number(cableSwitchBitsInput.value));
+  const data = Math.trunc(Number(cableSwitchDataInput.value));
+  if (!Number.isFinite(bits) || bits < 1 || bits > 32) {
+    cableSwitchBitsInput.setCustomValidity("Bits must be an integer from 1 to 32.");
+    cableSwitchBitsInput.reportValidity();
+    return null;
+  }
+  const maxData = 2 ** bits - 1;
+  if (!Number.isFinite(data) || data < 0 || data > maxData) {
+    cableSwitchDataInput.setCustomValidity(`Data must satisfy 0 <= data <= ${maxData}.`);
+    cableSwitchDataInput.reportValidity();
+    return null;
+  }
+  return { bits, data };
 }
 
 function appendTextControls(text, onChange) {
@@ -943,25 +1296,270 @@ function appendMultiBitControls(node) {
   fanInMenu.appendChild(label);
 }
 
+function appendCableSwitchControls(node) {
+  const label = document.createElement("label");
+  label.className = "menu-field";
+  label.textContent = "Data";
+  const input = document.createElement("input");
+  input.type = "number";
+  input.min = "0";
+  input.max = String(2 ** multiBitCount(node) - 1);
+  input.step = "1";
+  input.value = cableDataValue(node);
+  input.addEventListener("change", () => {
+    const data = Math.trunc(Number(input.value));
+    const maxData = 2 ** multiBitCount(node) - 1;
+    if (!Number.isFinite(data) || data < 0 || data > maxData) {
+      input.setCustomValidity(`Data must satisfy 0 <= data <= ${maxData}.`);
+      input.reportValidity();
+      return;
+    }
+    input.setCustomValidity("");
+    recordUndo();
+    node.data = data;
+    hideFanInMenu();
+    render();
+  });
+  label.appendChild(input);
+  fanInMenu.appendChild(label);
+}
+
+function appendClockFrequencyControls(node) {
+  const label = document.createElement("div");
+  label.className = "menu-field";
+  label.textContent = "Frequency";
+  const options = document.createElement("div");
+  options.className = "frequency-options";
+  for (const hz of [1, 2, 5, 10]) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = `${hz}Hz`;
+    button.classList.toggle("active", clockFrequency(node) === hz);
+    button.addEventListener("click", () => {
+      recordUndo();
+      node.clockHz = hz;
+      node.lastClockTick = performance.now();
+      hideFanInMenu();
+      render();
+    });
+    options.appendChild(button);
+  }
+  label.appendChild(options);
+  fanInMenu.appendChild(label);
+}
+
+function appendPulseControls(node) {
+  const patternLabel = document.createElement("label");
+  patternLabel.className = "menu-field";
+  patternLabel.textContent = "Pattern";
+  const patternInput = document.createElement("input");
+  patternInput.type = "text";
+  patternInput.value = normalizePulsePattern(node.pulsePattern);
+  patternInput.placeholder = "0, 1, X, Z";
+  patternInput.addEventListener("change", () => {
+    const pattern = normalizePulsePattern(patternInput.value);
+    recordUndo();
+    node.pulsePattern = pattern;
+    node.pulseIndex = 0;
+    node.lastPulseTick = performance.now();
+    hideFanInMenu();
+    render();
+  });
+  patternLabel.appendChild(patternInput);
+  fanInMenu.appendChild(patternLabel);
+
+  const frequencyLabel = document.createElement("div");
+  frequencyLabel.className = "menu-field";
+  frequencyLabel.textContent = "Frequency";
+  const options = document.createElement("div");
+  options.className = "frequency-options";
+  for (const hz of [1, 2, 5, 10]) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.textContent = `${hz}Hz`;
+    button.classList.toggle("active", pulseFrequency(node) === hz);
+    button.addEventListener("click", () => {
+      recordUndo();
+      node.pulseHz = hz;
+      node.lastPulseTick = performance.now();
+      hideFanInMenu();
+      render();
+    });
+    options.appendChild(button);
+  }
+  frequencyLabel.appendChild(options);
+  fanInMenu.appendChild(frequencyLabel);
+}
+
 function positionContextMenu(clientX, clientY) {
-  fanInMenu.style.left = `${clientX}px`;
-  fanInMenu.style.top = `${clientY}px`;
+  const margin = 8;
   fanInMenu.style.zIndex = String(modalZIndex + 1);
   fanInMenu.hidden = false;
+  fanInMenu.style.visibility = "hidden";
+  fanInMenu.style.left = "0px";
+  fanInMenu.style.top = "0px";
+  const rect = fanInMenu.getBoundingClientRect();
+  const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+  const maxTop = Math.max(margin, window.innerHeight - rect.height - margin);
+  const left = Math.min(maxLeft, Math.max(margin, clientX));
+  const top = Math.min(maxTop, Math.max(margin, clientY));
+  fanInMenu.style.left = `${left}px`;
+  fanInMenu.style.top = `${top}px`;
+  fanInMenu.style.visibility = "";
 }
 
 function showNodeContextMenu(node, clientX, clientY) {
   fanInMenu.replaceChildren();
   if (isFanInGate(node)) appendFanInControls(node);
+  if (isCableSourceNode(node)) appendCableSwitchControls(node);
+  if (node?.type === "CLOCK") appendClockFrequencyControls(node);
+  if (node?.type === "PULSE") appendPulseControls(node);
   if (node?.type === "MULTI_INPUT" || node?.type === "MULTI_TEST_INPUT" || node?.type === "BUS") appendMultiBitControls(node);
   if (node?.type === "MULTI_OUTPUT" || node?.type === "MULTI_PIN") appendMultiBitControls(node);
-  if (node?.type === "INPUT" || node?.type === "MULTI_INPUT" || node?.type === "TEST_INPUT" || node?.type === "MULTI_TEST_INPUT" || node?.type === "OUTPUT" || node?.type === "MULTI_OUTPUT") appendOnColorControl(node);
-  if (node?.type === "PIN" || node?.type === "MULTI_PIN") appendPinMacroControls(node);
+  if (node?.type === "INPUT" || node?.type === "MULTI_INPUT" || isCableSourceNode(node) || node?.type === "TEST_INPUT" || node?.type === "MULTI_TEST_INPUT" || node?.type === "OUTPUT" || node?.type === "MULTI_OUTPUT") appendOnColorControl(node);
+  if (node?.type === "PIN" || node?.type === "MULTI_PIN" || node?.type === "CABLE_PIN") appendPinMacroControls(node);
   if (node?.type === "TEXT") appendCircuitTextControls(node);
   if (!fanInMenu.childElementCount) {
     hideFanInMenu();
     return;
   }
+  positionContextMenu(clientX, clientY);
+}
+
+function updateBusToolOptions(mutator) {
+  const baseOptions = state.pendingPartOptions || state.busStart?.options || {};
+  const options = { ...baseOptions };
+  mutator(options);
+  options.busA = busToolA(options);
+  options.busB = busToolB(options);
+  options.busVectorIndex = busToolVectorIndex(options);
+  state.pendingPartOptions = options;
+  if (state.busStart) state.busStart.options = options;
+  render();
+}
+
+function busDirectionLabel(index, options = state.pendingPartOptions || state.busStart?.options || {}) {
+  const signs = busVectorSignsFromIndex(index);
+  const x = signs.x * busToolA(options);
+  const y = signs.y * busToolB(options);
+  return `(${x}, ${y})`;
+}
+
+function showBusToolContextMenu(clientX, clientY) {
+  const options = state.pendingPartOptions || state.busStart?.options || {};
+  busToolMenuDraft = {
+    busA: busToolA(options),
+    busB: busToolB(options),
+    busVectorIndex: busToolVectorIndex(options),
+  };
+  fanInMenu.replaceChildren();
+
+  const horizontalLabel = document.createElement("label");
+  horizontalLabel.className = "menu-field";
+  horizontalLabel.textContent = "Horizontal a";
+  const horizontalInput = document.createElement("input");
+  horizontalInput.type = "number";
+  horizontalInput.min = "1";
+  horizontalInput.max = "32";
+  horizontalInput.step = "1";
+  horizontalInput.value = String(busToolA(options));
+  let refreshDirectionButtons = () => {};
+  horizontalInput.addEventListener("input", () => {
+    if (!busToolMenuDraft) return;
+    busToolMenuDraft.busA = Math.min(32, Math.max(1, Math.round(Number(horizontalInput.value || 2))));
+    refreshDirectionButtons();
+  });
+  horizontalLabel.appendChild(horizontalInput);
+  fanInMenu.appendChild(horizontalLabel);
+
+  const verticalLabel = document.createElement("label");
+  verticalLabel.className = "menu-field";
+  verticalLabel.textContent = "Vertical b";
+  const verticalInput = document.createElement("input");
+  verticalInput.type = "number";
+  verticalInput.min = "1";
+  verticalInput.max = "32";
+  verticalInput.step = "1";
+  verticalInput.value = String(busToolB(options));
+  verticalInput.addEventListener("input", () => {
+    if (!busToolMenuDraft) return;
+    busToolMenuDraft.busB = Math.min(32, Math.max(1, Math.round(Number(verticalInput.value || 2))));
+    refreshDirectionButtons();
+  });
+  verticalLabel.appendChild(verticalInput);
+  fanInMenu.appendChild(verticalLabel);
+
+  const directionLabel = document.createElement("div");
+  directionLabel.className = "menu-field bus-direction-field";
+  directionLabel.textContent = "Direction";
+  const directionGrid = document.createElement("div");
+  directionGrid.className = "bus-direction-grid";
+  const directionCells = [
+    { index: 3, label: "\u2196" },
+    { index: 2, label: "\u2191" },
+    { index: 1, label: "\u2197" },
+    { index: 4, label: "\u2190" },
+    null,
+    { index: 0, label: "\u2192" },
+    { index: 5, label: "\u2199" },
+    { index: 6, label: "\u2193" },
+    { index: 7, label: "\u2198" },
+  ];
+  const directionButtons = [];
+  for (const cell of directionCells) {
+    if (!cell) {
+      const spacer = document.createElement("span");
+      spacer.className = "bus-direction-spacer";
+      directionGrid.appendChild(spacer);
+      continue;
+    }
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "bus-direction-button";
+    button.textContent = cell.label;
+    button.dataset.index = String(cell.index);
+    button.addEventListener("click", () => {
+      if (!busToolMenuDraft) return;
+      busToolMenuDraft.busVectorIndex = cell.index;
+      refreshDirectionButtons();
+    });
+    directionButtons.push(button);
+    directionGrid.appendChild(button);
+  }
+  refreshDirectionButtons = () => {
+    for (const button of directionButtons) {
+      const index = Number(button.dataset.index || 0);
+      const isActive = busToolVectorIndex(busToolMenuDraft || options) === index;
+      button.classList.toggle("active", isActive);
+      button.setAttribute("aria-pressed", String(isActive));
+      button.title = busDirectionLabel(index, busToolMenuDraft || options);
+    }
+  };
+  refreshDirectionButtons();
+  directionLabel.appendChild(directionGrid);
+  fanInMenu.appendChild(directionLabel);
+
+  const actions = document.createElement("div");
+  actions.className = "dialog-actions";
+  const okButton = document.createElement("button");
+  okButton.type = "button";
+  okButton.textContent = "OK";
+  okButton.addEventListener("click", () => {
+    if (!busToolMenuDraft) return;
+    updateBusToolOptions((next) => {
+      next.busA = busToolMenuDraft.busA;
+      next.busB = busToolMenuDraft.busB;
+      next.busVectorIndex = busToolMenuDraft.busVectorIndex;
+    });
+    hideFanInMenu();
+  });
+  const cancelButton = document.createElement("button");
+  cancelButton.type = "button";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", hideFanInMenu);
+  actions.append(okButton, cancelButton);
+  fanInMenu.appendChild(actions);
+
   positionContextMenu(clientX, clientY);
 }
 
@@ -982,8 +1580,34 @@ let suppressPortRotation = false;
 
 function localPortPosition(node, portName, direction) {
   const size = nodeSize(node);
-  if (node.type === "INPUT" || node.type === "TEST_INPUT" || node.type === "OUTPUT" || node.type === "VCC" || node.type === "GND") {
+  if (isSinglePortIndicatorType(node.type)) {
     return { x: size.w / 2, y: size.h / 2 };
+  }
+  if (isCableSourceNode(node)) {
+    return { x: size.w / 2, y: size.h };
+  }
+  if (node.type === "CABLE_OUTPUT") {
+    return { x: size.w / 2, y: size.h };
+  }
+  if (node.type === "CABLE_TO_BUS") {
+    if (direction === "input") return { x: 0, y: size.h / 2 };
+    const index = Math.max(0, Number(String(portName).replace("bit", "")) || 0);
+    return { x: size.w, y: 1 + index * 2 };
+  }
+  if (node.type === "BUS_TO_CABLE") {
+    if (direction === "output") return { x: size.w, y: size.h / 2 };
+    const index = Math.max(0, Number(String(portName).replace("bit", "")) || 0);
+    return { x: 0, y: 1 + index * 2 };
+  }
+  if (node.type === "CABLE_MERGER") {
+    if (direction === "output") return { x: size.w, y: size.h / 2 };
+    const index = Math.max(0, Number(String(portName).replace("part", "")) || 0);
+    return { x: 0, y: cableSegmentLocalY(node, index) };
+  }
+  if (node.type === "CABLE_DIVIDER") {
+    if (direction === "input") return { x: 0, y: size.h / 2 };
+    const index = Math.max(0, Number(String(portName).replace("part", "")) || 0);
+    return { x: size.w, y: cableSegmentLocalY(node, index) };
   }
   if (node.type === "MULTI_INPUT" || node.type === "MULTI_TEST_INPUT") {
     const index = Math.max(0, Number(String(portName).replace("bit", "")) || 0);
@@ -1008,13 +1632,23 @@ function localPortPosition(node, portName, direction) {
       ? { x: 1 + index * 2, y: 0 }
       : { x: 1 + index * 2, y: 2 };
   }
-  if (node.type === "PIN" || node.type === "JUNCTION") {
+  if (node.type === "PIN" || node.type === "CABLE_PIN" || node.type === "JUNCTION") {
     return { x: size.w / 2, y: size.h / 2 };
   }
   if (node.type === "MACRO") {
     const ports = macroPorts(node, direction);
     const pin = ports.find((item) => item.id === portName) || ports[0];
     return pin ? macroPinPosition(pin, size) : { x: direction === "input" ? 0 : size.w, y: size.h / 2 };
+  }
+  if (SEQUENTIAL_TYPES.has(node.type)) {
+    if (direction === "output") return { x: size.w + 4, y: portName === "qbar" ? 12 : 4 };
+    if (portName === "clk" || portName === "en") return { x: size.w / 2, y: size.h + 4 };
+    if (portName === "r" || portName === "k") return { x: -4, y: 12 };
+    return { x: -4, y: 4 };
+  }
+  if (node.type === "TRISTATE") {
+    if (direction === "input" && portName === "en") return { x: size.w / 2, y: size.h / 2 + 2 };
+    return { x: direction === "input" ? 0 : size.w, y: size.h / 2 };
   }
   if (node.type === "NOT" || node.type === "BUFFER") {
     return { x: direction === "input" ? 0 : size.w, y: size.h / 2 };
@@ -1058,7 +1692,14 @@ function findWire(id) {
 
 function normalizeEndpoint(endpoint, direction) {
   if (endpoint.kind === "wire") return endpoint;
-  return { kind: "port", nodeId: endpoint.nodeId, port: endpoint.port, direction: endpoint.direction || direction };
+  if (endpoint.kind === "pending-junction") return endpoint;
+  return {
+    kind: "port",
+    nodeId: endpoint.nodeId,
+    port: endpoint.port,
+    direction: endpoint.direction || direction,
+    ...(endpoint.bitLength ? { bitLength: endpoint.bitLength } : {}),
+  };
 }
 
 function endpointPosition(endpoint, direction) {
@@ -1075,6 +1716,13 @@ function wirePathPoints(wire) {
   const end = endpointPosition(wire.to, "input");
   if (!start || !end) return [];
   return [start, ...(wire.points || []), end];
+}
+
+function wireBitLength(wire) {
+  return Math.max(
+    1,
+    Math.round(Number(wire.bitLength || endpointBitLength(wire.from, "output") || endpointBitLength(wire.to, "input") || 1)),
+  );
 }
 
 // Insert corner points whenever two consecutive points would form a diagonal segment.
@@ -1128,16 +1776,25 @@ function findJunctionAtPoint(point) {
   return state.nodes.find((node) => node.type === "JUNCTION" && samePoint(portPosition(node, "out", "output"), point));
 }
 
+function syncJunctionBitLengthsFromWires() {
+  for (const node of state.nodes) {
+    if (node.type !== "JUNCTION") continue;
+    const storedBits = directJunctionBitLength(node);
+    const inferredBits = inferJunctionBitLength({ ...node, bitLength: undefined, bits: undefined });
+    if (!storedBits || storedBits === 1 && inferredBits > 1) {
+      node.bitLength = inferredBits;
+    }
+  }
+}
+
 function splitWirePointsAtPoint(wire, point) {
   const points = wirePathPoints(wire);
   for (let index = 1; index < points.length; index += 1) {
     const a = points[index - 1];
     const b = points[index];
     if (!pointOnSegment(point, a, b, 0.0001)) continue;
-    const before = points.slice(1, index).map((item) => ({ ...item }));
-    const after = points.slice(index, -1).map((item) => ({ ...item }));
-    if (!samePoint(a, point)) before.push({ ...point });
-    if (!samePoint(b, point)) after.unshift({ ...point });
+    const before = points.slice(1, index).filter((item) => !samePoint(item, point)).map((item) => ({ ...item }));
+    const after = points.slice(index, -1).filter((item) => !samePoint(item, point)).map((item) => ({ ...item }));
     return { before, after };
   }
   return { before: [], after: [] };
@@ -1145,12 +1802,15 @@ function splitWirePointsAtPoint(wire, point) {
 
 function ensureJunctionAtWirePoint(wire, point) {
   let junction = findJunctionAtPoint(point);
+  const bitLength = wireBitLength(wire);
   const from = normalizeEndpoint(wire.from, "output");
   const to = normalizeEndpoint(wire.to, "input");
   if (junction && (
     (from.kind === "port" && from.nodeId === junction.id)
     || (to.kind === "port" && to.nodeId === junction.id)
   )) {
+    const storedBits = directJunctionBitLength(junction);
+    if (!storedBits || storedBits === 1 && bitLength > 1) junction.bitLength = bitLength;
     return junction;
   }
   if (!junction) {
@@ -1159,20 +1819,25 @@ function ensureJunctionAtWirePoint(wire, point) {
       type: "JUNCTION",
       x: point.x - 0.5,
       y: point.y - 0.5,
+      bitLength,
     };
     state.nodes.push(junction);
+  } else if (!directJunctionBitLength(junction) || directJunctionBitLength(junction) === 1 && bitLength > 1) {
+    junction.bitLength = bitLength;
   }
   const split = splitWirePointsAtPoint(wire, point);
   const firstWire = {
     ...wire,
     to: { kind: "port", nodeId: junction.id, port: "in", direction: "input" },
     points: split.before,
+    bitLength,
   };
   const secondWire = {
     id: uid("wire"),
     from: { kind: "port", nodeId: junction.id, port: "out", direction: "output" },
     to: { ...wire.to },
     points: split.after,
+    bitLength,
   };
   state.wires = state.wires.filter((item) => item.id !== wire.id);
   state.wires.push(firstWire, secondWire);
@@ -1186,6 +1851,7 @@ function junctionEndpointForWirePoint(wire, point, direction) {
     nodeId: junction.id,
     port: direction === "input" ? "in" : "out",
     direction,
+    bitLength: wireBitLength(wire),
   };
 }
 
@@ -1232,22 +1898,29 @@ function boundsIntersect(a, b) {
   return a.minX <= b.maxX && a.maxX >= b.minX && a.minY <= b.maxY && a.maxY >= b.minY;
 }
 
+function boundsContains(container, item) {
+  return item.minX >= container.minX
+    && item.maxX <= container.maxX
+    && item.minY >= container.minY
+    && item.maxY <= container.maxY;
+}
+
 function selectInBounds(bounds) {
-  const nodeIds = state.nodes.filter((node) => boundsIntersect(nodeBounds(node), bounds)).map((node) => node.id);
+  const nodeIds = state.nodes.filter((node) => boundsContains(bounds, nodeBounds(node))).map((node) => node.id);
   const wireIds = state.wires.filter((wire) => {
     const boundsForWire = wireBounds(wire);
-    return boundsForWire && boundsIntersect(boundsForWire, bounds);
+    return boundsForWire && boundsContains(bounds, boundsForWire);
   }).map((wire) => wire.id);
   selectMany(nodeIds, wireIds);
 }
 
 function getOutputValue(nodeId, port) {
-  return Boolean(state.values.get(`${nodeId}.${port}`));
+  return signalIsOne(state.values.get(`${nodeId}.${port}`));
 }
 
 function inputValuesForNode(node, values = state.values) {
   const inputs = {};
-  for (const port of nodeInputs(node)) inputs[port] = Boolean(values.get(`${node.id}.${port}`));
+  for (const port of nodeInputs(node)) inputs[port] = signalValue(values.get(`${node.id}.${port}`));
   return inputs;
 }
 
@@ -1259,6 +1932,14 @@ function endpointKey(endpoint, direction) {
 
 function portKey(nodeId, port) {
   return `port:${nodeId}.${port}`;
+}
+
+function endpointBitLength(endpoint, direction) {
+  const normalized = normalizeEndpoint(endpoint, direction);
+  if (normalized.kind !== "port") return normalized.bitLength || 1;
+  if (normalized.bitLength) return Math.max(1, Math.round(Number(normalized.bitLength || 1)));
+  const node = findNode(normalized.nodeId);
+  return portBitLength(node, normalized.port);
 }
 
 function createUnionFind() {
@@ -1290,9 +1971,12 @@ function buildConnectivity() {
     graph.union(wireKey, endpointKey(wire.to, "input"));
   }
   for (const node of state.nodes) {
-    if (node.type === "PIN" || node.type === "JUNCTION") {
-      graph.union(portKey(node.id, "in"), portKey(node.id, "out"));
-    }
+  if (node.type === "PIN" || node.type === "JUNCTION") {
+    graph.union(portKey(node.id, "in"), portKey(node.id, "out"));
+  }
+  if (node.type === "CABLE_PIN") {
+    graph.union(portKey(node.id, "in"), portKey(node.id, "out"));
+  }
     if (node.type === "MULTI_PIN") {
       for (const port of multiBitPorts(node)) {
         graph.union(portKey(node.id, `${port}in`), portKey(node.id, `${port}out`));
@@ -1303,28 +1987,75 @@ function buildConnectivity() {
 }
 
 function groupHotValues(values, graph) {
-  const hot = new Map();
+  const driven = new Map();
   for (const node of state.nodes) {
     for (const port of driverPortsForNode(node)) {
       const key = portKey(node.id, port);
       const root = graph.find(key);
-      hot.set(root, Boolean(hot.get(root) || values.get(`${node.id}.${port}`)));
+      if (!driven.has(root)) driven.set(root, []);
+      driven.get(root).push(signalValue(values.get(`${node.id}.${port}`)));
     }
   }
+  const hot = new Map();
+  for (const [root, signals] of driven) hot.set(root, resolveSignals(signals));
   return hot;
 }
 
+function groupCableValues(values, graph) {
+  const cableValues = new Map();
+  for (const node of state.nodes) {
+    for (const port of driverPortsForNode(node)) {
+      const key = `${node.id}.${port}.__cable`;
+      if (!values.has(key)) continue;
+      const root = graph.find(portKey(node.id, port));
+      cableValues.set(root, Math.max(0, Math.trunc(Number(values.get(key) || 0))));
+    }
+  }
+  return cableValues;
+}
+
 function readInputValue(nodeId, port, hot, graph) {
-  return Boolean(hot.get(graph.find(portKey(nodeId, port))));
+  const root = graph.find(portKey(nodeId, port));
+  return signalValue(hot.get(root));
+}
+
+function readCableInputValue(nodeId, port, cableValues, graph) {
+  return Math.max(0, Math.trunc(Number(cableValues.get(graph.find(portKey(nodeId, port))) || 0)));
+}
+
+function readCableCompatibleInputValue(node, port, hot, cableValues, graph) {
+  const cableValue = readCableInputValue(node.id, port, cableValues, graph);
+  if (cableValue) return cableValue;
+  return portBitLength(node, port) === 1 && signalIsOne(readInputValue(node.id, port, hot, graph)) ? 1 : 0;
+}
+
+function setSimValue(values, key, value) {
+  if (values.get(key) === value) return false;
+  values.set(key, value);
+  return true;
+}
+
+function reusableSimValues(previousValues = state.values) {
+  const values = new Map();
+  for (const node of state.nodes) {
+    for (const port of driverPortsForNode(node)) {
+      const key = `${node.id}.${port}`;
+      if (previousValues.has(key)) values.set(key, previousValues.get(key));
+      const cableKey = `${key}.__cable`;
+      if (previousValues.has(cableKey)) values.set(cableKey, previousValues.get(cableKey));
+    }
+  }
+  return values;
 }
 
 function driverPortsForNode(node) {
-  if (["OUTPUT", "PIN", "MULTI_PIN", "JUNCTION", "TEXT"].includes(node.type)) return [];
+  if (["OUTPUT", "CABLE_OUTPUT", "PIN", "MULTI_PIN", "CABLE_PIN", "JUNCTION", "TEXT"].includes(node.type)) return [];
   return nodeOutputs(node);
 }
 
 function isLogicConsumer(node) {
-  return !["INPUT", "TEST_INPUT", "VCC", "GND", "OUTPUT", "PIN", "MULTI_PIN", "JUNCTION", "TEXT"].includes(node.type);
+  if (SEQUENTIAL_TYPES.has(node.type)) return false;
+  return !["INPUT", "TEST_INPUT", "VCC", "GND", "X_SRC", "Z_SRC", "CLOCK", "PULSE", "OUTPUT", "CABLE_OUTPUT", "PIN", "MULTI_PIN", "CABLE_PIN", "JUNCTION", "TEXT"].includes(node.type);
 }
 
 function analyzeCircuitIssues() {
@@ -1389,61 +2120,264 @@ function analyzeCircuitIssues() {
   return issues;
 }
 
-function evaluateGate(type, inputs, node) {
-  if (type === "INPUT") return { out: Boolean(node.value) };
+function isBlockingCircuitIssue(issue) {
+  return issue?.type === "feedback-loop";
+}
+
+function firstBlockingCircuitIssue(issues = analyzeCircuitIssues()) {
+  return issues.find(isBlockingCircuitIssue) || null;
+}
+
+function signalValue(value) {
+  if (value === SIGNAL.ZERO || value === SIGNAL.ONE || value === SIGNAL.UNKNOWN || value === SIGNAL.HIGH_Z) return value;
+  if (value === true || value === 1 || value === "true") return SIGNAL.ONE;
+  if (value === false || value === 0 || value === "false") return SIGNAL.ZERO;
+  return SIGNAL.HIGH_Z;
+}
+
+function signalIsOne(value) {
+  return signalValue(value) === SIGNAL.ONE;
+}
+
+function signalIsZero(value) {
+  return signalValue(value) === SIGNAL.ZERO;
+}
+
+function signalForLogicInput(value) {
+  const signal = signalValue(value);
+  return signal === SIGNAL.HIGH_Z ? SIGNAL.UNKNOWN : signal;
+}
+
+function signalFromBoolean(value) {
+  return value ? SIGNAL.ONE : SIGNAL.ZERO;
+}
+
+function resolveSignals(signals) {
+  let hasZero = false;
+  let hasOne = false;
+  for (const value of signals) {
+    const signal = signalValue(value);
+    if (signal === SIGNAL.UNKNOWN) return SIGNAL.UNKNOWN;
+    if (signal === SIGNAL.ZERO) hasZero = true;
+    if (signal === SIGNAL.ONE) hasOne = true;
+    if (hasZero && hasOne) return SIGNAL.UNKNOWN;
+  }
+  if (hasOne) return SIGNAL.ONE;
+  if (hasZero) return SIGNAL.ZERO;
+  return SIGNAL.HIGH_Z;
+}
+
+function signalNot(value) {
+  const signal = signalForLogicInput(value);
+  if (signal === SIGNAL.ZERO) return SIGNAL.ONE;
+  if (signal === SIGNAL.ONE) return SIGNAL.ZERO;
+  return SIGNAL.UNKNOWN;
+}
+
+function signalAnd(values) {
+  let unknown = false;
+  for (const value of values) {
+    const signal = signalForLogicInput(value);
+    if (signal === SIGNAL.ZERO) return SIGNAL.ZERO;
+    if (signal !== SIGNAL.ONE) unknown = true;
+  }
+  return unknown ? SIGNAL.UNKNOWN : SIGNAL.ONE;
+}
+
+function signalOr(values) {
+  let unknown = false;
+  for (const value of values) {
+    const signal = signalForLogicInput(value);
+    if (signal === SIGNAL.ONE) return SIGNAL.ONE;
+    if (signal !== SIGNAL.ZERO) unknown = true;
+  }
+  return unknown ? SIGNAL.UNKNOWN : SIGNAL.ZERO;
+}
+
+function signalXor(values) {
+  let ones = 0;
+  for (const value of values) {
+    const signal = signalForLogicInput(value);
+    if (signal === SIGNAL.ONE) ones += 1;
+    else if (signal !== SIGNAL.ZERO) return SIGNAL.UNKNOWN;
+  }
+  return ones % 2 === 1 ? SIGNAL.ONE : SIGNAL.ZERO;
+}
+
+function storedQ(node) {
+  return signalValue(node.q ?? SIGNAL.ZERO);
+}
+
+function qOutputs(value) {
+  const q = signalValue(value);
+  return { q, qbar: signalNot(q) };
+}
+
+function setSequentialQ(node, value) {
+  const next = signalValue(value);
+  const changed = signalValue(node.q) !== next;
+  node.q = next;
+  return changed;
+}
+
+function evaluateSrNext(current, sValue, rValue) {
+  const s = signalForLogicInput(sValue);
+  const r = signalForLogicInput(rValue);
+  if (s === SIGNAL.ONE && r === SIGNAL.ONE) return SIGNAL.UNKNOWN;
+  if (s === SIGNAL.ONE && r === SIGNAL.ZERO) return SIGNAL.ONE;
+  if (s === SIGNAL.ZERO && r === SIGNAL.ONE) return SIGNAL.ZERO;
+  if (s === SIGNAL.ZERO && r === SIGNAL.ZERO) return signalValue(current);
+  return SIGNAL.UNKNOWN;
+}
+
+function evaluateDNext(dValue) {
+  const d = signalForLogicInput(dValue);
+  return d === SIGNAL.ZERO || d === SIGNAL.ONE ? d : SIGNAL.UNKNOWN;
+}
+
+function evaluateJkNext(current, jValue, kValue) {
+  const q = signalValue(current);
+  const j = signalForLogicInput(jValue);
+  const k = signalForLogicInput(kValue);
+  if (j === SIGNAL.ZERO && k === SIGNAL.ZERO) return q;
+  if (j === SIGNAL.ONE && k === SIGNAL.ZERO) return SIGNAL.ONE;
+  if (j === SIGNAL.ZERO && k === SIGNAL.ONE) return SIGNAL.ZERO;
+  if (j === SIGNAL.ONE && k === SIGNAL.ONE) return q === SIGNAL.UNKNOWN ? SIGNAL.UNKNOWN : signalNot(q);
+  return SIGNAL.UNKNOWN;
+}
+
+function evaluateTNext(current, tValue) {
+  const q = signalValue(current);
+  const t = signalForLogicInput(tValue);
+  if (t === SIGNAL.ZERO) return q;
+  if (t === SIGNAL.ONE) return q === SIGNAL.UNKNOWN ? SIGNAL.UNKNOWN : signalNot(q);
+  return SIGNAL.UNKNOWN;
+}
+
+function signalColor(value, hotColor = state.settings.wireHotColor, coldColor = state.settings.wireColdColor) {
+  const settings = normalizeSettings(state.settings);
+  const signal = signalValue(value);
+  if (signal === SIGNAL.ONE) return hotColor || DEFAULT_HOT_COLOR;
+  if (signal === SIGNAL.ZERO) return coldColor || DEFAULT_COLD_COLOR;
+  if (signal === SIGNAL.UNKNOWN) return settings.xSignalColor;
+  return settings.zSignalColor;
+}
+
+function signalClass(value) {
+  const signal = signalValue(value);
+  if (signal === SIGNAL.ONE) return "hot";
+  if (signal === SIGNAL.ZERO) return "cold";
+  if (signal === SIGNAL.UNKNOWN) return "unknown";
+  return "high-z";
+}
+
+function evaluateGate(type, inputs, node, cableInputs = {}) {
+  if (type === "INPUT") return { out: signalFromBoolean(node.value) };
   if (type === "MULTI_INPUT" || type === "MULTI_TEST_INPUT") {
     const values = multiBitValues(node);
-    return Object.fromEntries(values.map((value, index) => [`bit${index}`, value]));
+    return Object.fromEntries(values.map((value, index) => [`bit${index}`, signalFromBoolean(value)]));
+  }
+  if (isCableSourceType(type)) {
+    return { out: signalFromBoolean(cableDataValue(node) !== 0) };
+  }
+  if (type === "CABLE_TO_BUS") {
+    const cableValue = Math.max(0, Math.trunc(Number(cableInputs.in || 0)));
+    const bitString = cableValue.toString(2).padStart(multiBitCount(node), "0").slice(-multiBitCount(node));
+    return Object.fromEntries([...bitString].map((bit, index) => [`bit${index}`, bit === "1" ? SIGNAL.ONE : SIGNAL.ZERO]));
+  }
+  if (type === "BUS_TO_CABLE") {
+    const values = multiBitPorts(node).map((port) => inputs[port]);
+    if (values.some((value) => signalForLogicInput(value) === SIGNAL.UNKNOWN)) return { out: SIGNAL.UNKNOWN };
+    return { out: values.some(signalIsOne) ? SIGNAL.ONE : SIGNAL.ZERO };
+  }
+  if (type === "CABLE_MERGER") {
+    return { out: signalFromBoolean(cableMergerValue(node, cableInputs) !== 0) };
+  }
+  if (type === "CABLE_DIVIDER") {
+    return Object.fromEntries(cableSegmentPorts(node).map((port, index) => [port, signalFromBoolean(cableDividerValue(node, index, cableInputs) !== 0)]));
   }
   if (type === "BUS") {
-    return Object.fromEntries(busOutputs(node).map((port, index) => [port, Boolean(inputs[`in${index}`])]));
+    return Object.fromEntries(busOutputs(node).map((port, index) => [port, signalValue(inputs[`in${index}`])]));
   }
   if (type === "MULTI_PIN") {
-    return Object.fromEntries(multiBitPorts(node).map((port) => [`${port}out`, Boolean(inputs[`${port}in`])]));
+    return Object.fromEntries(multiBitPorts(node).map((port) => [`${port}out`, signalValue(inputs[`${port}in`])]));
   }
-  if (type === "TEST_INPUT") return { out: Boolean(node.value) };
-  if (type === "VCC") return { out: true };
-  if (type === "GND") return { out: false };
+  if (type === "TEST_INPUT") return { out: signalFromBoolean(node.value) };
+  if (type === "VCC") return { out: SIGNAL.ONE };
+  if (type === "GND") return { out: SIGNAL.ZERO };
+  if (type === "X_SRC") return { out: SIGNAL.UNKNOWN };
+  if (type === "Z_SRC") return { out: SIGNAL.HIGH_Z };
+  if (type === "CLOCK") return { out: signalFromBoolean(node.value) };
+  if (type === "PULSE") return { out: pulseSignal(node) };
   if (type === "OUTPUT") return {};
+  if (type === "CABLE_OUTPUT") return {};
   if (type === "TEXT") return {};
-  if (type === "PIN") return { out: Boolean(inputs.in) };
-  if (type === "JUNCTION") return { out: Boolean(inputs.in) };
-  if (type === "AND") return { out: nodeInputs(node).every((input) => Boolean(inputs[input])) };
-  if (type === "OR") return { out: nodeInputs(node).some((input) => Boolean(inputs[input])) };
-  if (type === "XOR") return { out: nodeInputs(node).filter((input) => Boolean(inputs[input])).length % 2 === 1 };
-  if (type === "NAND") return { out: !nodeInputs(node).every((input) => Boolean(inputs[input])) };
-  if (type === "NOR") return { out: !nodeInputs(node).some((input) => Boolean(inputs[input])) };
-  if (type === "XNOR") return { out: nodeInputs(node).filter((input) => Boolean(inputs[input])).length % 2 === 0 };
-  const a = Boolean(inputs.a ?? inputs.in);
-  const b = Boolean(inputs.b);
-  if (type === "NOT") return { out: !a };
-  if (type === "BUFFER") return { out: a };
-  if (type === "MACRO") return evaluateMacroNode(node, inputs);
-  if (type === "CHIP") return { sum: a !== b, carry: a && b };
+  if (type === "PIN") return { out: signalValue(inputs.in) };
+  if (type === "CABLE_PIN") return { out: signalFromBoolean(Math.max(0, Math.trunc(Number(cableInputs.in || 0))) !== 0) };
+  if (type === "JUNCTION") return { out: signalValue(inputs.in) };
+  if (type === "AND") return { out: signalAnd(nodeInputs(node).map((input) => inputs[input])) };
+  if (type === "OR") return { out: signalOr(nodeInputs(node).map((input) => inputs[input])) };
+  if (type === "XOR") return { out: signalXor(nodeInputs(node).map((input) => inputs[input])) };
+  if (type === "NAND") return { out: signalNot(signalAnd(nodeInputs(node).map((input) => inputs[input]))) };
+  if (type === "NOR") return { out: signalNot(signalOr(nodeInputs(node).map((input) => inputs[input]))) };
+  if (type === "XNOR") return { out: signalNot(signalXor(nodeInputs(node).map((input) => inputs[input]))) };
+  const a = signalValue(inputs.a ?? inputs.in);
+  const b = signalValue(inputs.b);
+  if (type === "NOT") return { out: signalNot(a) };
+  if (type === "BUFFER") return { out: signalForLogicInput(a) };
+  if (type === "TRISTATE") {
+    const en = signalForLogicInput(inputs.en);
+    if (en === SIGNAL.ONE) return { out: signalValue(inputs.in) };
+    if (en === SIGNAL.ZERO) return { out: SIGNAL.HIGH_Z };
+    return { out: SIGNAL.UNKNOWN };
+  }
+  if (type === "SR_LATCH") {
+    const en = signalForLogicInput(inputs.en);
+    if (en === SIGNAL.ONE) setSequentialQ(node, evaluateSrNext(storedQ(node), inputs.s, inputs.r));
+    else if (en === SIGNAL.UNKNOWN) setSequentialQ(node, SIGNAL.UNKNOWN);
+    return qOutputs(storedQ(node));
+  }
+  if (type === "D_LATCH") {
+    const en = signalForLogicInput(inputs.en);
+    if (en === SIGNAL.ONE) setSequentialQ(node, evaluateDNext(inputs.d));
+    else if (en === SIGNAL.UNKNOWN) setSequentialQ(node, SIGNAL.UNKNOWN);
+    return qOutputs(storedQ(node));
+  }
+  if (FLIP_FLOP_TYPES.has(type)) return qOutputs(storedQ(node));
+  if (type === "MACRO") return evaluateMacroNode(node, inputs, cableInputs);
+  if (type === "CHIP") {
+    if ([a, b].some((value) => signalForLogicInput(value) === SIGNAL.UNKNOWN)) return { sum: SIGNAL.UNKNOWN, carry: SIGNAL.UNKNOWN };
+    return { sum: a !== b ? SIGNAL.ONE : SIGNAL.ZERO, carry: signalIsOne(a) && signalIsOne(b) ? SIGNAL.ONE : SIGNAL.ZERO };
+  }
   return {};
 }
 
-function evaluateMacroNode(node, inputs) {
+function evaluateMacroNode(node, inputs, cableInputs = {}) {
   const macro = findMacroForViewer(node.macroId);
-  return cachedMacroOutputs(macro, inputs);
+  return simulateMacroCircuit(macro, inputs, cableInputs).outputs;
 }
 
-function macroInputCacheKey(macro, inputs) {
+function macroInputCacheKey(macro, inputs, cableInputs = {}) {
   const entries = Object.entries(inputs || {}).sort(([a], [b]) => a.localeCompare(b));
-  return `${macro?.id || ""}:${JSON.stringify(entries)}`;
+  const cableEntries = Object.entries(cableInputs || {}).sort(([a], [b]) => a.localeCompare(b));
+  return `${macro?.id || ""}:${JSON.stringify(entries)}:${JSON.stringify(cableEntries)}`;
 }
 
-function cachedMacroOutputs(macro, inputs) {
-  if (!macro || !state.simulationCache) return simulateMacroCircuit(macro, inputs).outputs;
-  const key = macroInputCacheKey(macro, inputs);
+function cachedMacroOutputs(macro, inputs, cableInputs = {}) {
+  if (!macro || !state.simulationCache) return simulateMacroCircuit(macro, inputs, cableInputs).outputs;
+  const key = macroInputCacheKey(macro, inputs, cableInputs);
   if (state.simulationCache.has(key)) return state.simulationCache.get(key);
-  const outputs = simulateMacroCircuit(macro, inputs).outputs;
+  const outputs = simulateMacroCircuit(macro, inputs, cableInputs).outputs;
   state.simulationCache.set(key, outputs);
   return outputs;
 }
 
 function macroInputValueForPin(pinNode, external, inputs) {
-  return Boolean(inputs[external?.id] ?? inputs[pinNode.macroPinName] ?? inputs[pinNode.id]);
+  return signalValue(inputs[external?.id] ?? inputs[pinNode.macroPinName] ?? inputs[pinNode.id]);
+}
+
+function macroInputCableValueForPin(pinNode, external, cableInputs = {}) {
+  return Math.max(0, Math.trunc(Number(cableInputs[external?.id] ?? cableInputs[pinNode.macroPinName] ?? cableInputs[pinNode.id] ?? 0)));
 }
 
 function macroInternalPinPorts(pinNode, external) {
@@ -1458,15 +2392,27 @@ function applyMacroInputHotValues(hot, graph, pinNodes, macroPins, inputs) {
     const pin = pinNodes.find((item) => item.id === external.internalNodeId || item.id === external.id);
     if (!external || external.direction === "output") continue;
     if (!pin) continue;
-    const value = macroInputValueForPin(pin, external, inputs);
+      const value = macroInputValueForPin(pin, external, inputs);
+      for (const port of macroInternalPinPorts(pin, external)) {
+        const root = graph.find(portKey(pin.id, port));
+        hot.set(root, resolveSignals([hot.get(root), value]));
+      }
+    }
+  }
+
+function applyMacroInputCableValues(cableValues, graph, pinNodes, macroPins, cableInputs = {}) {
+  for (const external of macroPins || []) {
+    const pin = pinNodes.find((item) => item.id === external.internalNodeId || item.id === external.id);
+    if (!external || external.direction === "output") continue;
+    if (!pin || pin.type !== "CABLE_PIN") continue;
+    const value = macroInputCableValueForPin(pin, external, cableInputs);
     for (const port of macroInternalPinPorts(pin, external)) {
-      const root = graph.find(portKey(pin.id, port));
-      hot.set(root, Boolean(hot.get(root) || value));
+      cableValues.set(graph.find(portKey(pin.id, port)), value);
     }
   }
 }
 
-function simulateMacroCircuit(macro, inputs = {}) {
+function simulateMacroCircuit(macro, inputs = {}, cableInputs = {}) {
   if (!macro?.circuit) return { nodes: [], wires: [], values: new Map(), outputs: {} };
   const internalNodes = (macro.circuit.nodes || []).map((item) => ({ ...item }));
   const internalWires = (macro.circuit.wires || []).map((item) => ({
@@ -1475,7 +2421,7 @@ function simulateMacroCircuit(macro, inputs = {}) {
     to: JSON.parse(JSON.stringify(item.to)),
     points: (item.points || []).map((point) => ({ ...point })),
   }));
-  const pinNodes = internalNodes.filter((item) => item.type === "PIN" || item.type === "MULTI_PIN");
+  const pinNodes = internalNodes.filter((item) => item.type === "PIN" || item.type === "MULTI_PIN" || item.type === "CABLE_PIN");
   const pinByExternal = new Map((macro.pins || []).map((pin) => [pin.id, pin]));
   const pinByInternalId = new Map();
   for (const pin of macro.pins || []) {
@@ -1494,27 +2440,68 @@ function simulateMacroCircuit(macro, inputs = {}) {
     if (external?.direction !== "output") {
       const inputValue = macroInputValueForPin(pin, external, inputs);
       for (const port of macroInternalPinPorts(pin, external)) values.set(`${pin.id}.${port}`, inputValue);
+      if (pin.type === "CABLE_PIN") {
+        const cableValue = macroInputCableValueForPin(pin, external, cableInputs);
+        for (const port of macroInternalPinPorts(pin, external)) values.set(`${pin.id}.${port}.__cable`, cableValue);
+      }
     }
   }
 
   for (let pass = 0; pass < internalNodes.length + 4; pass += 1) {
     const graph = buildConnectivity();
     const hot = groupHotValues(values, graph);
+    const cableValues = groupCableValues(values, graph);
     applyMacroInputHotValues(hot, graph, pinNodes, macro.pins || [], inputs);
+    applyMacroInputCableValues(cableValues, graph, pinNodes, macro.pins || [], cableInputs);
     let changed = false;
     for (const item of internalNodes) {
       if (item.type === "TEST_INPUT" || item.type === "MULTI_TEST_INPUT") continue;
-      if (item.type === "INPUT") values.set(`${item.id}.out`, Boolean(item.value));
+      if (item.type === "INPUT") values.set(`${item.id}.out`, signalFromBoolean(item.value));
+      if (item.type === "MULTI_INPUT") {
+        multiBitValues(item).forEach((value, index) => values.set(`${item.id}.bit${index}`, signalFromBoolean(value)));
+      }
+      if (isCableSourceNode(item)) {
+        values.set(`${item.id}.out`, signalFromBoolean(cableDataValue(item) !== 0));
+        values.set(`${item.id}.out.__cable`, cableDataValue(item));
+      }
+      if (item.type === "VCC") values.set(`${item.id}.out`, SIGNAL.ONE);
+      if (item.type === "GND") values.set(`${item.id}.out`, SIGNAL.ZERO);
+      if (item.type === "X_SRC") values.set(`${item.id}.out`, SIGNAL.UNKNOWN);
+      if (item.type === "Z_SRC") values.set(`${item.id}.out`, SIGNAL.HIGH_Z);
+      if (item.type === "CLOCK") values.set(`${item.id}.out`, signalFromBoolean(item.value));
+      if (item.type === "PULSE") values.set(`${item.id}.out`, pulseSignal(item));
       const itemInputs = {};
+      const itemCableInputs = {};
       for (const input of nodeInputs(item)) {
         itemInputs[input] = readInputValue(item.id, input, hot, graph);
         values.set(`${item.id}.${input}`, itemInputs[input]);
+        itemCableInputs[input] = readCableCompatibleInputValue(item, input, hot, cableValues, graph);
       }
-      if (item.type === "PIN" || item.type === "MULTI_PIN") {
+      if (item.type === "PIN" || item.type === "MULTI_PIN" || item.type === "CABLE_PIN") {
         const external = [...pinByExternal.values()].find((pin) => pin.internalNodeId === item.id || pin.id === item.macroPinName);
         if (external?.direction !== "output") continue;
       }
-      const outputs = evaluateGate(item.type, itemInputs, item);
+      const outputs = evaluateGate(item.type, itemInputs, item, itemCableInputs);
+      if (item.type === "BUS_TO_CABLE") {
+        const bitSignals = multiBitPorts(item).map((port) => signalValue(itemInputs[port]));
+        const hasUnknownBit = bitSignals.some((signal) => signal !== SIGNAL.ZERO && signal !== SIGNAL.ONE);
+        const bitString = bitSignals.map((signal) => (signal === SIGNAL.ONE ? "1" : "0")).join("");
+        if (setSimValue(values, `${item.id}.out.__cable`, hasUnknownBit ? null : parseInt(bitString || "0", 2))) changed = true;
+      }
+      if (item.type === "CABLE_MERGER") {
+        if (setSimValue(values, `${item.id}.out.__cable`, cableMergerValue(item, itemCableInputs))) changed = true;
+      }
+      if (item.type === "CABLE_DIVIDER") {
+        for (const [index, port] of cableSegmentPorts(item).entries()) {
+          if (setSimValue(values, `${item.id}.${port}.__cable`, cableDividerValue(item, index, itemCableInputs))) changed = true;
+        }
+      }
+      if (item.type === "CABLE_PIN") {
+        if (setSimValue(values, `${item.id}.out.__cable`, Math.max(0, Math.trunc(Number(itemCableInputs.in || 0))))) changed = true;
+      }
+      if (item.type === "CABLE_OUTPUT") {
+        values.set(`${item.id}.in.__cable`, clampCableValueToBits(itemCableInputs.in, multiBitCount(item)));
+      }
       for (const [port, value] of Object.entries(outputs)) {
         const key = `${item.id}.${port}`;
         if (values.get(key) !== value) {
@@ -1528,21 +2515,37 @@ function simulateMacroCircuit(macro, inputs = {}) {
 
   const graph = buildConnectivity();
   const hot = groupHotValues(values, graph);
+  const cableValues = groupCableValues(values, graph);
   applyMacroInputHotValues(hot, graph, pinNodes, macro.pins || [], inputs);
+  applyMacroInputCableValues(cableValues, graph, pinNodes, macro.pins || [], cableInputs);
+  for (const item of internalNodes) {
+    for (const input of nodeInputs(item)) {
+      values.set(`${item.id}.${input}`, readInputValue(item.id, input, hot, graph));
+      values.set(`${item.id}.${input}.__cable`, readCableCompatibleInputValue(item, input, hot, cableValues, graph));
+    }
+  }
   const outputs = {};
   for (const pin of macro.pins || []) {
     if (pin.direction !== "output") continue;
     const internal = pinNodes.find((item) => item.id === pin.internalNodeId || item.macroPinName === pin.id);
     if (internal) {
       const ports = macroInternalPinPorts(internal, pin);
-      outputs[pin.id] = Boolean(
-        hot.get(graph.find(portKey(internal.id, ports[0])))
-        || hot.get(graph.find(portKey(internal.id, ports[1]))),
-      );
+      outputs[pin.id] = resolveSignals([
+        hot.get(graph.find(portKey(internal.id, ports[0]))),
+        hot.get(graph.find(portKey(internal.id, ports[1]))),
+      ]);
+      if (internal.type === "CABLE_PIN") {
+        outputs[`${pin.id}.__cable`] = Math.max(0, Math.trunc(Number(
+          cableValues.get(graph.find(portKey(internal.id, ports[0])))
+          || cableValues.get(graph.find(portKey(internal.id, ports[1])))
+          || 0,
+        )));
+      }
     }
   }
   for (const wire of internalWires) {
-    values.set(`${wire.id}.__wire`, Boolean(hot.get(graph.find(`wire:${wire.id}`))));
+    const wireRoot = graph.find(`wire:${wire.id}`);
+    values.set(`${wire.id}.__wire`, signalValue(hot.get(wireRoot)));
   }
 
   state.nodes = previous.nodes;
@@ -1552,38 +2555,72 @@ function simulateMacroCircuit(macro, inputs = {}) {
   return { nodes: internalNodes, wires: internalWires, values, outputs };
 }
 
-// Small iterative propagation pass. It is enough for this prototype's simple acyclic circuits.
-function simulate() {
-  const previousSimulationCache = state.simulationCache;
-  state.simulationCache = new Map();
-  const values = new Map();
-  for (const node of state.nodes) {
-    if (node.type === "INPUT" || node.type === "TEST_INPUT") values.set(`${node.id}.out`, Boolean(node.value));
-    if (node.type === "MULTI_INPUT" || node.type === "MULTI_TEST_INPUT") {
-      multiBitValues(node).forEach((value, index) => values.set(`${node.id}.bit${index}`, value));
-    }
-    if (node.type === "VCC") values.set(`${node.id}.out`, true);
-    if (node.type === "GND") values.set(`${node.id}.out`, false);
-  }
-  state.circuitIssues = analyzeCircuitIssues();
-  if (state.circuitIssues.length) {
-    state.values = values;
-    state.simulationCache = previousSimulationCache;
-    return;
-  }
+function setSequentialOutputs(values, node) {
+  if (!SEQUENTIAL_TYPES.has(node.type)) return false;
+  const outputs = qOutputs(storedQ(node));
+  return Object.entries(outputs).reduce((changed, [port, value]) => (
+    setSimValue(values, `${node.id}.${port}`, value) || changed
+  ), false);
+}
 
+function updateFlipFlopStates(values) {
+  const graph = buildConnectivity();
+  const hot = groupHotValues(values, graph);
+  let changed = false;
+  for (const node of state.nodes) {
+    if (!FLIP_FLOP_TYPES.has(node.type)) continue;
+    const clk = readInputValue(node.id, "clk", hot, graph);
+    const previousClock = signalValue(node.lastClock ?? SIGNAL.ZERO);
+    if (clk === SIGNAL.UNKNOWN) {
+      changed = setSequentialQ(node, SIGNAL.UNKNOWN) || changed;
+    } else if (previousClock !== SIGNAL.ONE && clk === SIGNAL.ONE) {
+      if (node.type === "SR_FF") changed = setSequentialQ(node, evaluateSrNext(storedQ(node), readInputValue(node.id, "s", hot, graph), readInputValue(node.id, "r", hot, graph))) || changed;
+      if (node.type === "D_FF") changed = setSequentialQ(node, evaluateDNext(readInputValue(node.id, "d", hot, graph))) || changed;
+      if (node.type === "JK_FF") changed = setSequentialQ(node, evaluateJkNext(storedQ(node), readInputValue(node.id, "j", hot, graph), readInputValue(node.id, "k", hot, graph))) || changed;
+      if (node.type === "T_FF") changed = setSequentialQ(node, evaluateTNext(storedQ(node), readInputValue(node.id, "t", hot, graph))) || changed;
+    }
+    node.lastClock = clk;
+    changed = setSequentialOutputs(values, node) || changed;
+  }
+  return changed;
+}
+
+function settleCircuitValues(values) {
   for (let pass = 0; pass < state.nodes.length + 4; pass += 1) {
     const graph = buildConnectivity();
     const hot = groupHotValues(values, graph);
+    const cableValues = groupCableValues(values, graph);
     let changed = false;
     for (const node of state.nodes) {
-      if (node.type === "INPUT" || node.type === "TEST_INPUT" || node.type === "VCC" || node.type === "GND") continue;
+      if (isLogicSourceType(node.type)) continue;
       const inputs = {};
+      const cableInputs = {};
       for (const input of nodeInputs(node)) {
         inputs[input] = readInputValue(node.id, input, hot, graph);
         values.set(`${node.id}.${input}`, inputs[input]);
+        cableInputs[input] = readCableCompatibleInputValue(node, input, hot, cableValues, graph);
       }
-      const outputs = evaluateGate(node.type, inputs, node);
+      const outputs = evaluateGate(node.type, inputs, node, cableInputs);
+      if (node.type === "BUS_TO_CABLE") {
+        const bitSignals = multiBitPorts(node).map((port) => signalValue(inputs[port]));
+        const hasUnknownBit = bitSignals.some((signal) => signal !== SIGNAL.ZERO && signal !== SIGNAL.ONE);
+        const bitString = bitSignals.map((signal) => (signal === SIGNAL.ONE ? "1" : "0")).join("");
+        if (setSimValue(values, `${node.id}.out.__cable`, hasUnknownBit ? null : parseInt(bitString || "0", 2))) changed = true;
+      }
+      if (node.type === "CABLE_MERGER") {
+        if (setSimValue(values, `${node.id}.out.__cable`, cableMergerValue(node, cableInputs))) changed = true;
+      }
+      if (node.type === "CABLE_DIVIDER") {
+        for (const [index, port] of cableSegmentPorts(node).entries()) {
+          if (setSimValue(values, `${node.id}.${port}.__cable`, cableDividerValue(node, index, cableInputs))) changed = true;
+        }
+      }
+      if (node.type === "CABLE_PIN") {
+        if (setSimValue(values, `${node.id}.out.__cable`, Math.max(0, Math.trunc(Number(cableInputs.in || 0))))) changed = true;
+      }
+      if (node.type === "CABLE_OUTPUT") {
+        values.set(`${node.id}.in.__cable`, clampCableValueToBits(cableInputs.in, multiBitCount(node)));
+      }
       for (const [port, value] of Object.entries(outputs)) {
         const key = `${node.id}.${port}`;
         if (values.get(key) !== value) {
@@ -1597,11 +2634,55 @@ function simulate() {
     }
     if (!changed) break;
   }
+}
+
+function simulate() {
+  const previousSimulationCache = state.simulationCache;
+  state.simulationCache = new Map();
+  const values = new Map();
+  for (const node of state.nodes) {
+    if (node.type === "INPUT" || node.type === "TEST_INPUT") values.set(`${node.id}.out`, signalFromBoolean(node.value));
+    if (node.type === "MULTI_INPUT" || node.type === "MULTI_TEST_INPUT") {
+      multiBitValues(node).forEach((value, index) => values.set(`${node.id}.bit${index}`, signalFromBoolean(value)));
+    }
+    if (isCableSourceNode(node)) {
+      values.set(`${node.id}.out`, signalFromBoolean(cableDataValue(node) !== 0));
+      values.set(`${node.id}.out.__cable`, cableDataValue(node));
+    }
+    if (node.type === "VCC") values.set(`${node.id}.out`, SIGNAL.ONE);
+    if (node.type === "GND") values.set(`${node.id}.out`, SIGNAL.ZERO);
+    if (node.type === "X_SRC") values.set(`${node.id}.out`, SIGNAL.UNKNOWN);
+    if (node.type === "Z_SRC") values.set(`${node.id}.out`, SIGNAL.HIGH_Z);
+    if (node.type === "CLOCK") values.set(`${node.id}.out`, signalFromBoolean(node.value));
+    if (node.type === "PULSE") values.set(`${node.id}.out`, pulseSignal(node));
+    setSequentialOutputs(values, node);
+  }
+  state.circuitIssues = analyzeCircuitIssues();
+  if (firstBlockingCircuitIssue(state.circuitIssues)) {
+    state.values = values;
+    state.simulationCache = previousSimulationCache;
+    return;
+  }
+
+  settleCircuitValues(values);
+  const edgePassLimit = state.nodes.length + 4;
+  for (let pass = 0; pass < edgePassLimit; pass += 1) {
+    if (!updateFlipFlopStates(values)) break;
+    settleCircuitValues(values);
+  }
 
   const graph = buildConnectivity();
   const hot = groupHotValues(values, graph);
+  const cableValues = groupCableValues(values, graph);
+  for (const node of state.nodes) {
+    for (const input of nodeInputs(node)) {
+      values.set(`${node.id}.${input}`, readInputValue(node.id, input, hot, graph));
+      values.set(`${node.id}.${input}.__cable`, readCableCompatibleInputValue(node, input, hot, cableValues, graph));
+    }
+  }
   for (const wire of state.wires) {
-    values.set(`${wire.id}.__wire`, Boolean(hot.get(graph.find(`wire:${wire.id}`))));
+    const wireRoot = graph.find(`wire:${wire.id}`);
+    values.set(`${wire.id}.__wire`, signalValue(hot.get(wireRoot)));
   }
   state.values = values;
   state.simulationCache = previousSimulationCache;
@@ -1615,6 +2696,7 @@ function createSvg(tag, attrs = {}) {
 
 function templateViewBox() {
   const rect = templateCanvas.getBoundingClientRect();
+  clampTemplateView(rect);
   const width = (rect.width || TEMPLATE_VIEW_W * GRID) / state.template.view.zoom;
   const height = (rect.height || TEMPLATE_VIEW_H * GRID) / state.template.view.zoom;
   return {
@@ -1625,15 +2707,32 @@ function templateViewBox() {
   };
 }
 
+function templateMinimumZoom(rect = templateCanvas.getBoundingClientRect()) {
+  const width = rect.width || TEMPLATE_VIEW_W * GRID;
+  const height = rect.height || TEMPLATE_VIEW_H * GRID;
+  return Math.max(
+    TEMPLATE_MIN_ZOOM,
+    width / (TEMPLATE_VIEW_W * GRID),
+    height / (TEMPLATE_VIEW_H * GRID),
+  );
+}
+
+function clampTemplateView(rect = templateCanvas.getBoundingClientRect()) {
+  state.template.view.zoom = Math.max(templateMinimumZoom(rect), Math.min(TEMPLATE_MAX_ZOOM, state.template.view.zoom));
+  const width = (rect.width || TEMPLATE_VIEW_W * GRID) / state.template.view.zoom;
+  const height = (rect.height || TEMPLATE_VIEW_H * GRID) / state.template.view.zoom;
+  const maxX = TEMPLATE_VIEW_W * GRID;
+  const maxY = TEMPLATE_VIEW_H * GRID;
+  state.template.view.x = Math.min(Math.max(0, maxX - width), Math.max(0, state.template.view.x));
+  state.template.view.y = Math.min(Math.max(0, maxY - height), Math.max(0, state.template.view.y));
+}
+
 function updateTemplateViewBox() {
   const box = templateViewBox();
   templateCanvas.setAttribute("viewBox", `${box.x} ${box.y} ${box.width} ${box.height}`);
 }
 
 function appendTemplateGrid() {
-  const box = templateViewBox();
-  const width = Math.max(TEMPLATE_VIEW_W * GRID, box.x + box.width + GRID * 4);
-  const height = Math.max(TEMPLATE_VIEW_H * GRID, box.y + box.height + GRID * 4);
   const defs = createSvg("defs");
   const minorPattern = createSvg("pattern", {
     id: "template-minor-grid",
@@ -1668,8 +2767,8 @@ function appendTemplateGrid() {
     class: "template-grid-bg",
     x: 0,
     y: 0,
-    width,
-    height,
+    width: TEMPLATE_VIEW_W * GRID,
+    height: TEMPLATE_VIEW_H * GRID,
     fill: "url(#template-major-grid)",
   }));
 }
@@ -1706,6 +2805,15 @@ function gateBodyBox(node, px, py, w, h) {
     return {
       x: px + GRID * 3,
       y: py,
+      w: GRID * 4,
+      h: GRID * 3,
+    };
+  }
+
+  if (node.type === "TRISTATE") {
+    return {
+      x: px + GRID * 3,
+      y: py + GRID,
       w: GRID * 4,
       h: GRID * 3,
     };
@@ -1763,7 +2871,7 @@ function gateSymbolPath(type, x, y, w, h) {
     ].join(" ");
   }
 
-  if (type === "NOT" || type === "BUFFER") {
+  if (type === "NOT" || type === "BUFFER" || type === "TRISTATE") {
     return [
       `M ${x} ${y}`,
       `L ${x} ${y + h}`,
@@ -1778,11 +2886,11 @@ function gateSymbolPath(type, x, y, w, h) {
 function appendGateSymbol(group, node, px, py, w, h) {
   const body = gateBodyBox(node, px, py, w, h);
 
-  if (node.type === "NOT" || node.type === "BUFFER") {
-    const midY = py + h / 2;
+  if (node.type === "NOT" || node.type === "BUFFER" || node.type === "TRISTATE") {
+    const midY = body.y + body.h / 2;
     const input = portPosition(node, "in", "input");
     const output = portPosition(node, "out", "output");
-    const apexX = node.type === "BUFFER" ? px + GRID * 7 : px + GRID * 6;
+    const apexX = node.type === "NOT" ? px + GRID * 6 : px + GRID * 7;
     const bubbleRadius = GRID;
 
     group.appendChild(createSvg("line", {
@@ -1807,6 +2915,17 @@ function appendGateSymbol(group, node, px, py, w, h) {
         cx: apexX + bubbleRadius,
         cy: midY,
         r: bubbleRadius,
+      }));
+    }
+    if (node.type === "TRISTATE") {
+      const en = portPosition(node, "en", "input");
+      const enTargetY = midY + GRID * 0.75;
+      group.appendChild(createSvg("line", {
+        class: "gate-pin",
+        x1: en.x * GRID,
+        y1: en.y * GRID,
+        x2: en.x * GRID,
+        y2: enTargetY,
       }));
     }
     group.appendChild(createSvg("line", {
@@ -1875,18 +2994,60 @@ function appendGateSymbol(group, node, px, py, w, h) {
   }
 }
 
-// Draw wires before nodes so ports and selected nodes remain clickable and visible.
+function appendWirePointCaps(parent, points, color, radius, extraAttrs = {}) {
+  const seen = new Set();
+  for (const point of points) {
+    const key = `${point.x},${point.y}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    parent.appendChild(createSvg("circle", {
+      class: "wire-point-cap",
+      cx: point.x * GRID,
+      cy: point.y * GRID,
+      r: radius,
+      style: `fill: ${color}`,
+      ...extraAttrs,
+    }));
+  }
+}
+
+// The wires layer sits above nodes in the SVG so wires and cables are never hidden by component bodies.
 function renderWires() {
   wiresLayer.replaceChildren();
   for (const wire of state.wires) {
-    const hot = Boolean(state.values.get(`${wire.id}.__wire`));
+    const signal = signalValue(state.values.get(`${wire.id}.__wire`));
+    const bitLength = wireBitLength(wire);
+    const isCable = bitLength > 1;
+    const selected = isWireSelected(wire.id);
+    const points = wirePathPoints(wire);
+    const color = signalColor(signal);
     const path = createSvg("path", {
-      class: `wire ${hot ? "hot" : "cold"}`,
-      d: pointsToSvgPath(wirePathPoints(wire)),
-      style: `stroke: ${hot ? state.settings.wireHotColor : state.settings.wireColdColor}`,
+      class: `wire ${isCable ? "cable" : ""} ${signalClass(signal)} ${selected ? "selected" : ""}`,
+      d: pointsToSvgPath(points),
+      style: isCable
+        ? `stroke: ${color}; stroke-width: ${GRID}`
+        : `stroke: ${color}`,
       "data-wire-id": wire.id,
     });
     wiresLayer.appendChild(path);
+    appendWirePointCaps(wiresLayer, points, color, isCable ? GRID / 2 : WIRE_POINT_CAP_RADIUS, {
+      "data-wire-id": wire.id,
+    });
+  }
+}
+
+function renderJunctionOverlay() {
+  junctionOverlayLayer.replaceChildren();
+  for (const node of state.nodes) {
+    if (node.type !== "JUNCTION") continue;
+    const point = portPosition(node, "out", "output");
+    junctionOverlayLayer.appendChild(createSvg("circle", {
+      class: "node junction-body junction-overlay-body",
+      cx: point.x * GRID,
+      cy: point.y * GRID,
+      r: GRID / 2,
+      "data-node-id": node.id,
+    }));
   }
 }
 
@@ -1918,7 +3079,7 @@ function appendMultiBitSwitchShape(group, node, px, py) {
       height: bodyHeight,
     }));
   }
-  appendLeftOrderArrow(group, px, arrowY, bodyWidth, node.onColor || DEFAULT_HOT_COLOR);
+  appendLeftOrderArrow(group, px, arrowY, bodyWidth);
   for (let index = 0; index < bits; index += 1) {
     const cx = px + GRID * (1 + index * 2);
     const cy = bodyY + GRID;
@@ -1934,7 +3095,7 @@ function appendMultiBitSwitchShape(group, node, px, py) {
       class: `switch-dot multibit-dot ${values[index] ? "on" : "off"}`,
       cx,
       cy,
-      r: GRID * (node.type === "MULTI_TEST_INPUT" ? 0.32 : 0.46),
+      r: GRID * 0.46,
       style: values[index]
         ? `fill: ${node.onColor || DEFAULT_HOT_COLOR}; stroke: ${node.onColor || DEFAULT_HOT_COLOR}`
         : "fill: #ffffff; stroke: var(--part-stroke)",
@@ -1943,24 +3104,438 @@ function appendMultiBitSwitchShape(group, node, px, py) {
   }
 }
 
-function appendLeftOrderArrow(group, px, y, width, color = DEFAULT_HOT_COLOR) {
+function appendCableSwitchShape(group, node, px, py) {
+  const size = nodeSize(node);
+  const bodyWidth = size.w * GRID;
+  const bodyHeight = GRID * 4;
+  const cableWidth = GRID;
+  const cableHeight = GRID * 2;
+  const cableX = px + bodyWidth / 2 - cableWidth / 2;
+  const cableY = py + bodyHeight;
+  if (node.type === "CABLE_TEST_SWITCH") {
+    group.appendChild(createSvg("polygon", {
+      class: "gate-body cable-switch-body cable-test-switch-body",
+      points: [
+        `${px},${py + bodyHeight / 2}`,
+        `${px + GRID},${py}`,
+        `${px + bodyWidth - GRID},${py}`,
+        `${px + bodyWidth},${py + bodyHeight / 2}`,
+        `${px + bodyWidth - GRID},${py + bodyHeight}`,
+        `${px + GRID},${py + bodyHeight}`,
+      ].join(" "),
+    }));
+  } else {
+    group.appendChild(createSvg("rect", {
+      class: "gate-body cable-switch-body",
+      x: px,
+      y: py,
+      width: bodyWidth,
+      height: bodyHeight,
+    }));
+  }
+  group.appendChild(createSvg("rect", {
+    class: "cable-switch-cable",
+    x: cableX,
+    y: cableY,
+    width: cableWidth,
+    height: cableHeight,
+  }));
+}
+
+function cableOutputValue(node) {
+  const signal = signalValue(state.values.get(`${node.id}.in`));
+  if (signal !== SIGNAL.ZERO && signal !== SIGNAL.ONE) return SIGNAL.UNKNOWN;
+  return clampCableValueToBits(state.values.get(`${node.id}.in.__cable`) || 0, multiBitCount(node));
+}
+
+function appendCableOutputShape(group, node, px, py) {
+  const size = nodeSize(node);
+  const bodyWidth = size.w * GRID;
+  const bodyHeight = GRID * 4;
+  const cableWidth = GRID;
+  const cableHeight = GRID * 2;
+  const cableX = px + bodyWidth / 2 - cableWidth / 2;
+  const cableY = py + bodyHeight;
+  const radius = bodyHeight / 2;
+  group.appendChild(createSvg("path", {
+    class: "gate-body cable-output-body",
+    d: [
+      `M ${px + radius} ${py}`,
+      `H ${px + bodyWidth - radius}`,
+      `A ${radius} ${radius} 0 0 1 ${px + bodyWidth - radius} ${py + bodyHeight}`,
+      `H ${px + radius}`,
+      `A ${radius} ${radius} 0 0 1 ${px + radius} ${py}`,
+      "Z",
+    ].join(" "),
+  }));
+  group.appendChild(createSvg("rect", {
+    class: "cable-switch-cable",
+    x: cableX,
+    y: cableY,
+    width: cableWidth,
+    height: cableHeight,
+  }));
+  const label = createSvg("text", {
+    class: "cable-output-data",
+    x: px + bodyWidth / 2,
+    y: py + bodyHeight / 2,
+    "text-anchor": "middle",
+    "dominant-baseline": "middle",
+    dy: "0.12em",
+  });
+  label.textContent = String(cableOutputValue(node));
+  group.appendChild(label);
+}
+
+function appendCableToBusShape(group, node, px, py) {
+  const bits = multiBitCount(node);
+  const size = nodeSize(node);
+  const input = portPosition(node, "in", "input");
+  const bodyX = px + GRID * 2;
+  const bodyW = GRID * 2;
+  const bodyH = size.h * GRID;
+  const inputY = input.y * GRID;
+  group.appendChild(createSvg("rect", {
+    class: "cable-to-bus-body",
+    x: bodyX,
+    y: py,
+    width: bodyW,
+    height: bodyH,
+  }));
+  group.appendChild(createSvg("rect", {
+    class: "cable-to-bus-cable",
+    x: px,
+    y: inputY - GRID / 2,
+    width: bodyX - px,
+    height: GRID,
+  }));
+  for (let index = 0; index < bits; index += 1) {
+    const output = portPosition(node, `bit${index}`, "output");
+    const y = output.y * GRID;
+    group.appendChild(createSvg("line", {
+      class: "cable-to-bus-bit",
+      x1: bodyX + bodyW,
+      y1: y,
+      x2: output.x * GRID,
+      y2: y,
+    }));
+  }
+  appendCableConverterArrows(group, node, px, py);
+}
+
+function appendBusToCableShape(group, node, px, py) {
+  const bits = multiBitCount(node);
+  const size = nodeSize(node);
+  const output = portPosition(node, "out", "output");
+  const bodyX = px + GRID * 2;
+  const bodyW = GRID * 2;
+  const bodyH = size.h * GRID;
+  const outputY = output.y * GRID;
+  group.appendChild(createSvg("rect", {
+    class: "cable-to-bus-body",
+    x: bodyX,
+    y: py,
+    width: bodyW,
+    height: bodyH,
+  }));
+  group.appendChild(createSvg("rect", {
+    class: "cable-to-bus-cable",
+    x: bodyX + bodyW,
+    y: outputY - GRID / 2,
+    width: px + size.w * GRID - (bodyX + bodyW),
+    height: GRID,
+  }));
+  for (let index = 0; index < bits; index += 1) {
+    const input = portPosition(node, `bit${index}`, "input");
+    const y = input.y * GRID;
+    group.appendChild(createSvg("line", {
+      class: "cable-to-bus-bit",
+      x1: input.x * GRID,
+      y1: y,
+      x2: bodyX,
+      y2: y,
+    }));
+  }
+  appendCableConverterArrows(group, node, px, py);
+}
+
+function appendCableMergeSplitShape(group, node, px, py) {
+  const size = nodeSize(node);
+  const bodyX = px + GRID * 2;
+  const bodyW = GRID * 2;
+  const bodyH = size.h * GRID;
+  group.appendChild(createSvg("rect", {
+    class: "cable-to-bus-body",
+    x: bodyX,
+    y: py,
+    width: bodyW,
+    height: bodyH,
+  }));
+
+  if (node.type === "CABLE_MERGER") {
+    for (const port of cableSegmentPorts(node)) {
+      const input = portPosition(node, port, "input");
+      const y = input.y * GRID;
+      group.appendChild(createSvg("rect", {
+        class: "cable-to-bus-cable",
+        x: px,
+        y: y - GRID / 2,
+        width: bodyX - px,
+        height: GRID,
+      }));
+    }
+    const output = portPosition(node, "out", "output");
+    const y = output.y * GRID;
+    group.appendChild(createSvg("rect", {
+      class: "cable-to-bus-cable",
+      x: bodyX + bodyW,
+      y: y - GRID / 2,
+      width: px + size.w * GRID - (bodyX + bodyW),
+      height: GRID,
+    }));
+    appendCableConverterArrows(group, node, px, py);
+    return;
+  }
+
+  const input = portPosition(node, "in", "input");
+  const inputY = input.y * GRID;
+  group.appendChild(createSvg("rect", {
+    class: "cable-to-bus-cable",
+    x: px,
+    y: inputY - GRID / 2,
+    width: bodyX - px,
+    height: GRID,
+  }));
+  for (const port of cableSegmentPorts(node)) {
+    const output = portPosition(node, port, "output");
+    const y = output.y * GRID;
+    group.appendChild(createSvg("rect", {
+      class: "cable-to-bus-cable",
+      x: bodyX + bodyW,
+      y: y - GRID / 2,
+      width: px + size.w * GRID - (bodyX + bodyW),
+      height: GRID,
+    }));
+  }
+  appendCableConverterArrows(group, node, px, py);
+}
+
+function appendArrow(group, x1, y1, x2, y2, className, color) {
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const length = Math.hypot(dx, dy);
+  if (length < 1) return;
+  const ux = dx / length;
+  const uy = dy / length;
+  const scale = arrowScale();
+  const head = GRID * scale;
+  const half = GRID * 0.5 * scale;
+  const baseX = x2 - ux * head;
+  const baseY = y2 - uy * head;
+  const pxn = -uy;
+  const pyn = ux;
   group.appendChild(createSvg("line", {
-    class: "multibit-order-arrow",
-    x1: px + GRID * 0.5,
-    y1: y,
-    x2: px + width,
-    y2: y,
-    style: `stroke: ${color}`,
+    class: `${className} line`,
+    x1,
+    y1,
+    x2: baseX,
+    y2: baseY,
+    style: `stroke: ${color}; stroke-width: ${2 * scale}`,
   }));
   group.appendChild(createSvg("polygon", {
-    class: "multibit-arrow-head",
+    class: `${className} head`,
     points: [
-      `${px},${y}`,
-      `${px + GRID},${y - GRID * 0.5}`,
-      `${px + GRID},${y + GRID * 0.5}`,
+      `${x2},${y2}`,
+      `${baseX + pxn * half},${baseY + pyn * half}`,
+      `${baseX - pxn * half},${baseY - pyn * half}`,
     ].join(" "),
-    style: `fill: ${color}`,
+    style: `fill: ${color}; stroke: none`,
   }));
+}
+
+function appendCableConverterArrows(group, node, px, py) {
+  const size = nodeSize(node);
+  const bodyX = px + GRID * 2;
+  const bodyW = GRID * 2;
+  const bodyH = size.h * GRID;
+  const orderX = bodyX + bodyW / 2;
+  const red = orderArrowColor();
+  const blue = dataArrowColor();
+  const orderedItems = isCableMergeSplitType(node.type) ? cableSegments(node).length : multiBitCount(node);
+  if (orderedItems > 1) {
+    const orderStartY = state.settings.orderArrowDirection === "msb-to-lsb"
+      ? py
+      : py + bodyH;
+    const orderEndY = state.settings.orderArrowDirection === "msb-to-lsb"
+      ? py + bodyH
+      : py;
+    appendArrow(
+      group,
+      orderX,
+      orderStartY,
+      orderX,
+      orderEndY,
+      "cable-converter-order-arrow",
+      red,
+    );
+  }
+  const dataY = py - GRID;
+  const dataStartX = state.settings.dataArrowDirection === "right-to-left"
+    ? bodyX + bodyW
+    : bodyX;
+  const dataEndX = state.settings.dataArrowDirection === "right-to-left"
+    ? bodyX
+    : bodyX + bodyW;
+  appendArrow(
+    group,
+    dataStartX,
+    dataY,
+    dataEndX,
+    dataY,
+    "cable-converter-data-arrow",
+    blue,
+  );
+}
+
+function cableTextAnchorFromBox(boxDirection) {
+  if (!boxDirection) return "middle";
+  if (boxDirection.x < 0) return "end";
+  if (boxDirection.x > 0) return "start";
+  return "middle";
+}
+
+function cableTextPointFromBox(contactPoint, boxDirection = { x: 0, y: 0 }) {
+  return {
+    x: contactPoint.x + (boxDirection.x || 0) * 0.35,
+    y: contactPoint.y + (boxDirection.y || 0),
+  };
+}
+
+function cablePinVisualInset() {
+  return 0.2;
+}
+
+function appendUprightCableText(parent, node, className, localPoint, text, options = {}) {
+  const size = nodeSize(node);
+  const point = transformLocalPoint(localPoint, node, size);
+  let anchor = options.anchor || "middle";
+  if (options.boxDirection) {
+    const directionPoint = transformLocalPoint({
+      x: localPoint.x + options.boxDirection.x,
+      y: localPoint.y + options.boxDirection.y,
+    }, node, size);
+    anchor = cableTextAnchorFromBox({
+      x: directionPoint.x - point.x,
+      y: directionPoint.y - point.y,
+    });
+  }
+  const label = createSvg("text", {
+    class: className,
+    x: (node.x + point.x) * GRID,
+    y: (node.y + point.y) * GRID,
+    "text-anchor": anchor,
+    "dominant-baseline": "middle",
+    dy: "0.12em",
+  });
+  label.textContent = text;
+  parent.appendChild(label);
+}
+
+function transformedLocalVector(node, localPoint, vector) {
+  const size = nodeSize(node);
+  const start = transformLocalPoint(localPoint, node, size);
+  const end = transformLocalPoint({ x: localPoint.x + vector.x, y: localPoint.y + vector.y }, node, size);
+  return { x: end.x - start.x, y: end.y - start.y };
+}
+
+function cableLengthTextAnchor(direction) {
+  if (direction.x < -0.5) return "end";
+  if (direction.x > 0.5) return "start";
+  return "middle";
+}
+
+function cableLengthTextBaseline(direction) {
+  if (direction.y > 0.5) return "hanging";
+  if (direction.y < -0.5) return "text-after-edge";
+  return "middle";
+}
+
+function appendCablePortLengthLabel(parent, node, pivotPoint, boxDirection, text) {
+  const size = nodeSize(node);
+  const point = transformLocalPoint(pivotPoint, node, size);
+  const direction = transformedLocalVector(node, pivotPoint, boxDirection);
+  const baseline = cableLengthTextBaseline(direction);
+  const padding = {
+    x: direction.x > 0.5 ? 0.18 : direction.x < -0.5 ? -0.18 : 0,
+    y: direction.y > 0.5 ? 0.12 : direction.y < -0.5 ? -0.12 : 0,
+  };
+  const label = createSvg("text", {
+    class: "cable-port-length",
+    x: (node.x + point.x + padding.x) * GRID,
+    y: (node.y + point.y + padding.y) * GRID,
+    "text-anchor": cableLengthTextAnchor(direction),
+    "dominant-baseline": baseline,
+    dy: baseline === "middle" ? "0.12em" : "0",
+  });
+  label.textContent = text;
+  parent.appendChild(label);
+}
+
+function appendCableTextLabels(parent, node) {
+  const size = nodeSize(node);
+  if (isCableSourceNode(node)) {
+    const contact = { x: size.w / 2 - 0.5, y: 4 };
+    appendCablePortLengthLabel(parent, node, contact, { x: -1, y: 1 }, String(multiBitCount(node)));
+    appendUprightCableText(parent, node, "cable-switch-data", { x: size.w / 2, y: 2 }, String(cableDataValue(node)));
+  }
+  if (node.type === "CABLE_OUTPUT") {
+    const contact = { x: size.w / 2 - 0.5, y: 4 };
+    appendCablePortLengthLabel(parent, node, contact, { x: -1, y: 1 }, String(multiBitCount(node)));
+  }
+  if (node.type === "CABLE_TO_BUS") {
+    const contact = { x: 2, y: size.h / 2 - 0.5 };
+    appendCablePortLengthLabel(parent, node, contact, { x: -1, y: -1 }, String(multiBitCount(node)));
+  }
+  if (node.type === "BUS_TO_CABLE") {
+    const contact = { x: size.w - 2, y: size.h / 2 - 0.5 };
+    appendCablePortLengthLabel(parent, node, contact, { x: 1, y: -1 }, String(multiBitCount(node)));
+  }
+  if (node.type === "CABLE_MERGER") {
+    const segments = cableSegments(node);
+    for (const [index, bits] of segments.entries()) {
+      const y = cableSegmentLocalY(node, index) - 0.5;
+      appendCablePortLengthLabel(parent, node, { x: 2, y }, { x: -1, y: -1 }, String(bits));
+    }
+    appendCablePortLengthLabel(parent, node, { x: size.w - 2, y: size.h / 2 - 0.5 }, { x: 1, y: -1 }, String(cableSegmentTotalBits(node)));
+  }
+  if (node.type === "CABLE_DIVIDER") {
+    appendCablePortLengthLabel(parent, node, { x: 2, y: size.h / 2 - 0.5 }, { x: -1, y: -1 }, String(cableSegmentTotalBits(node)));
+    const segments = cableSegments(node);
+    for (const [index, bits] of segments.entries()) {
+      const y = cableSegmentLocalY(node, index) - 0.5;
+      appendCablePortLengthLabel(parent, node, { x: size.w - 2, y }, { x: 1, y: -1 }, String(bits));
+    }
+  }
+  if (node.type === "CABLE_PIN") {
+    const inset = cablePinVisualInset();
+    const contact = { x: inset, y: inset };
+    appendCablePortLengthLabel(parent, node, contact, { x: -1, y: -1 }, String(multiBitCount(node)));
+  }
+}
+
+function appendLeftOrderArrow(group, px, y, width, color = orderArrowColor()) {
+  const pointsLeft = state.settings.orderArrowDirection !== "msb-to-lsb";
+  const left = px;
+  const right = px + width;
+  appendArrow(
+    group,
+    pointsLeft ? right : left,
+    y,
+    pointsLeft ? left : right,
+    y,
+    "multibit-order-arrow",
+    color,
+  );
 }
 
 function appendBusShape(group, node, px, py) {
@@ -2016,18 +3591,18 @@ function appendBusShape(group, node, px, py) {
 function appendMultiBitOutputShape(group, node, px, py) {
   const bits = multiBitCount(node);
   const width = bits * GRID * 2;
-  appendLeftOrderArrow(group, px, py, width, node.onColor || DEFAULT_HOT_COLOR);
+  appendLeftOrderArrow(group, px, py, width);
   for (let index = 0; index < bits; index += 1) {
-    const value = Boolean(state.values.get(`${node.id}.bit${index}`));
+    const signal = signalValue(state.values.get(`${node.id}.bit${index}`));
     const cx = px + GRID * (1 + index * 2);
     const cy = py + GRID * 2;
     group.appendChild(createSvg("circle", {
-      class: "output-led multibit-output-led",
+      class: `output-led multibit-output-led ${signalClass(signal)}`,
       cx,
       cy,
       r: GRID,
-      style: value
-        ? `fill: ${node.onColor || DEFAULT_HOT_COLOR}; stroke: var(--part-stroke); stroke-width: var(--circuit-stroke)`
+      style: signal !== SIGNAL.ZERO
+        ? `fill: ${signalColor(signal, node.onColor || DEFAULT_HOT_COLOR, "#ffffff")}; stroke: var(--part-stroke); stroke-width: var(--circuit-stroke)`
         : "fill: #ffffff; stroke: var(--part-stroke); stroke-width: var(--circuit-stroke)",
     }));
   }
@@ -2037,7 +3612,7 @@ function appendMultiBitPinShape(group, node, px, py) {
   const bits = multiBitCount(node);
   const width = bits * GRID * 2;
   const assigned = circuitPinAssigned(node);
-  appendLeftOrderArrow(group, px, py, width, DEFAULT_HOT_COLOR);
+  appendLeftOrderArrow(group, px, py, width);
   for (let index = 0; index < bits; index += 1) {
     const cx = px + GRID * (1 + index * 2);
     const cy = py + GRID * 2;
@@ -2049,6 +3624,105 @@ function appendMultiBitPinShape(group, node, px, py) {
       width: markerSize,
       height: markerSize,
     }));
+  }
+}
+
+function sequentialDisplayName(node) {
+  if (node.type === "SR_LATCH") return "SR L";
+  if (node.type === "D_LATCH") return "D L";
+  if (node.type === "SR_FF") return "SR FF";
+  if (node.type === "D_FF") return "D FF";
+  if (node.type === "JK_FF") return "JK FF";
+  if (node.type === "T_FF") return "T FF";
+  return nodeLabel(node);
+}
+
+function appendSequentialLabel(group, text, x, y, anchor = "middle") {
+  group.appendChild(createSvg("text", {
+    class: "node-sub sequential-pin-label",
+    x,
+    y,
+    style: `text-anchor: ${anchor}`,
+  }));
+  group.lastChild.textContent = text;
+}
+
+function appendSequentialShape(group, node, px, py, w, h) {
+  for (const port of nodeInputs(node)) {
+    const point = portPosition(node, port, "input");
+    const x = point.x * GRID;
+    const y = point.y * GRID;
+    if (port === "clk" || port === "en") {
+      group.appendChild(createSvg("line", {
+        class: "gate-pin",
+        x1: x,
+        y1: y,
+        x2: x,
+        y2: py + h,
+      }));
+    } else {
+      group.appendChild(createSvg("line", {
+        class: "gate-pin",
+        x1: x,
+        y1: y,
+        x2: px,
+        y2: y,
+      }));
+    }
+  }
+  for (const port of nodeOutputs(node)) {
+    const point = portPosition(node, port, "output");
+    const x = point.x * GRID;
+    const y = point.y * GRID;
+    group.appendChild(createSvg("line", {
+      class: "gate-pin",
+      x1: px + w,
+      y1: y,
+      x2: x,
+      y2: y,
+    }));
+  }
+  group.appendChild(createSvg("rect", {
+    class: "gate-body sequential-body",
+    x: px,
+    y: py,
+    width: w,
+    height: h,
+    rx: 0,
+  }));
+  group.appendChild(createSvg("text", {
+    class: "macro-symbol-text sequential-title",
+    x: px + w / 2,
+    y: py + h / 2,
+    "text-anchor": "middle",
+    "dominant-baseline": "middle",
+  }));
+  group.lastChild.textContent = sequentialDisplayName(node);
+
+  for (const port of nodeInputs(node)) {
+    if (port === "clk" || port === "en") continue;
+    const point = portPosition(node, port, "input");
+    appendSequentialLabel(group, port.toUpperCase(), px + GRID * 0.7, point.y * GRID, "start");
+  }
+  for (const port of nodeOutputs(node)) {
+    const point = portPosition(node, port, "output");
+    appendSequentialLabel(group, port === "qbar" ? "Q'" : "Q", px + w - GRID * 0.7, point.y * GRID, "end");
+  }
+  if (FLIP_FLOP_TYPES.has(node.type)) {
+    const clk = portPosition(node, "clk", "input");
+    const cx = clk.x * GRID;
+    const cy = py + h;
+    group.appendChild(createSvg("path", {
+      class: "sequential-clock-mark",
+      d: [
+        `M ${cx - GRID * 1.4} ${cy}`,
+        `L ${cx} ${cy - GRID * 1.8}`,
+        `L ${cx + GRID * 1.4} ${cy}`,
+      ].join(" "),
+    }));
+  }
+  if (LATCH_TYPES.has(node.type)) {
+    appendSequentialLabel(group, "EN", px + w / 2, py + h - GRID * 2.1);
   }
 }
 
@@ -2073,6 +3747,16 @@ function renderNodeShape(group, node) {
     }));
   } else if (node.type === "MULTI_INPUT" || node.type === "MULTI_TEST_INPUT") {
     appendMultiBitSwitchShape(group, node, px, py);
+  } else if (isCableSourceNode(node)) {
+    appendCableSwitchShape(group, node, px, py);
+  } else if (node.type === "CABLE_OUTPUT") {
+    appendCableOutputShape(group, node, px, py);
+  } else if (node.type === "CABLE_TO_BUS") {
+    appendCableToBusShape(group, node, px, py);
+  } else if (node.type === "BUS_TO_CABLE") {
+    appendBusToCableShape(group, node, px, py);
+  } else if (isCableMergeSplitType(node.type)) {
+    appendCableMergeSplitShape(group, node, px, py);
   } else if (node.type === "BUS") {
     appendBusShape(group, node, px, py);
   } else if (node.type === "MULTI_OUTPUT") {
@@ -2093,34 +3777,135 @@ function renderNodeShape(group, node) {
       class: `switch-dot ${node.value ? "on" : "off"}`,
       cx,
       cy,
-      r: GRID * 0.32,
+      r: GRID * 0.46,
       style: node.value
         ? `fill: ${node.onColor || DEFAULT_HOT_COLOR}; stroke: ${node.onColor || DEFAULT_HOT_COLOR}`
         : "fill: #ffffff; stroke: var(--part-stroke)",
     }));
   } else if (node.type === "OUTPUT") {
-    const value = Boolean(state.values.get(`${node.id}.in`));
+    const signal = signalValue(state.values.get(`${node.id}.in`));
+    const isOn = signalIsOne(signal);
     group.appendChild(createSvg("circle", {
-      class: `led ${value ? "on" : ""}`,
+      class: `led ${signalClass(signal)} ${isOn ? "on" : ""}`,
       cx: px + w / 2,
       cy: py + h / 2,
       r: GRID,
-      style: `fill: ${value ? node.onColor || DEFAULT_HOT_COLOR : "#ffffff"}; stroke: var(--part-stroke)`,
+      style: `fill: ${signal === SIGNAL.ZERO ? "#ffffff" : signalColor(signal, node.onColor || DEFAULT_HOT_COLOR, "#ffffff")}; stroke: var(--part-stroke)`,
     }));
-  } else if (node.type === "VCC" || node.type === "GND") {
+  } else if (node.type === "VCC" || node.type === "GND" || node.type === "X_SRC" || node.type === "Z_SRC" || node.type === "CLOCK" || node.type === "PULSE") {
     const centerX = px + w / 2;
     const centerY = py + h / 2;
-    if (node.type === "VCC") {
-      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX, y1: centerY + GRID * 0.6, x2: centerX, y2: centerY - GRID * 0.35 }));
-      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX - GRID * 0.55, y1: centerY - GRID * 0.35, x2: centerX + GRID * 0.55, y2: centerY - GRID * 0.35 }));
+    group.appendChild(createSvg("rect", {
+      class: "supply-hitbox",
+      x: px,
+      y: py,
+      width: w,
+      height: h,
+    }));
+    if (node.type === "PULSE") {
+      const signal = pulseSignal(node);
+      const color = signalColor(signal);
+      group.appendChild(createSvg("rect", {
+        class: "gate-body pulse-source-body",
+        x: px,
+        y: py,
+        width: w,
+        height: h,
+        rx: 0,
+        style: `stroke: ${color}`,
+      }));
+      group.appendChild(createSvg("text", {
+        class: "pulse-source-pattern",
+        x: centerX,
+        y: centerY - GRID * 0.35,
+        style: `fill: ${color}`,
+      }));
+      group.lastChild.textContent = normalizePulsePattern(node.pulsePattern);
+      group.appendChild(createSvg("text", {
+        class: "pulse-source-label",
+        x: centerX,
+        y: centerY + GRID * 0.85,
+        style: `fill: ${color}`,
+      }));
+      group.lastChild.textContent = `${pulseFrequency(node)}Hz`;
+    } else if (node.type === "CLOCK") {
+      const signal = signalFromBoolean(node.value);
+      const color = signalColor(signal);
+      group.appendChild(createSvg("circle", {
+        class: `supply-state-ring ${signalClass(signal)}`,
+        cx: centerX,
+        cy: centerY,
+        r: GRID * 2,
+        style: `stroke: ${color}; fill: #ffffff`,
+      }));
+      group.appendChild(createSvg("path", {
+        class: "clock-source-wave",
+        d: [
+          `M ${centerX - GRID * 1.25} ${centerY - GRID * 0.1}`,
+          `H ${centerX - GRID * 0.45}`,
+          `V ${centerY - GRID * 0.9}`,
+          `H ${centerX + GRID * 0.45}`,
+          `V ${centerY - GRID * 0.1}`,
+          `H ${centerX + GRID * 1.25}`,
+        ].join(" "),
+        style: `stroke: ${color}`,
+      }));
+      group.appendChild(createSvg("text", {
+        class: "clock-source-label",
+        x: centerX,
+        y: centerY + GRID * 0.95,
+        style: `fill: ${color}`,
+      }));
+      group.lastChild.textContent = `${clockFrequency(node)}Hz`;
+    } else if (node.type === "VCC") {
+      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX, y1: centerY, x2: centerX, y2: centerY - GRID }));
+      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX - GRID, y1: centerY - GRID, x2: centerX + GRID, y2: centerY - GRID }));
+    } else if (node.type === "GND") {
+      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX, y1: centerY, x2: centerX, y2: centerY + GRID }));
+      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX - GRID, y1: centerY + GRID, x2: centerX + GRID, y2: centerY + GRID }));
+      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX - GRID * 0.75, y1: centerY + GRID * 1.25, x2: centerX + GRID * 0.75, y2: centerY + GRID * 1.25 }));
+      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX - GRID * 0.5, y1: centerY + GRID * 1.5, x2: centerX + GRID * 0.5, y2: centerY + GRID * 1.5 }));
     } else {
-      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX, y1: centerY - GRID * 0.55, x2: centerX, y2: centerY + GRID * 0.15 }));
-      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX - GRID * 0.55, y1: centerY + GRID * 0.15, x2: centerX + GRID * 0.55, y2: centerY + GRID * 0.15 }));
-      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX - GRID * 0.38, y1: centerY + GRID * 0.38, x2: centerX + GRID * 0.38, y2: centerY + GRID * 0.38 }));
-      group.appendChild(createSvg("line", { class: "supply-symbol", x1: centerX - GRID * 0.2, y1: centerY + GRID * 0.6, x2: centerX + GRID * 0.2, y2: centerY + GRID * 0.6 }));
+      const signal = node.type === "X_SRC" ? SIGNAL.UNKNOWN : SIGNAL.HIGH_Z;
+      group.appendChild(createSvg("circle", {
+        class: `supply-state-ring ${signalClass(signal)}`,
+        cx: centerX,
+        cy: centerY,
+        r: GRID * 1.05,
+        style: `stroke: ${signalColor(signal)}; fill: #ffffff`,
+      }));
+      const mark = GRID * 0.38;
+      const markStyle = `stroke: ${signalColor(signal)}; fill: none`;
+      if (node.type === "X_SRC") {
+        group.appendChild(createSvg("line", {
+          class: "supply-state-mark",
+          x1: centerX - mark,
+          y1: centerY - mark,
+          x2: centerX + mark,
+          y2: centerY + mark,
+          style: markStyle,
+        }));
+        group.appendChild(createSvg("line", {
+          class: "supply-state-mark",
+          x1: centerX + mark,
+          y1: centerY - mark,
+          x2: centerX - mark,
+          y2: centerY + mark,
+          style: markStyle,
+        }));
+      } else {
+        group.appendChild(createSvg("path", {
+          class: "supply-state-mark",
+          d: [
+            `M ${centerX - mark} ${centerY - mark}`,
+            `H ${centerX + mark}`,
+            `L ${centerX - mark} ${centerY + mark}`,
+            `H ${centerX + mark}`,
+          ].join(" "),
+          style: markStyle,
+        }));
+      }
     }
-    group.appendChild(createSvg("text", { class: "supply-label", x: centerX, y: py + h + GRID * 0.7 }));
-    group.lastChild.textContent = node.type;
   } else if (node.type === "PIN") {
     group.appendChild(createSvg("rect", {
       class: `gate-body pin-body ${circuitPinAssigned(node) ? "assigned-pin" : ""}`,
@@ -2128,6 +3913,28 @@ function renderNodeShape(group, node) {
       y: py,
       width: w,
       height: h,
+    }));
+  } else if (node.type === "CABLE_PIN") {
+    const inset = cablePinVisualInset() * GRID;
+    group.appendChild(createSvg("rect", {
+      class: "supply-hitbox",
+      x: px,
+      y: py,
+      width: w,
+      height: h,
+    }));
+    group.appendChild(createSvg("rect", {
+      class: `gate-body pin-body cable-pin-body ${circuitPinAssigned(node) ? "assigned-pin" : ""}`,
+      x: px + inset,
+      y: py + inset,
+      width: w - inset * 2,
+      height: h - inset * 2,
+    }));
+    group.appendChild(createSvg("circle", {
+      class: "cable-pin-mark",
+      cx: px + w / 2,
+      cy: py + h / 2,
+      r: GRID / 2,
     }));
   } else if (node.type === "JUNCTION") {
     group.appendChild(createSvg("circle", {
@@ -2185,13 +3992,17 @@ function renderNodeShape(group, node) {
       const pinY = py + position.y * GRID;
       const labelX = pin.direction === "output" ? pinX - GRID * 0.35 : pinX + GRID * 0.35;
       const pinMarkerSize = GRID * PIN_VISUAL_CELLS;
-      group.appendChild(createSvg("rect", {
-        class: "macro-pin-marker",
-        x: pinX - pinMarkerSize / 2,
-        y: pinY - pinMarkerSize / 2,
-        width: pinMarkerSize,
-        height: pinMarkerSize,
-      }));
+      if (Math.max(1, Math.round(Number(pin.bitLength || 1))) > 1) {
+        appendCablePinGlyph(group, pinX, pinY, "macro-pin-marker");
+      } else {
+        group.appendChild(createSvg("rect", {
+          class: "macro-pin-marker",
+          x: pinX - pinMarkerSize / 2,
+          y: pinY - pinMarkerSize / 2,
+          width: pinMarkerSize,
+          height: pinMarkerSize,
+        }));
+      }
       if (pin.label) {
         group.appendChild(createSvg("text", {
           class: "node-sub macro-pin-label",
@@ -2202,6 +4013,8 @@ function renderNodeShape(group, node) {
         group.lastChild.textContent = pin.label;
       }
     }
+  } else if (SEQUENTIAL_TYPES.has(node.type)) {
+    appendSequentialShape(group, node, px, py, w, h);
   } else if (node.type === "CHIP") {
     group.appendChild(createSvg("rect", { class: "gate-body chip-body", x: px, y: py, width: w, height: h, rx: 6 }));
     group.appendChild(createSvg("line", { class: "chip-divider", x1: px + 14, y1: py + 20, x2: px + w - 14, y2: py + 20 }));
@@ -2224,29 +4037,33 @@ function renderNodeShape(group, node) {
 function renderPorts(group, node) {
   for (const port of nodeInputs(node)) {
     const point = portPosition(node, port, "input");
-    const hot = Boolean(state.values.get(`${node.id}.${port}`));
+    const signal = signalValue(state.values.get(`${node.id}.${port}`));
+    const bitLength = portBitLength(node, port);
     const circle = createSvg("circle", {
-      class: `port input ${hot ? "hot" : "cold"}`,
+      class: `port input ${bitLength > 1 ? "cable-port" : ""} ${signalClass(signal)}`,
       cx: point.x * GRID,
       cy: point.y * GRID,
-      r: 6,
+      r: bitLength > 1 ? GRID / 2 : 6,
       "data-node-id": node.id,
       "data-port": port,
       "data-direction": "input",
+      "data-bit-length": bitLength,
     });
     group.appendChild(circle);
   }
   for (const port of nodeOutputs(node)) {
     const point = portPosition(node, port, "output");
-    const hot = Boolean(state.values.get(`${node.id}.${port}`));
+    const signal = signalValue(state.values.get(`${node.id}.${port}`));
+    const bitLength = portBitLength(node, port);
     const circle = createSvg("circle", {
-      class: `port output ${hot ? "hot" : "cold"}`,
+      class: `port output ${bitLength > 1 ? "cable-port" : ""} ${signalClass(signal)}`,
       cx: point.x * GRID,
       cy: point.y * GRID,
-      r: 6,
+      r: bitLength > 1 ? GRID / 2 : 6,
       "data-node-id": node.id,
       "data-port": port,
       "data-direction": "output",
+      "data-bit-length": bitLength,
     });
     group.appendChild(circle);
   }
@@ -2254,7 +4071,7 @@ function renderPorts(group, node) {
 
 function appendSelectionCornerHandles(parent, bounds, className = "selection-handle") {
   if (!bounds) return;
-  const handle = GRID * 0.26;
+  const handle = GRID;
   const corners = [
     { x: bounds.minX, y: bounds.minY },
     { x: bounds.maxX, y: bounds.minY },
@@ -2286,7 +4103,7 @@ function renderWireSelection(wire) {
   if (!wire) return;
   const bounds = wireBounds(wire);
   if (!bounds) return;
-  const handle = GRID * 0.26;
+  const handle = GRID;
   appendSelectionCornerHandles(selectionOverlayLayer, {
     minX: bounds.minX * GRID,
     minY: bounds.minY * GRID,
@@ -2305,6 +4122,25 @@ function renderWireSelection(wire) {
       "data-point-index": index,
     }));
   });
+}
+
+function renderCombinedSelectionHandles() {
+  const bounds = selectedRotationBounds();
+  if (!bounds) return;
+  const pixelBounds = {
+    minX: bounds.minX * GRID,
+    minY: bounds.minY * GRID,
+    maxX: bounds.maxX * GRID,
+    maxY: bounds.maxY * GRID,
+  };
+  selectionOverlayLayer.appendChild(createSvg("rect", {
+    class: "selection-box selection-bounds-box",
+    x: pixelBounds.minX,
+    y: pixelBounds.minY,
+    width: pixelBounds.maxX - pixelBounds.minX,
+    height: pixelBounds.maxY - pixelBounds.minY,
+  }));
+  appendSelectionCornerHandles(selectionOverlayLayer, pixelBounds);
 }
 
 function applyNodeShapeTransform(shapeGroup, node) {
@@ -2337,6 +4173,7 @@ function renderNodes() {
     renderNodeShape(shapeGroup, node);
     suppressPortRotation = false;
     group.appendChild(shapeGroup);
+    appendCableTextLabels(group, node);
     renderPorts(group, node);
     nodesLayer.appendChild(group);
   }
@@ -2378,31 +4215,7 @@ function renderSelection() {
 function appendBusToolPreview(parent, center, options = state.pendingPartOptions || {}) {
   const bits = busToolBits(options);
   const group = createSvg("g", { class: "bus-tool-preview" });
-  const angleSteps = busToolAngleSteps(options);
   const dots = busToolDotWorldPoints(center, options);
-  if (angleSteps % 2) {
-    for (const dot of dots) {
-      group.appendChild(createSvg("rect", {
-        class: "bus-tool-box",
-        x: (dot.x - 1) * GRID,
-        y: (dot.y - 1) * GRID,
-        width: GRID * 2,
-        height: GRID * 2,
-      }));
-    }
-  } else {
-    const size = { w: bits * 2, h: 2 };
-    const corners = [
-      { x: center.x - size.w / 2, y: center.y - size.h / 2 },
-      { x: center.x + size.w / 2, y: center.y - size.h / 2 },
-      { x: center.x + size.w / 2, y: center.y + size.h / 2 },
-      { x: center.x - size.w / 2, y: center.y + size.h / 2 },
-    ].map((point) => rotatePointSvgDegrees(point, center, -45 * angleSteps));
-    group.appendChild(createSvg("polygon", {
-      class: "bus-tool-box",
-      points: corners.map((point) => `${point.x * GRID},${point.y * GRID}`).join(" "),
-    }));
-  }
   for (const dot of dots) {
     group.appendChild(createSvg("circle", {
       class: "bus-tool-dot",
@@ -2412,12 +4225,15 @@ function appendBusToolPreview(parent, center, options = state.pendingPartOptions
     }));
   }
   const arrow = busToolArrowGeometry(center, options);
+  const color = orderArrowColor();
+  const scale = arrowScale();
   group.appendChild(createSvg("line", {
     class: "bus-tool-arrow",
     x1: arrow.tail.x * GRID,
     y1: arrow.tail.y * GRID,
     x2: arrow.back.x * GRID,
     y2: arrow.back.y * GRID,
+    style: `stroke: ${color}; stroke-width: ${2 * scale}`,
   }));
   group.appendChild(createSvg("polygon", {
     class: "bus-tool-arrow-head",
@@ -2426,6 +4242,7 @@ function appendBusToolPreview(parent, center, options = state.pendingPartOptions
       `${arrow.wingA.x * GRID},${arrow.wingA.y * GRID}`,
       `${arrow.wingB.x * GRID},${arrow.wingB.y * GRID}`,
     ].join(" "),
+    style: `fill: ${color}; stroke: ${color}`,
   }));
   parent.appendChild(group);
   const attachPoints = endpointsUnderBusTool(center, options);
@@ -2448,11 +4265,20 @@ function renderPreview() {
       const previewEnd = state.attachCandidate
         ? endpointPosition(state.attachCandidate, "input") || state.pointerGrid
         : state.pointerGrid;
+      const bitLength = endpointBitLength(state.wireStart, "output");
+      const points = [start, ...state.wirePoints, previewEnd];
       const path = createSvg("path", {
-        class: "wire-preview",
-        d: pointsToSvgPath([start, ...state.wirePoints, previewEnd]),
+        class: `wire-preview ${bitLength > 1 ? "cable" : ""}`,
+        d: pointsToSvgPath(points),
+        ...(bitLength > 1 ? { style: `stroke: #000000; stroke-width: ${GRID}` } : {}),
       });
       wirePreviewLayer.appendChild(path);
+      appendWirePointCaps(
+        wirePreviewLayer,
+        points,
+        bitLength > 1 ? "#000000" : "var(--part-stroke)",
+        bitLength > 1 ? GRID / 2 : WIRE_POINT_CAP_RADIUS,
+      );
     }
   }
   if (state.drag?.kind === "box-select") {
@@ -2484,17 +4310,51 @@ function renderPreview() {
             class: "wire-preview",
             d: pointsToSvgPath(points),
           }));
+          appendWirePointCaps(wirePreviewLayer, points, "var(--part-stroke)", WIRE_POINT_CAP_RADIUS);
         }
       }
+      return;
+    }
+    const compositePreview = compositePreviewParts(state.pendingPart, state.pointerGrid, state.pendingPartOptions || {});
+    if (compositePreview) {
+      const group = createSvg("g", { class: "pending-part-preview" });
+      for (const wire of compositePreview.wires) {
+        const isCable = wireBitLength(wire) > 1;
+        const points = wire.previewPoints || wirePathPoints(wire);
+        group.appendChild(createSvg("path", {
+          class: `wire-preview ${isCable ? "cable" : ""}`,
+          d: pointsToSvgPath(points),
+          ...(isCable ? { style: `stroke: #000000; stroke-width: ${GRID}` } : {}),
+        }));
+        appendWirePointCaps(
+          group,
+          points,
+          isCable ? "#000000" : "var(--part-stroke)",
+          isCable ? GRID / 2 : WIRE_POINT_CAP_RADIUS,
+        );
+      }
+      for (const node of compositePreview.nodes) {
+        const shapeGroup = createSvg("g");
+        applyNodeShapeTransform(shapeGroup, node);
+        suppressPortRotation = true;
+        renderNodeShape(shapeGroup, node);
+        suppressPortRotation = false;
+        group.appendChild(shapeGroup);
+        appendCableTextLabels(group, node);
+      }
+      wirePreviewLayer.appendChild(group);
       return;
     }
     const previewNode = pendingPreviewNode(state.pendingPart, state.pointerGrid, state.pendingPartOptions || {});
     if (previewNode) {
       const group = createSvg("g", { class: "pending-part-preview" });
-      applyNodeShapeTransform(group, previewNode);
+      const shapeGroup = createSvg("g");
+      applyNodeShapeTransform(shapeGroup, previewNode);
       suppressPortRotation = true;
-      renderNodeShape(group, previewNode);
+      renderNodeShape(shapeGroup, previewNode);
       suppressPortRotation = false;
+      group.appendChild(shapeGroup);
+      appendCableTextLabels(group, previewNode);
       wirePreviewLayer.appendChild(group);
     }
   }
@@ -2502,6 +4362,10 @@ function renderPreview() {
 
 function renderSelectionOverlay() {
   selectionOverlayLayer.replaceChildren();
+  if (selectedCount() > 1) {
+    renderCombinedSelectionHandles();
+    return;
+  }
   for (const id of state.selectedNodeIds) {
     const node = findNode(id);
     if (node) renderSelectionHandles(node);
@@ -2514,10 +4378,14 @@ function renderSelectionOverlay() {
 
 function renderStatus() {
   const part = state.pendingPart ? ` | Part ${partLabel(state.pendingPart)}` : "";
-  const issue = state.circuitIssues[0];
-  statusEl.textContent = issue
-    ? `Error: ${issue.message}`
-    : state.statusNotice || `Mode ${modeLabel()}${part} | Zoom ${zoomPercent()}% | Grid (${state.pointerGrid.x}, ${state.pointerGrid.y})`;
+  const simState = state.simulationRunning ? "Run" : "Stop";
+  const blockingIssue = firstBlockingCircuitIssue(state.circuitIssues);
+  const warningIssue = state.circuitIssues.find((issue) => !isBlockingCircuitIssue(issue));
+  statusEl.textContent = blockingIssue
+    ? `Error: ${blockingIssue.message}`
+    : warningIssue
+      ? `Warning: ${warningIssue.message}`
+    : state.statusNotice || `Sim ${simState} | Mode ${modeLabel()}${part} | Zoom ${zoomPercent()}% | Grid (${state.pointerGrid.x}, ${state.pointerGrid.y})`;
 }
 
 function renderViewportOnly() {
@@ -2537,12 +4405,92 @@ function renderScene({ simulateLogic = true } = {}) {
   if (simulateLogic) simulate();
   renderWires();
   renderNodes();
+  renderJunctionOverlay();
   renderInteractionLayers();
 }
 
 // Central render pass: recompute logic values, then redraw every circuit layer.
 function render() {
   renderScene({ simulateLogic: true });
+}
+
+function tickClocks() {
+  if (!state.simulationRunning) return;
+  const now = performance.now();
+  let changed = false;
+  for (const node of state.nodes) {
+    if (node.type === "CLOCK") {
+      const hz = clockFrequency(node);
+      const halfPeriodMs = 500 / hz;
+      const previousTick = Number(node.lastClockTick);
+      if (!Number.isFinite(previousTick)) {
+        node.lastClockTick = now;
+        continue;
+      }
+      const elapsed = now - previousTick;
+      if (elapsed < halfPeriodMs) continue;
+      const steps = Math.floor(elapsed / halfPeriodMs);
+      node.lastClockTick = previousTick + steps * halfPeriodMs;
+      if (steps % 2 === 1) {
+        node.value = !Boolean(node.value);
+        changed = true;
+      }
+      continue;
+    }
+    if (node.type === "PULSE") {
+      const hz = pulseFrequency(node);
+      const periodMs = 1000 / hz;
+      const previousTick = Number(node.lastPulseTick);
+      if (!Number.isFinite(previousTick)) {
+        node.lastPulseTick = now;
+        continue;
+      }
+      const elapsed = now - previousTick;
+      if (elapsed < periodMs) continue;
+      const steps = Math.floor(elapsed / periodMs);
+      const pattern = normalizePulsePattern(node.pulsePattern);
+      node.lastPulseTick = previousTick + steps * periodMs;
+      node.pulseIndex = (Math.max(0, Math.trunc(Number(node.pulseIndex || 0))) + steps) % pattern.length;
+      changed = true;
+    }
+  }
+  if (changed) render();
+}
+
+function resetClockTickBaselines() {
+  const now = performance.now();
+  for (const node of state.nodes) {
+    if (node.type === "CLOCK") {
+      node.clockHz = clockFrequency(node);
+      node.lastClockTick = now;
+    }
+    if (node.type === "PULSE") {
+      node.pulseHz = pulseFrequency(node);
+      node.pulsePattern = normalizePulsePattern(node.pulsePattern);
+      node.lastPulseTick = now;
+    }
+  }
+}
+
+function updateSimulationRunButton() {
+  if (!simulationRunToggle) return;
+  simulationRunToggle.classList.toggle("active", state.simulationRunning);
+  simulationRunToggle.setAttribute("aria-pressed", state.simulationRunning ? "true" : "false");
+  simulationRunToggle.setAttribute("aria-label", state.simulationRunning ? "Stop Simulation" : "Run Simulation");
+  simulationRunToggle.title = state.simulationRunning ? "Stop Simulation" : "Run Simulation";
+  const label = simulationRunToggle.querySelector(".sr-only");
+  if (label) label.textContent = state.simulationRunning ? "Stop Simulation" : "Run Simulation";
+}
+
+function setSimulationRunning(running) {
+  state.simulationRunning = Boolean(running);
+  resetClockTickBaselines();
+  updateSimulationRunButton();
+  renderStatus();
+}
+
+function toggleSimulationRunning() {
+  setSimulationRunning(!state.simulationRunning);
 }
 
 function appendGridToSvg(svg, prefix, bounds) {
@@ -2640,12 +4588,19 @@ function renderMacroViewer() {
   const wiresGroup = createSvg("g");
   const nodesGroup = createSvg("g");
   for (const wire of state.wires) {
-    const hot = Boolean(state.values.get(`${wire.id}.__wire`));
+    const signal = signalValue(state.values.get(`${wire.id}.__wire`));
+    const bitLength = wireBitLength(wire);
+    const isCable = bitLength > 1;
+    const points = wirePathPoints(wire);
+    const color = signalColor(signal);
     wiresGroup.appendChild(createSvg("path", {
-      class: `wire ${hot ? "hot" : "cold"}`,
-      d: pointsToSvgPath(wirePathPoints(wire)),
-      style: `stroke: ${hot ? state.settings.wireHotColor : state.settings.wireColdColor}`,
+      class: `wire ${isCable ? "cable" : ""} ${signalClass(signal)}`,
+      d: pointsToSvgPath(points),
+      style: isCable
+        ? `stroke: ${color}; stroke-width: ${GRID}`
+        : `stroke: ${color}`,
     }));
+    appendWirePointCaps(wiresGroup, points, color, isCable ? GRID / 2 : WIRE_POINT_CAP_RADIUS);
   }
   for (const node of state.nodes) {
     const group = createSvg("g", {
@@ -2653,12 +4608,13 @@ function renderMacroViewer() {
       "data-view-node-id": node.id,
     });
     renderNodeShape(group, node);
+    appendCableTextLabels(group, node);
     renderPorts(group, node);
     nodesGroup.appendChild(group);
   }
-  macroViewCanvas.append(wiresGroup, nodesGroup);
-  const inputText = Object.entries(frame.inputs).map(([key, value]) => `${key}=${value ? 1 : 0}`).join(", ");
-  const outputText = Object.entries(result.outputs).map(([key, value]) => `${key}=${value ? 1 : 0}`).join(", ");
+  macroViewCanvas.append(nodesGroup, wiresGroup);
+  const inputText = Object.entries(frame.inputs).map(([key, value]) => `${key}=${signalValue(value)}`).join(", ");
+  const outputText = Object.entries(result.outputs).map(([key, value]) => `${key}=${signalValue(value)}`).join(", ");
   macroViewStatus.textContent = `${frame.title} | Inputs: ${inputText || "none"} | Outputs: ${outputText || "none"}`;
   document.getElementById("macro-view-title").textContent = frame.title;
   document.getElementById("macro-view-back").disabled = state.macroViewer.stack.length <= 1;
@@ -2701,13 +4657,17 @@ function createNodeAt(type, center, options = {}) {
   const seedBusBits = Math.max(1, Math.round(Number(options.bits ?? 4)));
   const seedSize = type === "BUS"
     ? { w: seedBusBits * 2, h: options.busDiagonal ? seedBusBits * 2 : 2 }
+    : type === "CABLE_TO_BUS" || type === "BUS_TO_CABLE"
+      ? { w: 6, h: Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4)))) * 2 }
+    : isCableMergeSplitType(type)
+      ? { w: 6, h: cableMergeSplitHeight({ segments: options.segments }) }
     : type === "MULTI_INPUT" || type === "MULTI_TEST_INPUT"
       ? { w: Math.max(1, Math.round(Number(options.bits ?? 4))) * 2, h: 5 }
       : type === "MULTI_OUTPUT"
         ? { w: Math.max(1, Math.round(Number(options.bits ?? 4))) * 2, h: 3 }
-        : type === "MULTI_PIN"
-          ? { w: Math.max(1, Math.round(Number(options.bits ?? 4))) * 2, h: 4 }
-      : NODE_SIZES[type];
+      : type === "MULTI_PIN"
+        ? { w: Math.max(1, Math.round(Number(options.bits ?? 4))) * 2, h: 4 }
+        : NODE_SIZES[type];
   const node = {
     id: uid(type.toLowerCase()),
     type,
@@ -2718,6 +4678,14 @@ function createNodeAt(type, center, options = {}) {
     node.x = Math.round(node.x);
     node.y = Math.round(center.y - 2);
   }
+  if (isCableSourceType(type) || type === "CABLE_OUTPUT") {
+    node.x = Math.round(center.x - seedSize.w / 2);
+    node.y = Math.round(center.y - 3);
+  }
+  if (type === "CABLE_TO_BUS" || type === "BUS_TO_CABLE" || isCableMergeSplitType(type)) {
+    node.x = Math.round(node.x);
+    node.y = Math.round(node.y);
+  }
   if (type === "MULTI_OUTPUT" || type === "MULTI_PIN") {
     node.x = Math.round(node.x);
     node.y = Math.round(center.y - 2);
@@ -2726,16 +4694,42 @@ function createNodeAt(type, center, options = {}) {
     node.value = false;
     node.onColor = state.settings.inputHotColor;
   }
+  if (type === "CLOCK") {
+    node.value = false;
+    node.clockHz = clockFrequency(node);
+    node.lastClockTick = performance.now();
+  }
+  if (type === "PULSE") {
+    node.pulsePattern = normalizePulsePattern(options.pulsePattern);
+    node.pulseHz = pulseFrequency(node);
+    node.pulseIndex = 0;
+    node.lastPulseTick = performance.now();
+  }
   if (type === "MULTI_INPUT" || type === "MULTI_TEST_INPUT") {
     node.bits = Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4))));
     node.values = multiBitValues(node);
     node.onColor = state.settings.inputHotColor;
   }
+  if (isCableSourceType(type)) {
+    node.bits = Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4))));
+    node.data = Math.max(0, Math.trunc(Number(options.data ?? 0)));
+    node.onColor = state.settings.inputHotColor;
+  }
+  if (type === "CABLE_TO_BUS" || type === "BUS_TO_CABLE") {
+    node.bits = Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4))));
+  }
+  if (isCableMergeSplitType(type)) {
+    node.segments = cableSegments({ segments: options.segments });
+  }
+  if (SEQUENTIAL_TYPES.has(type)) {
+    node.q = SIGNAL.ZERO;
+    if (FLIP_FLOP_TYPES.has(type)) node.lastClock = SIGNAL.ZERO;
+  }
   if (type === "BUS") {
     node.bits = Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4))));
     node.busDiagonal = Boolean(options.busDiagonal);
   }
-  if (type === "MULTI_OUTPUT" || type === "MULTI_PIN") {
+  if (type === "MULTI_OUTPUT" || type === "MULTI_PIN" || type === "CABLE_PIN" || type === "CABLE_OUTPUT") {
     node.bits = Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4))));
     if (type === "MULTI_OUTPUT") node.onColor = state.settings.outputHotColor;
   }
@@ -2757,19 +4751,46 @@ function createWireBetween(fromNode, fromPort, toNode, toPort, points = []) {
     from: { kind: "port", nodeId: fromNode.id, port: fromPort, direction: "output" },
     to: { kind: "port", nodeId: toNode.id, port: toPort, direction: "input" },
     points: points.map((point) => ({ ...point })),
+    bitLength: Math.max(1, portBitLength(fromNode, fromPort), portBitLength(toNode, toPort)),
   };
 }
 
 function templatePinForSource(source, position, sourcePort = "") {
+  const isCable = source?.type === "CABLE_PIN";
   return {
     id: uid("template-pin"),
     label: "",
     direction: "input",
+    kind: isCable ? "cable" : "pin",
+    bitLength: isCable ? multiBitCount(source) : 1,
     x: position.x,
     y: position.y,
     sourcePinId: source.id,
     sourcePort,
   };
+}
+
+function templatePinKind(pin) {
+  return pin?.kind === "cable" || Number(pin?.bitLength || 1) > 1 ? "cable" : "pin";
+}
+
+function templatePinBitLength(pin) {
+  return Math.max(1, Math.round(Number(pin?.bitLength || 1)));
+}
+
+function normalizeTemplatePin(pin) {
+  const bitLength = templatePinBitLength(pin);
+  return {
+    ...pin,
+    kind: pin?.kind === "cable" || bitLength > 1 ? "cable" : "pin",
+    bitLength,
+  };
+}
+
+function templatePinCompatibleWithSource(pin, source) {
+  if (!pin || !source) return false;
+  const wantsCable = templatePinKind(pin) === "cable";
+  return wantsCable ? source.type === "CABLE_PIN" : source.type !== "CABLE_PIN";
 }
 
 function transformTemplatePendingPoint(point, center, options = {}) {
@@ -2836,13 +4857,62 @@ function busToolBits(options = state.pendingPartOptions || {}) {
   return Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4))));
 }
 
-function busToolAngleSteps(options = state.pendingPartOptions || {}) {
-  return ((Math.round(Number(options.busAngleSteps || 0)) % 8) + 8) % 8;
+function busToolA(options = state.pendingPartOptions || {}) {
+  return Math.min(32, Math.max(1, Math.round(Number(options.busA ?? 2))));
+}
+
+function busToolB(options = state.pendingPartOptions || {}) {
+  return Math.min(32, Math.max(1, Math.round(Number(options.busB ?? 2))));
+}
+
+function busToolVectorIndex(options = state.pendingPartOptions || {}) {
+  return ((Math.round(Number(options.busVectorIndex ?? 4)) % 8) + 8) % 8;
+}
+
+function busVectorSignsFromIndex(index) {
+  return [
+    { x: 1, y: 0 },
+    { x: 1, y: -1 },
+    { x: 0, y: -1 },
+    { x: -1, y: -1 },
+    { x: -1, y: 0 },
+    { x: -1, y: 1 },
+    { x: 0, y: 1 },
+    { x: 1, y: 1 },
+  ][((Math.round(Number(index || 0)) % 8) + 8) % 8];
+}
+
+function busVectorIndexFromSigns(signs) {
+  const key = `${Math.sign(signs.x || 0)},${Math.sign(signs.y || 0)}`;
+  return new Map([
+    ["1,0", 0],
+    ["1,-1", 1],
+    ["0,-1", 2],
+    ["-1,-1", 3],
+    ["-1,0", 4],
+    ["-1,1", 5],
+    ["0,1", 6],
+    ["1,1", 7],
+  ]).get(key);
+}
+
+function busToolVector(options = state.pendingPartOptions || {}) {
+  const a = busToolA(options);
+  const b = busToolB(options);
+  const signs = busVectorSignsFromIndex(busToolVectorIndex(options));
+  return {
+    x: signs.x * a,
+    y: signs.y * b,
+  };
 }
 
 function busToolSize(options = state.pendingPartOptions || {}) {
   const bits = busToolBits(options);
-  return busToolAngleSteps(options) % 2 ? { w: bits * 2, h: bits * 2 } : { w: bits * 2, h: 2 };
+  const vector = busToolVector(options);
+  return {
+    w: Math.max(2, Math.abs(vector.x) * Math.max(1, bits - 1) + 2),
+    h: Math.max(2, Math.abs(vector.y) * Math.max(1, bits - 1) + 2),
+  };
 }
 
 function rotatePointSvgDegrees(point, center, degrees) {
@@ -2865,39 +4935,22 @@ function rotateVectorSvgDegrees(vector, degrees) {
 
 function busToolDotLocalPoints(options = state.pendingPartOptions || {}) {
   const bits = busToolBits(options);
-  return Array.from({ length: bits }, (_, index) => {
-    if (busToolAngleSteps(options) % 2) return { x: 1 + index * 2, y: 1 + index * 2 };
-    return { x: 1 + index * 2, y: 1 };
-  });
+  const vector = busToolVector(options);
+  return Array.from({ length: bits }, (_, index) => ({
+    x: index * vector.x,
+    y: index * vector.y,
+  }));
 }
 
 function busToolDotWorldPoints(center, options = state.pendingPartOptions || {}) {
-  const bits = busToolBits(options);
-  const angleSteps = busToolAngleSteps(options);
-  if (angleSteps % 2 === 0) {
-    const size = { w: bits * 2, h: 2 };
-    const origin = { x: center.x - size.w / 2, y: center.y - size.h / 2 };
-    return busToolDotLocalPoints({ ...options, busAngleSteps: 0 }).map((local) => rotatePointSvgDegrees({
-      x: origin.x + local.x,
-      y: origin.y + local.y,
-    }, center, -45 * angleSteps));
-  }
-
-  const directions = {
-    1: { x: 1, y: -1 },
-    3: { x: -1, y: -1 },
-    5: { x: -1, y: 1 },
-    7: { x: 1, y: 1 },
-  };
-  const direction = directions[angleSteps] || directions[1];
-  const midpoint = (bits - 1) / 2;
-  return Array.from({ length: bits }, (_, index) => ({
-    x: center.x + (index - midpoint) * 2 * direction.x,
-    y: center.y + (index - midpoint) * 2 * direction.y,
+  return busToolDotLocalPoints(options).map((local) => ({
+    x: center.x + local.x,
+    y: center.y + local.y,
   }));
 }
 
 function arrowGeometry(head, tail) {
+  const scale = arrowScale();
   const dx = tail.x - head.x;
   const dy = tail.y - head.y;
   const length = Math.hypot(dx, dy) || 1;
@@ -2905,40 +4958,43 @@ function arrowGeometry(head, tail) {
   const uy = dy / length;
   const nx = -uy;
   const ny = ux;
-  const back = { x: head.x + ux * 0.8, y: head.y + uy * 0.8 };
+  const back = { x: head.x + ux * scale, y: head.y + uy * scale };
   return {
     head,
     tail,
     back,
-    wingA: { x: back.x + nx * 0.45, y: back.y + ny * 0.45 },
-    wingB: { x: back.x - nx * 0.45, y: back.y - ny * 0.45 },
+    wingA: { x: back.x + nx * 0.5 * scale, y: back.y + ny * 0.5 * scale },
+    wingB: { x: back.x - nx * 0.5 * scale, y: back.y - ny * 0.5 * scale },
   };
 }
 
+function orderArrowGeometry(head, tail) {
+  return state.settings.orderArrowDirection === "msb-to-lsb"
+    ? arrowGeometry(tail, head)
+    : arrowGeometry(head, tail);
+}
+
+function busOrderArrowGeometry(lsb, msb) {
+  return state.settings.orderArrowDirection === "msb-to-lsb"
+    ? arrowGeometry(lsb, msb)
+    : arrowGeometry(msb, lsb);
+}
+
 function busToolArrowGeometry(center, options = state.pendingPartOptions || {}) {
-  const bits = busToolBits(options);
-  const angleSteps = busToolAngleSteps(options);
-  if (angleSteps % 2) {
-    const dots = busToolDotWorldPoints(center, options);
-    const offset = rotateVectorSvgDegrees({ x: -2, y: -2 }, -45 * (angleSteps - 1));
-    return arrowGeometry(
-      { x: dots[0].x + offset.x, y: dots[0].y + offset.y },
-      { x: dots[dots.length - 1].x + offset.x, y: dots[dots.length - 1].y + offset.y },
-    );
-  }
-  const arrowLength = bits * 2;
-  const arrowY = -2;
-  const tail = rotatePointSvgDegrees({ x: center.x + arrowLength / 2, y: center.y + arrowY }, center, -45 * angleSteps);
-  const head = rotatePointSvgDegrees({ x: center.x - arrowLength / 2, y: center.y + arrowY }, center, -45 * angleSteps);
-  return arrowGeometry(head, tail);
+  const dots = busToolDotWorldPoints(center, options);
+  const vector = busToolVector(options);
+  const length = Math.hypot(vector.x, vector.y) || 1;
+  const offset = { x: (-vector.y / length) * 1.5, y: (vector.x / length) * 1.5 };
+  return busOrderArrowGeometry(
+    { x: dots[0].x + offset.x, y: dots[0].y + offset.y },
+    { x: dots[dots.length - 1].x + offset.x, y: dots[dots.length - 1].y + offset.y },
+  );
 }
 
 function busLocalPoint(point, center, options = state.pendingPartOptions || {}) {
-  const size = busToolSize(options);
-  const unrotated = rotatePointSvgDegrees(point, center, 45 * busToolAngleSteps(options));
   return {
-    x: unrotated.x - (center.x - size.w / 2),
-    y: unrotated.y - (center.y - size.h / 2),
+    x: point.x - center.x,
+    y: point.y - center.y,
   };
 }
 
@@ -2996,7 +5052,7 @@ function endpointsUnderBusTool(center, options = state.pendingPartOptions || {})
   }
   for (const dot of busToolDotWorldPoints(center, options)) {
     const wire = findWireAtGridPoint(dot, null, 0.35);
-    if (wire) addEndpoint({ kind: "pending-junction", wireId: wire.id, point: { ...dot } });
+    if (wire) addEndpoint({ kind: "pending-junction", wireId: wire.id, point: { ...dot }, bitLength: wireBitLength(wire) });
   }
   endpoints.sort((a, b) => busEndpointSortValue(a, center, options) - busEndpointSortValue(b, center, options));
   return endpoints;
@@ -3031,7 +5087,7 @@ function materializePendingJunctionEndpoint(endpoint, direction) {
 
 function cloneEndpointForWire(endpoint) {
   return endpoint?.kind === "port"
-    ? { kind: "port", nodeId: endpoint.nodeId, port: endpoint.port, direction: endpoint.direction }
+    ? { kind: "port", nodeId: endpoint.nodeId, port: endpoint.port, direction: endpoint.direction, ...(endpoint.bitLength ? { bitLength: endpoint.bitLength } : {}) }
     : { ...endpoint };
 }
 
@@ -3085,10 +5141,11 @@ function finishBusWire(center) {
   }
   state.wires = [...candidateWires, ...nextWires];
   const issues = analyzeCircuitIssues();
-  if (issues.length) {
+  const blockingIssue = firstBlockingCircuitIssue(issues);
+  if (blockingIssue) {
     state.nodes = previousNodes;
     state.wires = previousWires;
-    state.statusNotice = `Bus rejected: ${issues[0].message}`;
+    state.statusNotice = `Bus rejected: ${blockingIssue.message}`;
     state.busStart = null;
     render();
     return;
@@ -3138,7 +5195,28 @@ function rotateBusToolBySteps(steps) {
   const baseOptions = state.pendingPartOptions || state.busStart?.options || {};
   const options = {
     ...baseOptions,
-    busAngleSteps: busToolAngleSteps(baseOptions) + steps,
+    busVectorIndex: busToolVectorIndex(baseOptions) + steps,
+  };
+  state.pendingPartOptions = options;
+  if (state.busStart) state.busStart.options = options;
+  render();
+}
+
+function scaleBusTool(axis, delta) {
+  const baseOptions = state.pendingPartOptions || state.busStart?.options || {};
+  const signs = busVectorSignsFromIndex(busToolVectorIndex(baseOptions));
+  const key = axis === "x" ? "busA" : "busB";
+  const magnitude = axis === "x" ? busToolA(baseOptions) : busToolB(baseOptions);
+  const signedValue = (axis === "x" ? signs.x : signs.y) * magnitude;
+  const nextSignedValue = Math.min(32, Math.max(-32, signedValue + delta));
+  const nextSigns = { ...signs, [axis]: Math.sign(nextSignedValue) };
+  const nextIndex = busVectorIndexFromSigns(nextSigns);
+  if (nextIndex === undefined) return;
+  const nextMagnitude = nextSignedValue === 0 ? magnitude : Math.abs(nextSignedValue);
+  const options = {
+    ...baseOptions,
+    busVectorIndex: nextIndex,
+    [key]: Math.min(32, Math.max(1, nextMagnitude)),
   };
   state.pendingPartOptions = options;
   if (state.busStart) state.busStart.options = options;
@@ -3166,8 +5244,34 @@ function rotatePendingPartByQuarters(quarters) {
 }
 
 function placeCompositePart(type, center) {
-  if (type !== "TEST_INPUT_STUB" && type !== "TEST_OUTPUT_STUB") return false;
+  const isLogicStub = type === "TEST_INPUT_STUB" || type === "TEST_OUTPUT_STUB";
+  const isCableStub = type === "CABLE_TEST_INPUT_STUB" || type === "CABLE_OUTPUT_STUB";
+  if (!isLogicStub && !isCableStub) return false;
   recordUndo();
+  if (isCableStub) {
+    const bits = Math.min(32, Math.max(1, Math.round(Number(state.pendingPartOptions?.bits ?? 4))));
+    const sourceOnLeft = type === "CABLE_TEST_INPUT_STUB";
+    const pinCenter = sourceOnLeft
+      ? { x: center.x - 5, y: center.y }
+      : { x: center.x + 5, y: center.y };
+    const partnerCenter = { x: center.x, y: center.y - 6 };
+    const pin = createNodeAt("CABLE_PIN", pinCenter, { bits });
+    const partner = createNodeAt(sourceOnLeft ? "CABLE_TEST_SWITCH" : "CABLE_OUTPUT", partnerCenter, {
+      bits,
+      data: 0,
+    });
+    const bend = sourceOnLeft
+      ? { x: portPosition(partner, "out", "output").x, y: portPosition(pin, "in", "input").y }
+      : { x: portPosition(partner, "in", "input").x, y: portPosition(pin, "out", "output").y };
+    const wire = sourceOnLeft
+      ? createWireBetween(partner, "out", pin, "in", [bend])
+      : createWireBetween(pin, "out", partner, "in", [bend]);
+    state.nodes.push(partner, pin);
+    state.wires.push(wire);
+    selectMany([partner.id, pin.id], [wire.id]);
+    render();
+    return true;
+  }
   const partnerType = type === "TEST_INPUT_STUB" ? "TEST_INPUT" : "OUTPUT";
   const bend = { ...center };
   const pinCenter = type === "TEST_INPUT_STUB"
@@ -3186,8 +5290,88 @@ function placeCompositePart(type, center) {
   return true;
 }
 
+function compositePreviewParts(type, center, options = {}) {
+  const isLogicStub = type === "TEST_INPUT_STUB" || type === "TEST_OUTPUT_STUB";
+  const isCableStub = type === "CABLE_TEST_INPUT_STUB" || type === "CABLE_OUTPUT_STUB";
+  if (!isLogicStub && !isCableStub) return null;
+  if (isLogicStub) {
+    const sourceOnLeft = type === "TEST_INPUT_STUB";
+    const pinCenter = sourceOnLeft
+      ? { x: center.x - 2, y: center.y }
+      : { x: center.x + 2, y: center.y };
+    const partnerCenter = { x: center.x, y: center.y - 2 };
+    const pin = {
+      id: "pending-pin",
+      type: "PIN",
+      x: pinCenter.x - NODE_SIZES.PIN.w / 2,
+      y: pinCenter.y - NODE_SIZES.PIN.h / 2,
+      rotation: 0,
+      mirrorX: false,
+      mirrorY: false,
+    };
+    const partner = {
+      id: "pending-logic-partner",
+      type: sourceOnLeft ? "TEST_INPUT" : "OUTPUT",
+      value: false,
+      onColor: sourceOnLeft ? state.settings.inputHotColor : state.settings.outputHotColor,
+      x: partnerCenter.x - NODE_SIZES.TEST_INPUT.w / 2,
+      y: partnerCenter.y - NODE_SIZES.TEST_INPUT.h / 2,
+      rotation: 0,
+      mirrorX: false,
+      mirrorY: false,
+    };
+    const bend = { ...center };
+    const wire = sourceOnLeft
+      ? createWireBetween(partner, "out", pin, "in", [bend])
+      : createWireBetween(pin, "out", partner, "in", [bend]);
+    wire.id = "pending-wire";
+    wire.previewPoints = sourceOnLeft
+      ? [portPosition(partner, "out", "output"), bend, portPosition(pin, "in", "input")]
+      : [portPosition(pin, "out", "output"), bend, portPosition(partner, "in", "input")];
+    return { nodes: [partner, pin], wires: [wire] };
+  }
+  const bits = Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4))));
+  const sourceOnLeft = type === "CABLE_TEST_INPUT_STUB";
+  const pinCenter = sourceOnLeft
+    ? { x: center.x - 5, y: center.y }
+    : { x: center.x + 5, y: center.y };
+  const partnerCenter = { x: center.x, y: center.y - 6 };
+  const pin = {
+    id: "pending-cable-pin",
+    type: "CABLE_PIN",
+    bits,
+    x: pinCenter.x - NODE_SIZES.CABLE_PIN.w / 2,
+    y: pinCenter.y - NODE_SIZES.CABLE_PIN.h / 2,
+    rotation: 0,
+    mirrorX: false,
+    mirrorY: false,
+  };
+  const partner = {
+    id: "pending-cable-partner",
+    type: sourceOnLeft ? "CABLE_TEST_SWITCH" : "CABLE_OUTPUT",
+    bits,
+    data: 0,
+    x: partnerCenter.x - NODE_SIZES.CABLE_TEST_SWITCH.w / 2,
+    y: partnerCenter.y - NODE_SIZES.CABLE_TEST_SWITCH.h / 2,
+    rotation: 0,
+    mirrorX: false,
+    mirrorY: false,
+  };
+  const bend = sourceOnLeft
+    ? { x: portPosition(partner, "out", "output").x, y: portPosition(pin, "in", "input").y }
+    : { x: portPosition(partner, "in", "input").x, y: portPosition(pin, "out", "output").y };
+  const wire = sourceOnLeft
+    ? createWireBetween(partner, "out", pin, "in", [bend])
+    : createWireBetween(pin, "out", partner, "in", [bend]);
+  wire.id = "pending-cable-wire";
+  wire.previewPoints = sourceOnLeft
+    ? [portPosition(partner, "out", "output"), bend, portPosition(pin, "in", "input")]
+    : [portPosition(pin, "out", "output"), bend, portPosition(partner, "in", "input")];
+  return { nodes: [partner, pin], wires: [wire] };
+}
+
 function pendingPreviewNode(type, center, options = {}) {
-  if (type === "TEST_INPUT_STUB" || type === "TEST_OUTPUT_STUB") return null;
+  if (type === "TEST_INPUT_STUB" || type === "TEST_OUTPUT_STUB" || type === "CABLE_TEST_INPUT_STUB" || type === "CABLE_OUTPUT_STUB") return null;
   if (isMacroPart(type)) {
     const macro = findMacro(macroIdFromPart(type));
     const size = macro?.size || { w: 6, h: 4 };
@@ -3210,9 +5394,11 @@ function pendingPreviewNode(type, center, options = {}) {
     x: center.x,
     y: center.y,
   };
-  if (type === "MULTI_INPUT" || type === "MULTI_TEST_INPUT" || type === "MULTI_OUTPUT" || type === "MULTI_PIN" || type === "BUS") {
+  if (type === "MULTI_INPUT" || isCableSourceType(type) || type === "CABLE_OUTPUT" || type === "CABLE_TO_BUS" || type === "BUS_TO_CABLE" || type === "MULTI_TEST_INPUT" || type === "MULTI_OUTPUT" || type === "MULTI_PIN" || type === "CABLE_PIN" || type === "BUS") {
     node.bits = Math.min(32, Math.max(1, Math.round(Number(options.bits ?? 4))));
   }
+  if (isCableMergeSplitType(type)) node.segments = cableSegments({ segments: options.segments });
+  if (isCableSourceType(type)) node.data = Math.max(0, Math.trunc(Number(options.data ?? 0)));
   if (type === "BUS") node.busDiagonal = Boolean(options.busDiagonal);
   node.rotation = normalizeRotationOption(options.rotation);
   node.mirrorX = Boolean(options.mirrorX);
@@ -3226,6 +5412,14 @@ function pendingPreviewNode(type, center, options = {}) {
   if (type === "MULTI_INPUT" || type === "MULTI_TEST_INPUT") {
     node.x = Math.round(node.x);
     node.y = Math.round(center.y - 2);
+  }
+  if (isCableSourceType(type) || type === "CABLE_OUTPUT") {
+    node.x = Math.round(node.x);
+    node.y = Math.round(center.y - 3);
+  }
+  if (type === "CABLE_TO_BUS" || type === "BUS_TO_CABLE" || isCableMergeSplitType(type)) {
+    node.x = Math.round(node.x);
+    node.y = Math.round(node.y);
   }
   if (type === "MULTI_OUTPUT" || type === "MULTI_PIN") {
     node.x = Math.round(node.x);
@@ -3257,21 +5451,92 @@ function updatePartButtons() {
   });
 }
 
+function updateControlCursor(event = null) {
+  const active = state.tool === "control"
+    && event
+    && !state.drag
+    && Boolean(controlSwitchAtGridPoint(screenToGridRaw(event.clientX, event.clientY)));
+  canvas.classList.toggle("control-action-cursor", active);
+}
+
 function partNeedsBitCount(type) {
-  return type === "MULTI_INPUT" || type === "MULTI_TEST_INPUT" || type === "MULTI_OUTPUT" || type === "MULTI_PIN" || type === "BUS";
+  return type === "MULTI_INPUT" || isCableSourceType(type) || type === "CABLE_OUTPUT" || type === "CABLE_TEST_INPUT_STUB" || type === "CABLE_OUTPUT_STUB" || type === "CABLE_TO_BUS" || type === "BUS_TO_CABLE" || type === "MULTI_TEST_INPUT" || type === "MULTI_OUTPUT" || type === "MULTI_PIN" || type === "CABLE_PIN" || type === "BUS";
 }
 
 async function requestBitCount(type) {
-  const value = await requestTextValue({ title: `${partLabel(type)} bits`, value: "4" });
+  const value = await requestTextValue({
+    title: `${partLabel(type)} bits`,
+    value: "4",
+    inputType: "number",
+    min: "1",
+    max: "32",
+    step: "1",
+    validate: (raw) => {
+      const bits = Math.round(Number(raw));
+      return Number.isFinite(bits) && bits >= 1 && bits <= 32
+        ? ""
+        : "값은 1 이상 32 이하의 정수여야 합니다.";
+    },
+  });
   if (value === null) return null;
   const bits = Math.round(Number(value));
-  if (!Number.isFinite(bits) || bits < 1) return null;
-  return Math.min(32, bits);
+  return bits;
+}
+
+function parseCableSegmentText(value) {
+  const segments = String(value || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => Math.round(Number(part)));
+  if (!segments.length || segments.some((bits) => !Number.isFinite(bits) || bits < 1 || bits > 32)) return null;
+  const total = segments.reduce((sum, bits) => sum + bits, 0);
+  if (total > 32) return null;
+  return segments;
+}
+
+function cableSegmentValidationMessage(value) {
+  const segments = String(value || "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => Math.round(Number(part)));
+  if (!segments.length) return "공백으로 구분된 1~32 사이의 정수를 하나 이상 입력해야 합니다.";
+  if (segments.some((bits) => !Number.isFinite(bits) || bits < 1 || bits > 32)) {
+    return "각 값은 1 이상 32 이하의 정수여야 합니다.";
+  }
+  const total = segments.reduce((sum, bits) => sum + bits, 0);
+  if (total > 32) return "값들의 합은 32 이하여야 합니다.";
+  return "";
+}
+
+async function requestCableSegments(type) {
+  const value = await requestTextValue({
+    title: `${partLabel(type)} segments`,
+    value: "4 4",
+    validate: cableSegmentValidationMessage,
+  });
+  if (value === null) return null;
+  return parseCableSegmentText(value);
 }
 
 async function setPendingPart(type) {
   const options = {};
-  if (partNeedsBitCount(type)) {
+  if (isCableSourceType(type)) {
+    const config = await requestCableSwitchConfig({ bits: 4, data: 0 });
+    if (config === null) {
+      clearPendingPart();
+      return;
+    }
+    Object.assign(options, config);
+  } else if (isCableMergeSplitType(type)) {
+    const segments = await requestCableSegments(type);
+    if (segments === null) {
+      clearPendingPart();
+      return;
+    }
+    options.segments = segments;
+  } else if (partNeedsBitCount(type)) {
     const bits = await requestBitCount(type);
     if (bits === null) {
       clearPendingPart();
@@ -3289,14 +5554,16 @@ function clearPendingPart() {
   state.pendingPartOptions = null;
   state.busStart = null;
   updatePartButtons();
+  updateControlCursor();
 }
 
 function setTool(tool, options = {}) {
   state.tool = tool;
-  state.wireStart = null;
-  state.wirePoints = [];
+  canvas.classList.toggle("control-mode", tool === "control");
+  cancelWireDraft({ renderAfter: false });
   if (tool !== "move") state.drag = null;
   if (tool !== "wire") hideAttachLabel();
+  if (!options.preserveSelection) clearSelection();
   if (!options.keepPendingPart) {
     state.pendingPart = null;
     state.pendingPartOptions = null;
@@ -3308,6 +5575,7 @@ function setTool(tool, options = {}) {
     button.setAttribute("aria-pressed", active ? "true" : "false");
   });
   updatePartButtons();
+  updateControlCursor();
   render();
 }
 
@@ -3327,6 +5595,13 @@ function syncSettingsInputs(settings = settingsDraft) {
   wireColdColorInput.value = normalized.wireColdColor;
   inputHotColorInput.value = normalized.inputHotColor;
   outputHotColorInput.value = normalized.outputHotColor;
+  xSignalColorInput.value = normalized.xSignalColor;
+  zSignalColorInput.value = normalized.zSignalColor;
+  orderArrowColorInput.value = normalized.orderArrowColor;
+  dataArrowColorInput.value = normalized.dataArrowColor;
+  orderArrowDirectionInput.value = normalized.orderArrowDirection;
+  dataArrowDirectionInput.value = normalized.dataArrowDirection;
+  arrowScaleInput.value = Number(normalized.arrowScale || 1);
   textDefaultContentInput.value = normalized.textDefaults.text;
   textDefaultSizeInput.value = Number(normalized.textDefaults.fontSize || 48);
   textDefaultColorInput.value = normalized.textDefaults.color && normalized.textDefaults.color.startsWith("#")
@@ -3376,9 +5651,25 @@ function saveSettings() {
 
 function startWire(endpoint) {
   state.statusNotice = "";
+  state.wireStartSnapshot = null;
+  if (endpoint?.kind === "pending-junction") {
+    state.wireStartSnapshot = editorSnapshot();
+    endpoint = materializePendingJunctionEndpoint(endpoint, "output");
+  }
   state.wireStart = endpoint;
   state.wirePoints = [];
   render();
+}
+
+function cancelWireDraft({ renderAfter = true } = {}) {
+  if (state.wireStartSnapshot) {
+    state.nodes = cloneData(state.wireStartSnapshot.nodes || []);
+    state.wires = cloneData(state.wireStartSnapshot.wires || []);
+  }
+  state.wireStartSnapshot = null;
+  state.wireStart = null;
+  state.wirePoints = [];
+  if (renderAfter) render();
 }
 
 function addWireBend(point) {
@@ -3390,14 +5681,41 @@ function addWireBend(point) {
 
 function finishWire(endpoint) {
   if (!state.wireStart) return;
-  const pair = wireEndpointsForBusPair(state.wireStart, endpoint);
+  const undoSnapshot = state.wireStartSnapshot || editorSnapshot();
+  const originalNodes = cloneData((state.wireStartSnapshot || { nodes: state.nodes }).nodes || []);
+  const originalWires = cloneData((state.wireStartSnapshot || { wires: state.wires }).wires || []);
+  const startEndpoint = materializePendingJunctionEndpoint(state.wireStart, "output");
+  const endEndpoint = materializePendingJunctionEndpoint(endpoint, "input");
+  const restoreBeforeFinish = () => {
+    state.nodes = originalNodes;
+    state.wires = originalWires;
+  };
+  const pair = wireEndpointsForBusPair(startEndpoint, endEndpoint);
   const start = endpointPosition(pair.from, "output");
   const end = endpointPosition(pair.to, "input");
-  if (!start || !end || samePoint(start, end)) return;
+  if (!start || !end || samePoint(start, end)) {
+    restoreBeforeFinish();
+    state.wireStartSnapshot = null;
+    state.wireStart = null;
+    state.wirePoints = [];
+    render();
+    return;
+  }
+  const fromBits = endpointBitLength(pair.from, "output");
+  const toBits = endpointBitLength(pair.to, "input");
+  if (fromBits !== toBits) {
+    restoreBeforeFinish();
+    state.statusNotice = `Wire rejected: cable length mismatch (${fromBits} bit -> ${toBits} bit)`;
+    state.wireStartSnapshot = null;
+    state.wireStart = null;
+    state.wirePoints = [];
+    render();
+    return;
+  }
 
   const normalizedEnd = normalizeEndpoint(pair.to, "input");
   const endNode = normalizedEnd.kind === "port" ? findNode(normalizedEnd.nodeId) : null;
-  const routePoints = pair.from === state.wireStart
+  const routePoints = pair.from === startEndpoint
     ? state.wirePoints
     : [...state.wirePoints].reverse();
   const nextWire = {
@@ -3405,8 +5723,9 @@ function finishWire(endpoint) {
     from: { ...pair.from },
     to: { ...pair.to },
     points: routePoints.map((point) => ({ ...point })),
+    bitLength: fromBits,
   };
-  const previousWires = state.wires;
+  const splitWires = state.wires;
   let candidateWires = state.wires;
   if (normalizedEnd.kind === "port" && normalizedEnd.direction === "input" && endNode?.type !== "JUNCTION") {
     candidateWires = candidateWires.filter((wire) => {
@@ -3416,31 +5735,38 @@ function finishWire(endpoint) {
   }
   state.wires = [...candidateWires, nextWire];
   const issues = analyzeCircuitIssues();
-  state.wires = previousWires;
-  if (issues.length) {
-    state.statusNotice = `Wire rejected: ${issues[0].message}`;
+  state.wires = splitWires;
+  const blockingIssue = firstBlockingCircuitIssue(issues);
+  if (blockingIssue) {
+    restoreBeforeFinish();
+    state.statusNotice = `Wire rejected: ${blockingIssue.message}`;
+    state.wireStartSnapshot = null;
     state.wireStart = null;
     state.wirePoints = [];
     render();
     return;
   }
 
-  recordUndo();
+  state.undoStack.push(undoSnapshot);
+  if (state.undoStack.length > 100) state.undoStack.shift();
+  state.redoStack = [];
   state.statusNotice = "";
   state.wires = [...candidateWires, nextWire];
+  syncJunctionBitLengthsFromWires();
+  state.wireStartSnapshot = null;
   state.wireStart = null;
   state.wirePoints = [];
   render();
 }
 
-function portEndpointFromElement(port) {
+function portEndpointFromNodePort(node, port, direction, bitLength = portBitLength(node, port)) {
   const endpoint = {
     kind: "port",
-    nodeId: port.dataset.nodeId,
-    port: port.dataset.port,
-    direction: port.dataset.direction,
+    nodeId: node.id,
+    port,
+    direction,
+    bitLength: Math.max(1, Math.round(Number(bitLength || 1))),
   };
-  const node = findNode(endpoint.nodeId);
   if (node?.type === "MULTI_PIN") {
     const match = String(endpoint.port).match(/^bit(\d+)/);
     if (match) {
@@ -3455,13 +5781,81 @@ function portEndpointFromElement(port) {
   return endpoint;
 }
 
+function portEndpointFromElement(port) {
+  const node = findNode(port.dataset.nodeId);
+  if (!node) {
+    return {
+      kind: "port",
+      nodeId: port.dataset.nodeId,
+      port: port.dataset.port,
+      direction: port.dataset.direction,
+      bitLength: Math.max(1, Math.round(Number(port.dataset.bitLength || 1))),
+    };
+  }
+  return portEndpointFromNodePort(
+    node,
+    port.dataset.port,
+    port.dataset.direction,
+    Math.max(1, Math.round(Number(port.dataset.bitLength || 1))),
+  );
+}
+
+function portEndpointAtGridPoint(point) {
+  let best = null;
+  for (const node of state.nodes) {
+    const candidates = [
+      ...nodeInputs(node).map((port) => ({ port, direction: "input" })),
+      ...nodeOutputs(node).map((port) => ({ port, direction: "output" })),
+    ];
+    for (const candidate of candidates) {
+      const position = portPosition(node, candidate.port, candidate.direction);
+      const bitLength = portBitLength(node, candidate.port);
+      const tolerance = bitLength > 1 ? 0.62 : 0.35;
+      const distance = Math.hypot(point.x - position.x, point.y - position.y);
+      if (distance > tolerance || (best && distance >= best.distance)) continue;
+      best = {
+        distance,
+        endpoint: portEndpointFromNodePort(node, candidate.port, candidate.direction, bitLength),
+      };
+    }
+  }
+  return best?.endpoint || null;
+}
+
+function controlSwitchAtGridPoint(point) {
+  let best = null;
+  for (const node of state.nodes) {
+    if (!(node.type === "INPUT" || node.type === "TEST_INPUT" || node.type === "MULTI_INPUT" || node.type === "MULTI_TEST_INPUT")) continue;
+    const size = nodeSize(node);
+    const bitCount = node.type === "MULTI_INPUT" || node.type === "MULTI_TEST_INPUT" ? multiBitCount(node) : 1;
+    for (let index = 0; index < bitCount; index += 1) {
+      const local = bitCount === 1
+        ? { x: size.w / 2, y: size.h / 2 }
+        : { x: 1 + index * 2, y: 2 };
+      const transformed = transformLocalPoint(local, node, size);
+      const center = { x: node.x + transformed.x, y: node.y + transformed.y };
+      const distance = Math.hypot(point.x - center.x, point.y - center.y);
+      if (distance > 0.62 || (best && distance >= best.distance)) continue;
+      best = {
+        distance,
+        node,
+        bitIndex: bitCount === 1 ? null : index,
+      };
+    }
+  }
+  return best ? { node: best.node, bitIndex: best.bitIndex } : null;
+}
+
 function attachCandidateFromEvent(event) {
   if (state.tool !== "wire") return null;
   const port = event.target.closest?.(".port");
   if (port) return portEndpointFromElement(port);
-  const point = screenToGrid(event.clientX, event.clientY);
+  const pointRaw = screenToGridRaw(event.clientX, event.clientY);
+  const pointPort = portEndpointAtGridPoint(pointRaw);
+  if (pointPort) return pointPort;
+  const point = { x: Math.round(pointRaw.x), y: Math.round(pointRaw.y) };
   const wire = findWireAtGridPoint(point, null, 0.35);
-  return wire ? { kind: "pending-junction", wireId: wire.id, point } : null;
+  return wire ? { kind: "pending-junction", wireId: wire.id, point, bitLength: wireBitLength(wire) } : null;
 }
 
 function updateAttachLabel(event) {
@@ -3747,6 +6141,41 @@ function resetTemplateState() {
   state.template.view = { x: 0, y: 0, zoom: DEFAULT_ZOOM };
 }
 
+function templateWorkspacePayload() {
+  return {
+    polygon: cloneData(state.template.polygon || []),
+    draft: cloneData(state.template.draft || []),
+    pins: cloneData(state.template.pins || []),
+    texts: cloneData(state.template.texts || []),
+    tool: state.template.tool || "select",
+    pendingOptions: cloneData(state.template.pendingOptions || {}),
+    sourcePinId: state.template.sourcePinId || null,
+    multiPinBits: state.template.multiPinBits || null,
+    cablePinBits: state.template.cablePinBits || null,
+  };
+}
+
+function restoreTemplateWorkspace(payload = null) {
+  resetTemplateState();
+  if (!payload || typeof payload !== "object") return;
+  state.template.polygon = cloneData(Array.isArray(payload.polygon) ? payload.polygon : []);
+  state.template.draft = cloneData(Array.isArray(payload.draft) ? payload.draft : []);
+  state.template.pins = cloneData(Array.isArray(payload.pins) ? payload.pins : []).map(normalizeTemplatePin);
+  state.template.texts = cloneData(Array.isArray(payload.texts) ? payload.texts : []);
+  state.template.tool = typeof payload.tool === "string" ? payload.tool : "select";
+  state.template.pendingOptions = cloneData(payload.pendingOptions || {});
+  state.template.sourcePinId = payload.sourcePinId || null;
+  state.template.multiPinBits = payload.multiPinBits || state.template.multiPinBits;
+  state.template.cablePinBits = payload.cablePinBits || state.template.cablePinBits;
+}
+
+function templateWorkspaceHasContent() {
+  return state.template.polygon.length
+    || state.template.draft.length
+    || state.template.pins.length
+    || state.template.texts.length;
+}
+
 function editorSnapshot() {
   return cloneData({
     designName: state.designName,
@@ -3766,6 +6195,7 @@ function restoreSnapshot(snapshot) {
   state.wires = cloneData(snapshot.wires || []);
   state.settings = { ...state.settings, ...(snapshot.settings || {}) };
   state.macros = cloneData(snapshot.macros || []);
+  state.macroInstanceValues = new Map();
   selectMany(snapshot.selectedNodeIds || [], snapshot.selectedWireIds || []);
   if (Object.prototype.hasOwnProperty.call(snapshot, "selectionRotationCenter")) {
     state.selectionRotationCenter = snapshot.selectionRotationCenter ? { ...snapshot.selectionRotationCenter } : null;
@@ -3871,7 +6301,7 @@ function inferCircuitPinDirection(source, sourcePort = "") {
   let reachesDriver = false;
 
   for (const node of state.nodes) {
-    if (node.id === source.id || ["INPUT", "TEST_INPUT", "OUTPUT", "PIN", "JUNCTION", "TEXT"].includes(node.type)) continue;
+    if (node.id === source.id || ["INPUT", "TEST_INPUT", "OUTPUT", "CABLE_OUTPUT", "PIN", "CABLE_PIN", "JUNCTION", "TEXT"].includes(node.type)) continue;
     for (const input of nodeInputs(node)) {
       if (sourceRoots.has(graph.find(portKey(node.id, input)))) reachesConsumer = true;
     }
@@ -3897,7 +6327,7 @@ function openTemplateEditor(sourcePinId = null) {
   state.template.selected = null;
   state.template.pendingOptions = {};
   state.template.rotateKeyDown = false;
-  restoreTemplateFromCachedMacro();
+  if (!templateWorkspaceHasContent()) restoreTemplateFromCachedMacro();
   state.template.view = { x: 0, y: 0, zoom: DEFAULT_ZOOM };
   bringModalToFront(templateModal);
   templateModal.hidden = false;
@@ -3911,7 +6341,7 @@ function restoreTemplateFromCachedMacro() {
   if (macro.template) {
     state.template.polygon = cloneData(macro.template.polygon || []);
     state.template.draft = [];
-    state.template.pins = cloneData(macro.template.pins || []);
+    state.template.pins = cloneData(macro.template.pins || []).map(normalizeTemplatePin);
     state.template.texts = cloneData(macro.template.texts || []);
   } else {
     state.template.polygon = cloneData(macro.polygon || []);
@@ -3919,11 +6349,13 @@ function restoreTemplateFromCachedMacro() {
       id: uid("template-pin"),
       label: pin.label || "",
       direction: pin.direction || "input",
+      kind: Number(pin.bitLength || 1) > 1 ? "cable" : "pin",
+      bitLength: Math.max(1, Math.round(Number(pin.bitLength || 1))),
       x: pin.x,
       y: pin.y,
       sourcePinId: pin.internalNodeId || null,
       sourcePort: pin.internalPort || "",
-    }));
+    })).map(normalizeTemplatePin);
     state.template.texts = cloneData(macro.texts || []);
   }
   state.template.draft = [];
@@ -4200,6 +6632,18 @@ function selectedTemplateBounds() {
   }));
 }
 
+function gridPointInBounds(point, bounds) {
+  return point.x >= bounds.minX
+    && point.x <= bounds.maxX
+    && point.y >= bounds.minY
+    && point.y <= bounds.maxY;
+}
+
+function templatePointInSelectedBounds(point) {
+  const bounds = selectedTemplateBounds();
+  return Boolean(bounds && gridPointInBounds(point, bounds));
+}
+
 function rotateTemplateTextBox(text, center, quarters) {
   const size = textBoxSize(text);
   const boxCenter = { x: text.x + size.w / 2, y: text.y + size.h / 2 };
@@ -4300,7 +6744,7 @@ function mirrorSelectedTemplateObject(axis) {
 }
 
 function templateHasPendingShadow() {
-  return state.template.tool === "pin" || state.template.tool === "multi-pin";
+  return state.template.tool === "pin" || state.template.tool === "multi-pin" || state.template.tool === "cable-pin";
 }
 
 function rotateTemplatePendingByQuarters(quarters) {
@@ -4329,8 +6773,9 @@ function templateObjectBoundsGrid(item) {
   if (item.type === "pin") {
     const pin = state.template.pins.find((candidate) => candidate.id === item.id);
     if (!pin) return null;
-    const half = PIN_VISUAL_CELLS / 2;
-    return { minX: pin.x - half, minY: pin.y - half, maxX: pin.x + half, maxY: pin.y + half };
+    const width = templatePinKind(pin) === "cable" ? NODE_SIZES.CABLE_PIN.w : PIN_VISUAL_CELLS;
+    const height = templatePinKind(pin) === "cable" ? NODE_SIZES.CABLE_PIN.h : PIN_VISUAL_CELLS;
+    return { minX: pin.x - width / 2, minY: pin.y - height / 2, maxX: pin.x + width / 2, maxY: pin.y + height / 2 };
   }
   if (item.type === "text") {
     const text = state.template.texts.find((candidate) => candidate.id === item.id);
@@ -4350,15 +6795,15 @@ function selectTemplateInBounds(bounds) {
   const items = [];
   if (state.template.polygon.length >= 3) {
     const polygonBounds = templateBounds();
-    if (polygonBounds && boundsIntersect(polygonBounds, bounds)) items.push({ type: "polygon" });
+    if (polygonBounds && boundsContains(bounds, polygonBounds)) items.push({ type: "polygon" });
   }
   for (const pin of state.template.pins) {
     const pinBounds = templateObjectBoundsGrid({ type: "pin", id: pin.id });
-    if (pinBounds && boundsIntersect(pinBounds, bounds)) items.push({ type: "pin", id: pin.id });
+    if (pinBounds && boundsContains(bounds, pinBounds)) items.push({ type: "pin", id: pin.id });
   }
   for (const text of state.template.texts) {
     const textBounds = templateObjectBoundsGrid({ type: "text", id: text.id });
-    if (textBounds && boundsIntersect(textBounds, bounds)) items.push({ type: "text", id: text.id });
+    if (textBounds && boundsContains(bounds, textBounds)) items.push({ type: "text", id: text.id });
   }
   state.template.selected = templateSelectionFromItems(items);
 }
@@ -4395,14 +6840,16 @@ function appendTemplateMultiPinArrow(parent, orderedPins) {
     x: first.x + unit.x * (bits * 2 - 1) + normal.x,
     y: first.y + unit.y * (bits * 2 - 1) + normal.y,
   };
-  const arrow = arrowGeometry(head, tail);
+  const arrow = orderArrowGeometry(head, tail);
+  const color = orderArrowColor();
+  const scale = arrowScale();
   parent.appendChild(createSvg("line", {
     class: "multibit-order-arrow",
     x1: arrow.tail.x * GRID,
     y1: arrow.tail.y * GRID,
     x2: arrow.back.x * GRID,
     y2: arrow.back.y * GRID,
-    style: `stroke: ${DEFAULT_HOT_COLOR}`,
+    style: `stroke: ${color}; stroke-width: ${2 * scale}`,
   }));
   parent.appendChild(createSvg("polygon", {
     class: "multibit-arrow-head",
@@ -4411,7 +6858,33 @@ function appendTemplateMultiPinArrow(parent, orderedPins) {
       `${arrow.wingA.x * GRID},${arrow.wingA.y * GRID}`,
       `${arrow.wingB.x * GRID},${arrow.wingB.y * GRID}`,
     ].join(" "),
-    style: `fill: ${DEFAULT_HOT_COLOR}; stroke: ${DEFAULT_HOT_COLOR}`,
+    style: `fill: ${color}; stroke: ${color}`,
+  }));
+}
+
+function cablePinVisibleSizePx() {
+  const inset = cablePinVisualInset() * GRID;
+  return {
+    width: NODE_SIZES.CABLE_PIN.w * GRID - inset * 2,
+    height: NODE_SIZES.CABLE_PIN.h * GRID - inset * 2,
+  };
+}
+
+function appendCablePinGlyph(parent, cx, cy, className = "template-pin") {
+  const size = cablePinVisibleSizePx();
+  const pendingClass = className.includes("template-pending-shadow") ? " template-pending-shadow" : "";
+  parent.appendChild(createSvg("rect", {
+    class: `${className} template-cable-pin`,
+    x: cx - size.width / 2,
+    y: cy - size.height / 2,
+    width: size.width,
+    height: size.height,
+  }));
+  parent.appendChild(createSvg("circle", {
+    class: `template-cable-pin-mark${pendingClass}`,
+    cx,
+    cy,
+    r: GRID / 2,
   }));
 }
 
@@ -4426,6 +6899,15 @@ function appendTemplatePendingShadow() {
       width: pinMarkerSize,
       height: pinMarkerSize,
     }));
+    return;
+  }
+  if (state.template.tool === "cable-pin") {
+    appendCablePinGlyph(
+      templateCanvas,
+      state.template.pointer.x * GRID,
+      state.template.pointer.y * GRID,
+      "template-pin template-pending-shadow",
+    );
     return;
   }
   const bits = Math.min(32, Math.max(1, Math.round(Number(state.template.multiPinBits || 4))));
@@ -4450,12 +6932,13 @@ function appendTemplatePendingShadow() {
 }
 
 function templatePinPixelBounds(pin) {
-  const size = GRID * PIN_VISUAL_CELLS;
+  const width = templatePinKind(pin) === "cable" ? NODE_SIZES.CABLE_PIN.w * GRID : GRID * PIN_VISUAL_CELLS;
+  const height = templatePinKind(pin) === "cable" ? NODE_SIZES.CABLE_PIN.h * GRID : GRID * PIN_VISUAL_CELLS;
   return {
-    minX: pin.x * GRID - size / 2,
-    minY: pin.y * GRID - size / 2,
-    maxX: pin.x * GRID + size / 2,
-    maxY: pin.y * GRID + size / 2,
+    minX: pin.x * GRID - width / 2,
+    minY: pin.y * GRID - height / 2,
+    maxX: pin.x * GRID + width / 2,
+    maxY: pin.y * GRID + height / 2,
   };
 }
 
@@ -4520,6 +7003,27 @@ function renderTemplateEditor() {
   for (const pin of state.template.pins) {
     const pinMarkerSize = GRID * PIN_VISUAL_CELLS;
     const activeSource = Boolean(state.template.sourcePinId && pin.sourcePinId === state.template.sourcePinId);
+    if (templatePinKind(pin) === "cable") {
+      appendCablePinGlyph(
+        templateCanvas,
+        pin.x * GRID,
+        pin.y * GRID,
+        `template-pin ${pin.sourcePinId ? "linked" : ""} ${activeSource ? "active-source" : ""} ${templateSelectionHas("pin", pin.id) ? "selected" : ""}`,
+      );
+      templateCanvas.lastChild.previousSibling.setAttribute("data-template-pin-id", pin.id);
+      templateCanvas.lastChild.setAttribute("data-template-pin-id", pin.id);
+      if (templateSelectionHas("pin", pin.id)) selectedBounds.push(templatePinPixelBounds(pin));
+      if (templatePinBitLength(pin) > 1) {
+        templateCanvas.appendChild(createSvg("text", {
+          class: "template-pin-label",
+          x: pin.x * GRID - (NODE_SIZES.CABLE_PIN.w * GRID) / 2 - GRID * 0.35,
+          y: pin.y * GRID - (NODE_SIZES.CABLE_PIN.h * GRID) / 2 + GRID * 0.35,
+          "text-anchor": "end",
+        }));
+        templateCanvas.lastChild.textContent = String(templatePinBitLength(pin));
+      }
+      continue;
+    }
     const rect = createSvg("rect", {
       class: `template-pin ${pin.sourcePinId ? "linked" : ""} ${activeSource ? "active-source" : ""} ${templateSelectionHas("pin", pin.id) ? "selected" : ""}`,
       x: pin.x * GRID - pinMarkerSize / 2,
@@ -4589,6 +7093,7 @@ function updateTemplateToolButtons() {
     "template-tool-rectangle": "rectangle",
     "template-tool-pin": "pin",
     "template-tool-multi-pin": "multi-pin",
+    "template-tool-cable-pin": "cable-pin",
     "template-tool-text": "text",
   };
   for (const [id, tool] of Object.entries(toolById)) {
@@ -4630,10 +7135,13 @@ function linkTemplatePinOrGroup(pinId) {
   if (!pin || !source) return;
   const group = templatePinContextGroup(pin);
   if (group.some((item) => item.sourcePinId)) return;
+  if (group.some((item) => !templatePinCompatibleWithSource(item, source))) return;
   recordTemplateUndo();
   for (const item of group) {
     item.sourcePinId = source.id;
     item.sourcePort = source.type === "MULTI_PIN" ? `bit${Number(item.multiPinIndex || 0)}` : "";
+    item.kind = source.type === "CABLE_PIN" ? "cable" : "pin";
+    item.bitLength = source.type === "CABLE_PIN" ? multiBitCount(source) : 1;
   }
   renderTemplateEditor();
 }
@@ -4656,11 +7164,13 @@ function showTemplatePinContextMenu(pinId, clientX, clientY) {
   if (!pin) return;
   const group = templatePinContextGroup(pin);
   const hasLinkedPin = group.some((item) => item.sourcePinId);
+  const source = findNode(state.template.sourcePinId);
+  const canAssociate = Boolean(source && group.every((item) => templatePinCompatibleWithSource(item, source)));
   fanInMenu.replaceChildren();
   const associateButton = document.createElement("button");
   associateButton.type = "button";
   associateButton.textContent = "Associate with this pin";
-  associateButton.disabled = hasLinkedPin || !state.template.sourcePinId;
+  associateButton.disabled = hasLinkedPin || !canAssociate;
   associateButton.addEventListener("click", () => {
     if (associateButton.disabled) return;
     hideFanInMenu();
@@ -4717,10 +7227,14 @@ function templateTextAtEvent(event) {
 function validateTemplateForSave() {
   if (state.template.polygon.length < 3) return "매크로 몸체 다각형을 먼저 완성해야 합니다.";
   if (state.template.pins.some(templatePinOutsideBody)) return "핀은 매크로 몸체 밖에 완전히 벗어날 수 없습니다.";
-  const circuitIssue = analyzeCircuitIssues()[0];
+  const circuitIssue = firstBlockingCircuitIssue(analyzeCircuitIssues());
   if (circuitIssue) return circuitIssue.message;
-  const sourcePinIds = new Set(state.nodes.filter((node) => node.type === "PIN" || node.type === "MULTI_PIN").map((node) => node.id));
+  const sourcePinIds = new Set(state.nodes.filter((node) => node.type === "PIN" || node.type === "MULTI_PIN" || node.type === "CABLE_PIN").map((node) => node.id));
   const linked = new Set(state.template.pins.map((pin) => pin.sourcePinId).filter(Boolean));
+  const mismatchedTemplatePin = state.template.pins
+    .filter((pin) => pin.sourcePinId)
+    .some((pin) => !templatePinCompatibleWithSource(pin, findNode(pin.sourcePinId)));
+  if (mismatchedTemplatePin) return "Template pin type does not match the linked internal pin.";
   for (const id of linked) {
     if (!sourcePinIds.has(id)) return "존재하지 않는 내부 Pin에 연결된 템플릿 Pin이 있습니다.";
   }
@@ -4839,15 +7353,54 @@ function nodeFromEventTarget(target) {
   return group ? findNode(group.dataset.nodeId) : null;
 }
 
+function serializableNode(node) {
+  if (node?.type === "CLOCK") {
+    const { value, lastClockTick, ...rest } = node;
+    return {
+      ...rest,
+      clockHz: clockFrequency(node),
+    };
+  }
+  if (node?.type === "PULSE") {
+    const { lastPulseTick, ...rest } = node;
+    return {
+      ...rest,
+      pulsePattern: normalizePulsePattern(node.pulsePattern),
+      pulseHz: pulseFrequency(node),
+      pulseIndex: Math.max(0, Math.trunc(Number(node.pulseIndex || 0))) % normalizePulsePattern(node.pulsePattern).length,
+    };
+  }
+  return node;
+}
+
 function circuitPayload() {
+  syncJunctionBitLengthsFromWires();
   return {
     kind: "digital-works-design",
     name: state.designName,
-    nodes: state.nodes,
+    nodes: state.nodes.map(serializableNode),
     wires: state.wires,
     settings: normalizeSettings(state.settings),
     macros: state.macros,
+    templateWorkspace: templateWorkspacePayload(),
   };
+}
+
+function circuitPayloadText() {
+  return JSON.stringify(circuitPayload(), null, 2);
+}
+
+function markSavedState() {
+  state.savedPayloadText = circuitPayloadText();
+}
+
+function hasUnsavedChanges() {
+  return state.savedPayloadText !== circuitPayloadText();
+}
+
+function confirmDiscardUnsaved(actionLabel) {
+  if (!hasUnsavedChanges()) return true;
+  return window.confirm(`Unsaved changes will be lost if you ${actionLabel}. Continue?`);
 }
 
 function designFileName() {
@@ -4864,14 +7417,16 @@ function downloadCircuitPayload(payload, fileName = designFileName()) {
   link.download = fileName;
   link.click();
   URL.revokeObjectURL(link.href);
+  markSavedState();
 }
 
 async function writeCircuitToHandle(handle) {
   const writable = await handle.createWritable();
-  await writable.write(JSON.stringify(circuitPayload(), null, 2));
+  await writable.write(circuitPayloadText());
   await writable.close();
   state.fileHandle = handle;
   state.fileName = handle.name || state.fileName;
+  markSavedState();
   statusEl.textContent = `Saved ${state.fileName || "file"}`;
 }
 
@@ -4880,6 +7435,7 @@ async function exportCircuit({ saveAs = false } = {}) {
     if (saveAs) {
       if ("showSaveFilePicker" in window) {
         const handle = await window.showSaveFilePicker({
+          id: DESIGN_FILE_PICKER_ID,
           suggestedName: designFileName(),
           types: [{
             description: "Digital Works JSON",
@@ -4899,6 +7455,7 @@ async function exportCircuit({ saveAs = false } = {}) {
     }
     if ("showSaveFilePicker" in window) {
       const handle = await window.showSaveFilePicker({
+        id: DESIGN_FILE_PICKER_ID,
         suggestedName: designFileName(),
         types: [{
           description: "Digital Works JSON",
@@ -4924,6 +7481,8 @@ function loadCircuitData(data, file = null, handle = null) {
   state.fileHandle = handle || null;
   state.nodes = cloneData(data.nodes);
   state.wires = data.wires;
+  state.macroInstanceValues = new Map();
+  syncJunctionBitLengthsFromWires();
   state.settings = normalizeSettings({ ...state.settings, ...(data.settings || {}) });
   saveSettingsToStorage();
   state.macros = Array.isArray(data.macros)
@@ -4943,10 +7502,14 @@ function loadCircuitData(data, file = null, handle = null) {
     node.sourceMacroId = macro.sourceMacroId || macro.id;
     node.macroId = instanceMacro.id;
   }
-  resetTemplateState();
+  restoreTemplateWorkspace(data.templateWorkspace || null);
+  state.simulationRunning = false;
+  resetClockTickBaselines();
+  updateSimulationRunButton();
   renderMacroParts();
   syncSettingsInputs();
   clearSelection();
+  markSavedState();
   render();
   statusEl.textContent = `Loaded ${state.fileName || state.designName}`;
 }
@@ -4971,6 +7534,7 @@ async function openCircuitFile() {
   }
   try {
     const [handle] = await window.showOpenFilePicker({
+      id: DESIGN_FILE_PICKER_ID,
       multiple: false,
       types: [{
         description: "Digital Works JSON",
@@ -5025,6 +7589,7 @@ function macroFromCircuit(options = {}) {
         direction,
         internalNodeId: pin.sourcePinId,
         internalPort: pin.sourcePort || "",
+        bitLength: source?.type === "CABLE_PIN" ? multiBitCount(source) : templatePinBitLength(pin),
         x: pin.x - bounds.minX,
         y: pin.y - bounds.minY,
       };
@@ -5205,24 +7770,27 @@ canvas.addEventListener("pointerdown", async (event) => {
     }
     await placeNode(state.pendingPart, gridPoint, state.pendingPartOptions || {});
     clearPendingPart();
+    render();
     return;
   }
 
-  const port = event.target.closest?.(".port");
-  if (port && state.tool === "wire") {
+  const wireEndpoint = attachCandidateFromEvent(event);
+  if (wireEndpoint && state.tool === "wire") {
     event.stopPropagation();
-    const endpoint = portEndpointFromElement(port);
     if (state.wireStart) {
-      finishWire(endpoint);
+      finishWire(wireEndpoint);
     } else {
-      startWire(endpoint);
+      startWire(wireEndpoint);
     }
     hideAttachLabel();
     return;
   }
 
-  if (group && state.tool === "control") {
-    const node = findNode(group.dataset.nodeId);
+  const controlHit = state.tool === "control"
+    ? controlSwitchAtGridPoint(screenToGridRaw(event.clientX, event.clientY))
+    : null;
+  if ((controlHit || group) && state.tool === "control") {
+    const node = controlHit?.node || findNode(group.dataset.nodeId);
     if ((node?.type === "INPUT" || node?.type === "MULTI_INPUT" || node?.type === "TEST_INPUT" || node?.type === "MULTI_TEST_INPUT") && event.button === 0) {
       recordUndo();
       const bitTarget = event.target.closest?.("[data-bit-index]");
@@ -5230,7 +7798,7 @@ canvas.addEventListener("pointerdown", async (event) => {
         kind: "control-input",
         pointerId: event.pointerId,
         nodeId: node.id,
-        bitIndex: bitTarget ? Number(bitTarget.dataset.bitIndex) : null,
+        bitIndex: Number.isInteger(controlHit?.bitIndex) ? controlHit.bitIndex : bitTarget ? Number(bitTarget.dataset.bitIndex) : null,
         moved: false,
         startClient: { x: event.clientX, y: event.clientY },
       };
@@ -5313,6 +7881,7 @@ canvas.addEventListener("pointerdown", async (event) => {
 
 canvas.addEventListener("pointermove", (event) => {
   state.pointerGrid = screenToGrid(event.clientX, event.clientY);
+  updateControlCursor(event);
   updateAttachLabel(event);
   let needsViewportOnly = false;
   let needsSceneOnly = false;
@@ -5374,6 +7943,10 @@ canvas.addEventListener("pointermove", (event) => {
   }
 });
 
+canvas.addEventListener("pointerleave", () => {
+  updateControlCursor();
+});
+
 canvas.addEventListener("pointerup", (event) => {
   if (state.drag?.pointerId === event.pointerId) {
     const node = state.drag.kind === "control-input" ? findNode(state.drag.nodeId) : null;
@@ -5389,6 +7962,7 @@ canvas.addEventListener("pointerup", (event) => {
     }
     state.drag = null;
     canvas.releasePointerCapture(event.pointerId);
+    updateControlCursor(event);
     render();
   }
 });
@@ -5398,6 +7972,10 @@ canvas.addEventListener("pointerleave", hideAttachLabel);
 canvas.addEventListener("contextmenu", (event) => {
   event.preventDefault();
   const node = nodeFromEventTarget(event.target);
+  if (state.pendingPart === "BUS" || state.busStart) {
+    showBusToolContextMenu(event.clientX, event.clientY);
+    return;
+  }
   if (selectedCount() > 1) {
     hideFanInMenu();
     return;
@@ -5420,9 +7998,28 @@ document.addEventListener("pointerdown", (event) => {
   if (!fanInMenu.contains(event.target) && event.target.closest?.("#canvas") !== canvas) hideFanInMenu();
 });
 
+function preventBrowserZoomInApp(event) {
+  if (event.target.closest?.("#digital-works-app")) event.preventDefault();
+}
+
+document.addEventListener("wheel", (event) => {
+  if ((event.ctrlKey || event.metaKey) && !physicalZoomModifierDown && event.target.closest?.("#digital-works-app")) {
+    event.preventDefault();
+  }
+}, { passive: false, capture: true });
+document.addEventListener("gesturestart", preventBrowserZoomInApp, { passive: false });
+document.addEventListener("gesturechange", preventBrowserZoomInApp, { passive: false });
+document.addEventListener("gestureend", preventBrowserZoomInApp, { passive: false });
+
 // Zoom around the cursor by preserving the grid coordinate under the pointer.
 canvas.addEventListener("wheel", (event) => {
+  if ((event.ctrlKey || event.metaKey) && physicalZoomModifierDown) return;
   event.preventDefault();
+  if (state.scaleKeyDown && !topOpenModal() && (state.pendingPart === "BUS" || state.busStart)) {
+    const delta = event.deltaY < 0 ? 1 : -1;
+    scaleBusTool(event.shiftKey ? "x" : "y", delta);
+    return;
+  }
   if (state.rotateKeyDown && !topOpenModal()) {
     const direction = event.deltaY < 0 ? 1 : -1;
     if (state.pendingPart === "BUS" || state.busStart) {
@@ -5445,6 +8042,24 @@ canvas.addEventListener("wheel", (event) => {
 }, { passive: false });
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Control" || event.key === "Meta") physicalZoomModifierDown = true;
+  if (busToolMenuDraft && event.key === "Escape") {
+    event.preventDefault();
+    hideFanInMenu();
+    return;
+  }
+  if (event.key === "F5") {
+    if (!confirmDiscardUnsaved("reload")) {
+      event.preventDefault();
+      return;
+    }
+    if (hasUnsavedChanges()) {
+      event.preventDefault();
+      state.skipUnloadWarning = true;
+      window.location.reload();
+      return;
+    }
+  }
   const editingText = ["INPUT", "TEXTAREA"].includes(event.target?.tagName) || event.target?.isContentEditable;
   const activeModal = topOpenModal();
   if (activeModal) {
@@ -5512,11 +8127,26 @@ document.addEventListener("keydown", (event) => {
       finishDimensionRequest(null);
       return;
     }
+    if (activeModal === cableSwitchModal && event.key === "Escape") {
+      event.preventDefault();
+      finishCableSwitchRequest(null);
+      return;
+    }
     return;
   }
   if (!editingText && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z" && event.shiftKey) {
     event.preventDefault();
     redo();
+    return;
+  }
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s" && event.shiftKey) {
+    event.preventDefault();
+    void exportCircuit({ saveAs: true });
+    return;
+  }
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+    event.preventDefault();
+    void exportCircuit();
     return;
   }
   if (!editingText && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
@@ -5539,9 +8169,18 @@ document.addEventListener("keydown", (event) => {
     pasteSelection();
     return;
   }
-  if (event.code === "Space") state.spaceDown = true;
+  if (event.code === "Space") {
+    state.spaceDown = true;
+    if (!editingText && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      event.preventDefault();
+      toggleSimulationRunning();
+    }
+  }
   if (!editingText && !event.ctrlKey && !event.metaKey && !event.altKey && (event.key === "r" || event.key === "R")) {
     state.rotateKeyDown = true;
+  }
+  if (!editingText && !event.ctrlKey && !event.metaKey && !event.altKey && (event.key === "s" || event.key === "S")) {
+    state.scaleKeyDown = true;
   }
   if (event.key === "m" || event.key === "M") setTool("move");
   if (event.key === "c" || event.key === "C") setTool("control");
@@ -5583,8 +8222,6 @@ document.addEventListener("keydown", (event) => {
   }
   if (event.key === "Escape") {
     setTool("move");
-    state.wireStart = null;
-    state.wirePoints = [];
     clearSelection();
     clearPendingPart();
     hideAttachLabel();
@@ -5593,17 +8230,28 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keyup", (event) => {
+  if (event.key === "Control" || event.key === "Meta") physicalZoomModifierDown = event.ctrlKey || event.metaKey;
   if (event.code === "Space") state.spaceDown = false;
   if (event.key === "r" || event.key === "R") {
     state.rotateKeyDown = false;
     state.template.rotateKeyDown = false;
   }
+  if (event.key === "s" || event.key === "S") state.scaleKeyDown = false;
 });
 
 window.addEventListener("blur", () => {
+  physicalZoomModifierDown = false;
   state.spaceDown = false;
   state.rotateKeyDown = false;
+  state.scaleKeyDown = false;
   state.template.rotateKeyDown = false;
+});
+
+window.addEventListener("beforeunload", (event) => {
+  if (state.skipUnloadWarning) return;
+  if (!hasUnsavedChanges()) return;
+  event.preventDefault();
+  event.returnValue = "";
 });
 
 document.querySelectorAll("[data-add]").forEach((button) => {
@@ -5616,6 +8264,7 @@ document.querySelectorAll("[data-add]").forEach((button) => {
 document.querySelectorAll("[data-tool]").forEach((button) => {
   button.addEventListener("click", () => setTool(button.dataset.tool));
 });
+simulationRunToggle?.addEventListener("click", toggleSimulationRunning);
 
 document.getElementById("reset-view").addEventListener("click", () => {
   state.pan = { x: 520, y: 300 };
@@ -5625,7 +8274,7 @@ document.getElementById("reset-view").addEventListener("click", () => {
 
 document.getElementById("settings-open").addEventListener("click", openSettings);
 document.getElementById("settings-close").addEventListener("click", closeSettings);
-for (const modal of [settingsModal, templateModal, macroViewModal, textModal, dimensionModal]) registerStackedModal(modal);
+for (const modal of [settingsModal, templateModal, macroViewModal, textModal, dimensionModal, cableSwitchModal]) registerStackedModal(modal);
 document.getElementById("template-close").addEventListener("click", closeTemplateEditor);
 document.getElementById("template-tool-polygon").addEventListener("click", () => {
   state.template.tool = "polygon";
@@ -5685,6 +8334,21 @@ document.getElementById("template-tool-multi-pin").addEventListener("click", asy
   state.template.pendingOptions = {};
   renderTemplateEditor();
 });
+document.getElementById("template-tool-cable-pin").addEventListener("click", async () => {
+  const source = findNode(state.template.sourcePinId);
+  const defaultBits = source?.type === "CABLE_PIN" ? multiBitCount(source) : 4;
+  const value = await requestTextValue({ title: "Template cable pin bits", value: String(defaultBits) });
+  if (value === null) {
+    state.template.tool = "select";
+    renderTemplateEditor();
+    return;
+  }
+  const parsedBits = Math.round(Number(value || defaultBits));
+  state.template.cablePinBits = Number.isFinite(parsedBits) ? Math.min(32, Math.max(1, parsedBits)) : defaultBits;
+  state.template.tool = "cable-pin";
+  state.template.pendingOptions = {};
+  renderTemplateEditor();
+});
 document.getElementById("template-tool-text").addEventListener("click", () => {
   state.template.tool = "text";
   renderTemplateEditor();
@@ -5710,9 +8374,32 @@ templateCanvas.addEventListener("pointerdown", async (event) => {
       id: uid("template-pin"),
       label: "",
       direction: "input",
+      kind: "pin",
+      bitLength: 1,
       x: point.x,
       y: point.y,
       sourcePinId: null,
+      sourcePort: "",
+    };
+    state.template.pins.push(pin);
+    state.template.selected = { type: "pin", id: pin.id };
+    state.template.tool = "select";
+    renderTemplateEditor();
+    return;
+  }
+  if (state.template.tool === "cable-pin") {
+    recordTemplateUndo();
+    const bits = Math.min(32, Math.max(1, Math.round(Number(state.template.cablePinBits || 4))));
+    const pin = {
+      id: uid("template-pin"),
+      label: "",
+      direction: "input",
+      kind: "cable",
+      bitLength: bits,
+      x: point.x,
+      y: point.y,
+      sourcePinId: null,
+      sourcePort: "",
     };
     state.template.pins.push(pin);
     state.template.selected = { type: "pin", id: pin.id };
@@ -5751,6 +8438,22 @@ templateCanvas.addEventListener("pointerdown", async (event) => {
     return;
   }
   const textId = templateTextAtEvent(event);
+  const pinTarget = event.target.closest?.(".template-pin");
+  const pinId = pinTarget?.dataset.templatePinId || "";
+  const bodyTarget = event.target.closest?.(".template-body");
+  const hitsCurrentSelection = Boolean(state.template.selected) && (
+    (textId && templateSelectionHas("text", textId))
+    || (pinId && templateSelectionHas("pin", pinId))
+    || (bodyTarget && templateSelectionHas("polygon"))
+    || templatePointInSelectedBounds(point)
+  );
+  if (hitsCurrentSelection) {
+    recordTemplateUndo();
+    state.template.drag = { pointerId: event.pointerId, start: point, moved: false };
+    templateCanvas.setPointerCapture(event.pointerId);
+    renderTemplateEditor();
+    return;
+  }
   if (textId) {
     state.template.selected = { type: "text", id: textId };
     recordTemplateUndo();
@@ -5759,16 +8462,15 @@ templateCanvas.addEventListener("pointerdown", async (event) => {
     renderTemplateEditor();
     return;
   }
-  const pinTarget = event.target.closest?.(".template-pin");
   if (pinTarget) {
-    state.template.selected = templateSelectionFromItems([{ type: "pin", id: pinTarget.dataset.templatePinId }]);
+    state.template.selected = templateSelectionFromItems([{ type: "pin", id: pinId }]);
     recordTemplateUndo();
     state.template.drag = { pointerId: event.pointerId, start: point, moved: false };
     templateCanvas.setPointerCapture(event.pointerId);
     renderTemplateEditor();
     return;
   }
-  if (event.target.closest?.(".template-body")) {
+  if (bodyTarget) {
     state.template.selected = { type: "polygon" };
     recordTemplateUndo();
     state.template.drag = { pointerId: event.pointerId, start: point, moved: false };
@@ -5853,7 +8555,7 @@ templateCanvas.addEventListener("wheel", (event) => {
   const localBefore = before.matrixTransform(templateCanvas.getScreenCTM().inverse());
   const nextZoom = Math.min(
     TEMPLATE_MAX_ZOOM,
-    Math.max(TEMPLATE_MIN_ZOOM, state.template.view.zoom * (event.deltaY < 0 ? 1.1 : 0.9)),
+    Math.max(templateMinimumZoom(rect), state.template.view.zoom * (event.deltaY < 0 ? 1.1 : 0.9)),
   );
   state.template.view.zoom = nextZoom;
   state.template.view.x = localBefore.x - (event.clientX - rect.left) / nextZoom;
@@ -5933,6 +8635,41 @@ outputHotColorInput.addEventListener("input", () => {
     settings.outputHotColor = outputHotColorInput.value;
   });
 });
+xSignalColorInput.addEventListener("input", () => {
+  updateSettingsDraft((settings) => {
+    settings.xSignalColor = xSignalColorInput.value;
+  });
+});
+zSignalColorInput.addEventListener("input", () => {
+  updateSettingsDraft((settings) => {
+    settings.zSignalColor = zSignalColorInput.value;
+  });
+});
+orderArrowColorInput.addEventListener("input", () => {
+  updateSettingsDraft((settings) => {
+    settings.orderArrowColor = orderArrowColorInput.value;
+  });
+});
+dataArrowColorInput.addEventListener("input", () => {
+  updateSettingsDraft((settings) => {
+    settings.dataArrowColor = dataArrowColorInput.value;
+  });
+});
+orderArrowDirectionInput.addEventListener("change", () => {
+  updateSettingsDraft((settings) => {
+    settings.orderArrowDirection = orderArrowDirectionInput.value;
+  });
+});
+dataArrowDirectionInput.addEventListener("change", () => {
+  updateSettingsDraft((settings) => {
+    settings.dataArrowDirection = dataArrowDirectionInput.value;
+  });
+});
+arrowScaleInput.addEventListener("input", () => {
+  updateSettingsDraft((settings) => {
+    settings.arrowScale = Math.min(2, Math.max(0.5, Number(arrowScaleInput.value || 1)));
+  });
+});
 textDefaultContentInput.addEventListener("input", () => {
   updateSettingsDraft((settings) => {
     settings.textDefaults.text = textDefaultContentInput.value || "Text";
@@ -5978,13 +8715,20 @@ document.getElementById("settings-reset").addEventListener("click", () => {
   syncSettingsInputs(settingsDraft);
 });
 document.getElementById("settings-save").addEventListener("click", saveSettings);
-for (const input of [wireHotColorInput, wireColdColorInput, inputHotColorInput, outputHotColorInput]) {
+for (const input of [wireHotColorInput, wireColdColorInput, inputHotColorInput, outputHotColorInput, xSignalColorInput, zSignalColorInput, orderArrowColorInput, dataArrowColorInput]) {
   input.addEventListener("change", () => {
     input.dataset.editing = "false";
   });
 }
 textForm.addEventListener("submit", (event) => {
   event.preventDefault();
+  textModalInput.setCustomValidity("");
+  const validationMessage = pendingTextValidator ? pendingTextValidator(textModalInput.value) : "";
+  if (validationMessage) {
+    textModalInput.setCustomValidity(validationMessage);
+    textModalInput.reportValidity();
+    return;
+  }
   finishTextRequest(textModalInput.value || "Text");
 });
 textModalCancel.addEventListener("click", () => finishTextRequest(null));
@@ -6002,8 +8746,19 @@ dimensionCancel.addEventListener("click", () => finishDimensionRequest(null));
 dimensionModal.addEventListener("pointerdown", (event) => {
   if (event.target === dimensionModal) finishDimensionRequest(null);
 });
+cableSwitchForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const config = parseCableSwitchConfig();
+  if (!config) return;
+  finishCableSwitchRequest(config);
+});
+cableSwitchCancel.addEventListener("click", () => finishCableSwitchRequest(null));
+cableSwitchModal.addEventListener("pointerdown", (event) => {
+  if (event.target === cableSwitchModal) finishCableSwitchRequest(null);
+});
 
 document.getElementById("clear-circuit").addEventListener("click", () => {
+  if (!confirmDiscardUnsaved("clear the circuit")) return;
   recordUndo();
   state.designName = "Untitled Design";
   state.fileHandle = null;
@@ -6011,10 +8766,13 @@ document.getElementById("clear-circuit").addEventListener("click", () => {
   state.nodes = [];
   state.wires = [];
   state.macros = [];
+  state.macroInstanceValues = new Map();
+  setSimulationRunning(false);
   resetTemplateState();
   clearSelection();
   renderMacroParts();
   render();
+  markSavedState();
 });
 
 document.getElementById("save-file").addEventListener("click", () => exportCircuit());
@@ -6057,4 +8815,7 @@ document.querySelectorAll(".tool").forEach((button) => {
   button.setAttribute("aria-pressed", active ? "true" : "false");
 });
 updatePartButtons();
+updateSimulationRunButton();
+markSavedState();
+setInterval(tickClocks, 25);
 render();

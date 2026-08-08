@@ -1,0 +1,510 @@
+{
+  "kind": "digital-works-design",
+  "name": "Untitled Design",
+  "nodes": [
+    {
+      "id": "input-0vw3wf",
+      "type": "INPUT",
+      "x": -9,
+      "y": -21,
+      "value": true,
+      "onColor": "#ff1900",
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "input-w4qbgw",
+      "type": "INPUT",
+      "x": -9,
+      "y": -5,
+      "value": false,
+      "onColor": "#ff1900",
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "input-f8wjwl",
+      "type": "INPUT",
+      "x": -9,
+      "y": 11,
+      "value": true,
+      "onColor": "#ff1900",
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "nand-bk3lk1",
+      "type": "NAND",
+      "x": 0,
+      "y": -23,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 3
+    },
+    {
+      "id": "nand-qpc81t",
+      "type": "NAND",
+      "x": 0,
+      "y": 9,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 3
+    },
+    {
+      "id": "junction-tkuvvb",
+      "type": "JUNCTION",
+      "x": -4.5,
+      "y": -4.5,
+      "bitLength": 1
+    },
+    {
+      "id": "nand-muq4fd",
+      "type": "NAND",
+      "x": 24,
+      "y": -21,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "nand-n854i9",
+      "type": "NAND",
+      "x": 24,
+      "y": 7,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "output-4wuxf6",
+      "type": "OUTPUT",
+      "x": 43,
+      "y": -19,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "onColor": "#ff1900"
+    },
+    {
+      "id": "output-0xpmvs",
+      "type": "OUTPUT",
+      "x": 43,
+      "y": 9,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "onColor": "#ff1900"
+    },
+    {
+      "id": "junction-b4ln99",
+      "type": "JUNCTION",
+      "x": 37.5,
+      "y": 9.5,
+      "bitLength": 1
+    },
+    {
+      "id": "junction-ifkfpd",
+      "type": "JUNCTION",
+      "x": 37.5,
+      "y": -18.5,
+      "bitLength": 1
+    },
+    {
+      "id": "junction-981msd",
+      "type": "JUNCTION",
+      "x": 39.5,
+      "y": -18.5,
+      "bitLength": 1
+    },
+    {
+      "id": "junction-h0zhmw",
+      "type": "JUNCTION",
+      "x": 41.5,
+      "y": 9.5,
+      "bitLength": 1
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire-kqqems",
+      "from": {
+        "kind": "port",
+        "nodeId": "input-0vw3wf",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "nand-bk3lk1",
+        "port": "b",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-trmzlr",
+      "from": {
+        "kind": "port",
+        "nodeId": "input-w4qbgw",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-tkuvvb",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-tkraa9",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-tkuvvb",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "nand-bk3lk1",
+        "port": "c",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [
+        {
+          "x": -4,
+          "y": -18
+        }
+      ],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-yokkj2",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-tkuvvb",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "nand-qpc81t",
+        "port": "a",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [
+        {
+          "x": -4,
+          "y": 10
+        }
+      ],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-mmecr9",
+      "from": {
+        "kind": "port",
+        "nodeId": "input-f8wjwl",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "nand-qpc81t",
+        "port": "b",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-7n0375",
+      "from": {
+        "kind": "port",
+        "nodeId": "nand-qpc81t",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "nand-n854i9",
+        "port": "b",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-mclglw",
+      "from": {
+        "kind": "port",
+        "nodeId": "nand-bk3lk1",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "nand-muq4fd",
+        "port": "a",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-cf44ig",
+      "from": {
+        "kind": "port",
+        "nodeId": "nand-n854i9",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-b4ln99",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-9tgd2g",
+      "from": {
+        "kind": "port",
+        "nodeId": "nand-muq4fd",
+        "port": "b",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-b4ln99",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-ec88bz",
+      "from": {
+        "kind": "port",
+        "nodeId": "nand-muq4fd",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-ifkfpd",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-vruy5d",
+      "from": {
+        "kind": "port",
+        "nodeId": "nand-n854i9",
+        "port": "a",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-ifkfpd",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-679l92",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-ifkfpd",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-981msd",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-6sndoo",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-981msd",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "output-4wuxf6",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-aa75qi",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-981msd",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "nand-qpc81t",
+        "port": "c",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [
+        {
+          "x": 40,
+          "y": 16
+        },
+        {
+          "x": 0,
+          "y": 16
+        }
+      ],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-59oynf",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-b4ln99",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-h0zhmw",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-3eburb",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-h0zhmw",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "output-0xpmvs",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-pypa4r",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-h0zhmw",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "nand-bk3lk1",
+        "port": "a",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [
+        {
+          "x": 42,
+          "y": -24
+        },
+        {
+          "x": 0,
+          "y": -24
+        }
+      ],
+      "bitLength": 1
+    }
+  ],
+  "settings": {
+    "wireHotColor": "#ff1900",
+    "wireColdColor": "#969696",
+    "inputHotColor": "#ff1900",
+    "outputHotColor": "#ff1900",
+    "orderArrowColor": "#ff1900",
+    "dataArrowColor": "#0000ff",
+    "orderArrowDirection": "lsb-to-msb",
+    "dataArrowDirection": "left-to-right",
+    "arrowScale": 1,
+    "textDefaults": {
+      "text": "Text",
+      "w": 4,
+      "h": 2,
+      "align": "center",
+      "verticalAlign": "middle",
+      "fontSize": 48,
+      "fontFamily": "Arial, sans-serif",
+      "color": "#20231f"
+    }
+  },
+  "macros": [],
+  "templateWorkspace": {
+    "polygon": [],
+    "draft": [],
+    "pins": [],
+    "texts": [],
+    "tool": "select",
+    "pendingOptions": {},
+    "sourcePinId": null,
+    "multiPinBits": null,
+    "cablePinBits": null
+  }
+}

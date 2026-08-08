@@ -39,12 +39,16 @@
 
 html {
   height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 body {
   margin: 0;
   height: 100%;
   min-height: 100vh;
+  overflow: hidden;
+  overscroll-behavior: none;
   background: var(--bg);
   color: var(--fg);
   font-family: "Segoe UI", system-ui, sans-serif;
@@ -80,9 +84,11 @@ button.active {
 #digital-works-app {
   /* Full-height shell: topbar remains above the editable workspace. */
   height: 100vh;
+  height: 100dvh;
   min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .topbar {
@@ -140,7 +146,7 @@ button.active {
 .palette {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-height: 42px;
   padding: 5px 8px;
   border-bottom: 1px solid var(--line);
@@ -153,9 +159,17 @@ button.active {
   display: flex;
   align-items: center;
   gap: 3px;
-  padding-right: 8px;
+  padding: 0 7px 0 0;
   border-right: 1px solid var(--line);
   flex: 0 0 auto;
+}
+
+.part-group {
+  gap: 4px;
+}
+
+.part-group + .part-group {
+  margin-left: -2px;
 }
 
 .toolbar-group:last-child {
@@ -196,6 +210,27 @@ button.active {
   stroke-linecap: round;
   stroke-linejoin: round;
   pointer-events: none;
+}
+
+.icon-button svg text {
+  fill: currentColor;
+  stroke: none;
+  font-size: 7px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+#simulation-run-toggle .stop-icon {
+  display: none;
+}
+
+#simulation-run-toggle.active .run-icon {
+  display: none;
+}
+
+#simulation-run-toggle.active .stop-icon {
+  display: inline;
 }
 
 .icon-button.active svg,
@@ -278,11 +313,14 @@ button.active svg {
   display: grid;
   gap: 4px;
   min-width: 104px;
+  max-width: calc(100vw - 16px);
+  max-height: calc(100dvh - 16px);
   padding: 6px;
   border: 1px solid var(--part-stroke);
   border-radius: 6px;
   background: var(--panel);
   box-shadow: var(--shadow);
+  overflow: auto;
 }
 
 .fan-in-menu[hidden] {
@@ -341,6 +379,51 @@ button.active svg {
   padding: 4px 6px;
   color: var(--fg);
   background: var(--panel);
+}
+
+.bus-direction-field {
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+.bus-direction-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 28px);
+  grid-template-rows: repeat(3, 28px);
+  gap: 3px;
+  justify-content: end;
+}
+
+.fan-in-menu .bus-direction-button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--fg);
+  background: var(--panel);
+  font-size: 18px;
+  line-height: 1;
+  text-align: center;
+}
+
+.fan-in-menu .bus-direction-button.active {
+  border-color: var(--accent);
+  background: rgba(8, 127, 115, 0.12);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.bus-direction-spacer {
+  width: 28px;
+  height: 28px;
+}
+
+.frequency-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(44px, 1fr));
+  gap: 4px;
 }
 
 .dialog-actions {
@@ -545,6 +628,17 @@ button.active svg {
   stroke-width: 3;
 }
 
+.template-cable-pin {
+  stroke-width: 2;
+}
+
+.template-cable-pin-mark {
+  fill: #000000;
+  stroke: #000000;
+  stroke-width: 0;
+  pointer-events: none;
+}
+
 .template-pending-shadow {
   opacity: 0.45;
   pointer-events: none;
@@ -557,19 +651,6 @@ button.active svg {
   pointer-events: none;
 }
 
-.canvas-help {
-  position: absolute;
-  z-index: 2;
-  top: 12px;
-  left: 12px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  max-width: calc(100% - 24px);
-  pointer-events: none;
-}
-
-.canvas-help span,
 #status {
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--panel) 92%, transparent);
@@ -617,6 +698,27 @@ button.active svg {
   user-select: none;
 }
 
+#canvas.control-action-cursor,
+#canvas.control-action-cursor .node,
+#canvas.control-action-cursor .switch-dot,
+#canvas.control-action-cursor .port {
+  cursor: cell;
+}
+
+#canvas.control-mode,
+#canvas.control-mode .node,
+#canvas.control-mode .switch-dot,
+#canvas.control-mode .port {
+  cursor: default;
+}
+
+#canvas.control-mode.control-action-cursor,
+#canvas.control-mode.control-action-cursor .node,
+#canvas.control-mode.control-action-cursor .switch-dot,
+#canvas.control-mode.control-action-cursor .port {
+  cursor: cell;
+}
+
 .grid-minor {
   /* Minor and major grid strokes are separate so scale stays readable. */
   stroke: color-mix(in srgb, var(--line) 55%, transparent);
@@ -639,8 +741,13 @@ button.active svg {
   fill: none;
   stroke: var(--muted);
   stroke-width: var(--circuit-stroke);
-  stroke-linecap: round;
+  stroke-linecap: butt;
   stroke-linejoin: round;
+}
+
+.wire-point-cap {
+  stroke: none;
+  pointer-events: none;
 }
 
 .wire.hot {
@@ -651,12 +758,38 @@ button.active svg {
   stroke: var(--cold);
 }
 
+.wire.unknown {
+  stroke: #d08a00;
+}
+
+.wire.high-z {
+  stroke: #0b73b7;
+}
+
+.wire.cable {
+  stroke: #000000;
+  stroke-width: 24;
+}
+
+.wire.selected {
+  stroke-dasharray: 14 10;
+}
+
+.wire.cable.selected {
+  stroke-dasharray: 1 34;
+}
+
 .wire-preview {
   fill: none;
   stroke: var(--part-stroke);
   stroke-width: var(--circuit-stroke);
-  stroke-linecap: round;
+  stroke-linecap: butt;
   stroke-linejoin: round;
+}
+
+.wire-preview.cable {
+  stroke: #000000;
+  stroke-width: 24;
 }
 
 .pending-part-preview {
@@ -707,7 +840,7 @@ button.active svg {
 
 .selection-box {
   fill: color-mix(in srgb, var(--accent) 12%, transparent);
-  stroke: var(--accent);
+  stroke: #000000;
   stroke-width: var(--circuit-stroke);
   stroke-dasharray: 8 6;
   pointer-events: none;
@@ -727,15 +860,23 @@ button.active svg {
 }
 
 .pin-body.assigned-pin,
-.multibit-pin-marker.assigned-pin {
+.multibit-pin-marker.assigned-pin,
+.cable-pin-body.assigned-pin {
   fill: #f0d35a;
+}
+
+.cable-pin-mark {
+  fill: #000000;
+  stroke: #000000;
+  stroke-width: 0;
+  pointer-events: none;
 }
 
 .gate-pin {
   fill: none;
   stroke: var(--part-stroke);
   stroke-width: var(--circuit-stroke);
-  stroke-linecap: square;
+  stroke-linecap: butt;
 }
 
 .node.selected .gate-pin {
@@ -798,6 +939,30 @@ button.active svg {
   -webkit-user-select: none;
 }
 
+.sequential-title {
+  font-size: 60px;
+  font-weight: 700;
+}
+
+.sequential-pin-label {
+  fill: var(--fg);
+  font-size: 60px;
+  font-weight: 600;
+  dominant-baseline: middle;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sequential-clock-mark {
+  fill: none;
+  stroke: var(--part-stroke);
+  stroke-width: var(--circuit-stroke);
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
 .junction-body {
   fill: var(--part-stroke);
   stroke: var(--part-stroke);
@@ -848,6 +1013,12 @@ button.active svg {
   stroke: transparent;
 }
 
+.port.cable-port {
+  fill: transparent;
+  stroke: transparent;
+  pointer-events: all;
+}
+
 .selection-handle {
   fill: var(--panel);
   stroke: var(--part-stroke);
@@ -871,6 +1042,78 @@ button.active svg {
 
 .multibit-switch-body {
   rx: 0;
+}
+
+.cable-switch-body {
+  rx: 0;
+}
+
+.cable-output-body {
+  rx: 999px;
+}
+
+.cable-switch-cable {
+  fill: #000000;
+  stroke: #000000;
+  stroke-width: 0;
+  pointer-events: none;
+}
+
+.cable-port-length {
+  fill: var(--fg);
+  font-size: 48px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-weight: 400;
+  pointer-events: none;
+}
+
+.cable-switch-data {
+  fill: var(--fg);
+  font-size: 48px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  pointer-events: none;
+}
+
+.cable-output-data {
+  fill: var(--fg);
+  font-size: 48px;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  pointer-events: none;
+}
+
+.cable-to-bus-body {
+  fill: var(--panel);
+  stroke: var(--part-stroke);
+  stroke-width: var(--circuit-stroke);
+  pointer-events: all;
+}
+
+.cable-to-bus-cable {
+  fill: #000000;
+  stroke: #000000;
+  stroke-width: 0;
+  pointer-events: all;
+}
+
+.cable-to-bus-bit {
+  stroke: #000000;
+  stroke-width: var(--circuit-stroke);
+  stroke-linecap: round;
+  pointer-events: all;
+}
+
+.cable-converter-order-arrow.line,
+.cable-converter-data-arrow.line {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.cable-converter-order-arrow.head,
+.cable-converter-data-arrow.head {
+  stroke: none;
+  pointer-events: none;
 }
 
 .multibit-order-arrow {
@@ -901,18 +1144,14 @@ button.active svg {
   pointer-events: none;
 }
 
-.supply-label {
-  fill: var(--fg);
-  font-size: 14px;
-  font-weight: 700;
-  text-anchor: middle;
-  dominant-baseline: middle;
-  pointer-events: none;
-  user-select: none;
-}
-
 .test-switch-body {
   stroke-linejoin: round;
+}
+
+.supply-hitbox {
+  fill: transparent;
+  stroke: transparent;
+  pointer-events: all;
 }
 
 .supply-symbol {
@@ -921,6 +1160,60 @@ button.active svg {
   stroke-linecap: round;
   fill: none;
   pointer-events: none;
+}
+
+.supply-state-ring {
+  stroke-width: var(--circuit-stroke);
+  pointer-events: none;
+}
+
+.supply-state-mark {
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.clock-source-wave {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.clock-source-label {
+  font-size: 25px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pulse-source-body {
+  fill: #ffffff;
+}
+
+.pulse-source-pattern {
+  font-size: 24px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pulse-source-label {
+  font-size: 16px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .switch-dot.on {

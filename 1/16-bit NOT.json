@@ -1,0 +1,1920 @@
+{
+  "kind": "digital-works-design",
+  "name": "Untitled Design",
+  "nodes": [
+    {
+      "id": "cable_test_switch-ufcrz4",
+      "type": "CABLE_TEST_SWITCH",
+      "x": -27,
+      "y": -5,
+      "bits": 16,
+      "data": 0,
+      "onColor": "#ff1900",
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_pin-02fxbj",
+      "type": "CABLE_PIN",
+      "x": -30,
+      "y": 2,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_to_bus-vuivbw",
+      "type": "CABLE_TO_BUS",
+      "x": -20,
+      "y": -12,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "junction-2qe88y",
+      "type": "JUNCTION",
+      "x": -24.5,
+      "y": 3.5
+    },
+    {
+      "id": "not-b8z98h",
+      "type": "NOT",
+      "x": -3,
+      "y": -10.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-bg8jhn",
+      "type": "NOT",
+      "x": -3,
+      "y": -12.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-c7lusm",
+      "type": "NOT",
+      "x": -3,
+      "y": -6.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-kmar8q",
+      "type": "NOT",
+      "x": -3,
+      "y": -8.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-9rlm50",
+      "type": "NOT",
+      "x": -3,
+      "y": -2.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-qy1hsd",
+      "type": "NOT",
+      "x": -3,
+      "y": -4.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-i0zmgs",
+      "type": "NOT",
+      "x": -3,
+      "y": 1.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-hysfet",
+      "type": "NOT",
+      "x": -3,
+      "y": -0.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-whmfk5",
+      "type": "NOT",
+      "x": -3,
+      "y": 5.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-onmhq2",
+      "type": "NOT",
+      "x": -3,
+      "y": 3.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-c15k8m",
+      "type": "NOT",
+      "x": -3,
+      "y": 9.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-xpc28p",
+      "type": "NOT",
+      "x": -3,
+      "y": 7.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-1kpoid",
+      "type": "NOT",
+      "x": -3,
+      "y": 13.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-i5blit",
+      "type": "NOT",
+      "x": -3,
+      "y": 11.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-e0zn8a",
+      "type": "NOT",
+      "x": -3,
+      "y": 17.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-o4cmn2",
+      "type": "NOT",
+      "x": -3,
+      "y": 15.5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "bus_to_cable-4y50j7",
+      "type": "BUS_TO_CABLE",
+      "x": 18,
+      "y": -12,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_output-gkqm8w",
+      "type": "CABLE_OUTPUT",
+      "x": 26,
+      "y": -5,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_pin-0goui1",
+      "type": "CABLE_PIN",
+      "x": 33,
+      "y": 2,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "junction-nnoprw",
+      "type": "JUNCTION",
+      "x": 28.5,
+      "y": 3.5
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire-l3fxke",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_test_switch-ufcrz4",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-2qe88y",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-2lb1vz",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-2qe88y",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "cable_pin-02fxbj",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-vwy27v",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-2qe88y",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 16
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-wqf8zc",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_pin-0goui1",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-nnoprw",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-hmec2z",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-nnoprw",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "cable_output-gkqm8w",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-j9fel4",
+      "from": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-nnoprw",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 16
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-3qbg63",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit15",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-e0zn8a",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-fdhmlj",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit14",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-o4cmn2",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-5p9c07",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit13",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-1kpoid",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-ft14f7",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit12",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-i5blit",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-f19r5k",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit11",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-c15k8m",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-4iz3yq",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit10",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-xpc28p",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-vxta3s",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit9",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-whmfk5",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-7wx7f8",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit8",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-onmhq2",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-dn5ezt",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit7",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-i0zmgs",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-ouj9af",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit6",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-hysfet",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-lo856i",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit5",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-9rlm50",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-iozyda",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit4",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-qy1hsd",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-7japa5",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit3",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-c7lusm",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-z2ozh9",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit2",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-kmar8q",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-3v0vct",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit1",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-b8z98h",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-b5qmtb",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-vuivbw",
+        "port": "bit0",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "not-bg8jhn",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-vepedz",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-e0zn8a",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit15",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-en3sem",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-o4cmn2",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit14",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-iaew33",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-1kpoid",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit13",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-glfyk9",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-i5blit",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit12",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-m9gw5u",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-c15k8m",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit11",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-lfumip",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-xpc28p",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit10",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-mwxs95",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-whmfk5",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit9",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-m49n56",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-onmhq2",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit8",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-4qc8b8",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-i0zmgs",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit7",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-lvh9t6",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-hysfet",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit6",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-385izm",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-9rlm50",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit5",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-4jx61e",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-qy1hsd",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit4",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-0eurqt",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-c7lusm",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit3",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-qlaa7c",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-kmar8q",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit2",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-mul610",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-b8z98h",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit1",
+        "direction": "input"
+      },
+      "points": []
+    },
+    {
+      "id": "wire-bvtfiv",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-bg8jhn",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-4y50j7",
+        "port": "bit0",
+        "direction": "input"
+      },
+      "points": []
+    }
+  ],
+  "settings": {
+    "wireHotColor": "#ff1900",
+    "wireColdColor": "#969696",
+    "inputHotColor": "#ff1900",
+    "outputHotColor": "#ff1900",
+    "orderArrowColor": "#ff1900",
+    "dataArrowColor": "#0000ff",
+    "orderArrowDirection": "lsb-to-msb",
+    "dataArrowDirection": "left-to-right",
+    "arrowScale": 1,
+    "textDefaults": {
+      "text": "Text",
+      "w": 4,
+      "h": 2,
+      "align": "center",
+      "verticalAlign": "middle",
+      "fontSize": 48,
+      "fontFamily": "Arial, sans-serif",
+      "color": "#20231f"
+    }
+  },
+  "macros": [
+    {
+      "kind": "digital-works-macro",
+      "id": "macrodef-rhhpbt",
+      "name": "Untitled Design",
+      "size": {
+        "w": 12,
+        "h": 6
+      },
+      "polygon": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 12,
+          "y": 0
+        },
+        {
+          "x": 12,
+          "y": 6
+        },
+        {
+          "x": 0,
+          "y": 6
+        }
+      ],
+      "texts": [
+        {
+          "id": "template-text-rfg020",
+          "x": 4,
+          "y": 2,
+          "text": "16-bit NOT",
+          "w": 4,
+          "h": 2,
+          "align": "center",
+          "verticalAlign": "middle",
+          "fontSize": 48,
+          "fontFamily": "Arial, sans-serif",
+          "color": "#20231f"
+        }
+      ],
+      "template": {
+        "polygon": [
+          {
+            "x": 46,
+            "y": 30
+          },
+          {
+            "x": 58,
+            "y": 30
+          },
+          {
+            "x": 58,
+            "y": 36
+          },
+          {
+            "x": 46,
+            "y": 36
+          }
+        ],
+        "pins": [
+          {
+            "id": "template-pin-c0a28g",
+            "label": "",
+            "direction": "input",
+            "kind": "cable",
+            "bitLength": 16,
+            "x": 46,
+            "y": 33,
+            "sourcePinId": "cable_pin-02fxbj",
+            "sourcePort": ""
+          },
+          {
+            "id": "template-pin-tz90te",
+            "label": "",
+            "direction": "input",
+            "kind": "cable",
+            "bitLength": 16,
+            "x": 58,
+            "y": 33,
+            "sourcePinId": "cable_pin-0goui1",
+            "sourcePort": ""
+          }
+        ],
+        "texts": [
+          {
+            "id": "template-text-rfg020",
+            "x": 50,
+            "y": 32,
+            "text": "16-bit NOT",
+            "w": 4,
+            "h": 2,
+            "align": "center",
+            "verticalAlign": "middle",
+            "fontSize": 48,
+            "fontFamily": "Arial, sans-serif",
+            "color": "#20231f"
+          }
+        ]
+      },
+      "pins": [
+        {
+          "id": "template-pin-c0a28g",
+          "label": "",
+          "direction": "input",
+          "internalNodeId": "cable_pin-02fxbj",
+          "internalPort": "",
+          "bitLength": 16,
+          "x": 0,
+          "y": 3
+        },
+        {
+          "id": "template-pin-tz90te",
+          "label": "",
+          "direction": "output",
+          "internalNodeId": "cable_pin-0goui1",
+          "internalPort": "",
+          "bitLength": 16,
+          "x": 12,
+          "y": 3
+        }
+      ],
+      "circuit": {
+        "nodes": [
+          {
+            "id": "cable_test_switch-ufcrz4",
+            "type": "CABLE_TEST_SWITCH",
+            "x": -27,
+            "y": -5,
+            "bits": 16,
+            "data": 0,
+            "onColor": "#ff1900",
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_pin-02fxbj",
+            "type": "CABLE_PIN",
+            "x": -30,
+            "y": 2,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_to_bus-vuivbw",
+            "type": "CABLE_TO_BUS",
+            "x": -20,
+            "y": -12,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "junction-2qe88y",
+            "type": "JUNCTION",
+            "x": -24.5,
+            "y": 3.5
+          },
+          {
+            "id": "not-b8z98h",
+            "type": "NOT",
+            "x": -3,
+            "y": -10.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-bg8jhn",
+            "type": "NOT",
+            "x": -3,
+            "y": -12.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-c7lusm",
+            "type": "NOT",
+            "x": -3,
+            "y": -6.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-kmar8q",
+            "type": "NOT",
+            "x": -3,
+            "y": -8.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-9rlm50",
+            "type": "NOT",
+            "x": -3,
+            "y": -2.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-qy1hsd",
+            "type": "NOT",
+            "x": -3,
+            "y": -4.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-i0zmgs",
+            "type": "NOT",
+            "x": -3,
+            "y": 1.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-hysfet",
+            "type": "NOT",
+            "x": -3,
+            "y": -0.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-whmfk5",
+            "type": "NOT",
+            "x": -3,
+            "y": 5.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-onmhq2",
+            "type": "NOT",
+            "x": -3,
+            "y": 3.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-c15k8m",
+            "type": "NOT",
+            "x": -3,
+            "y": 9.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-xpc28p",
+            "type": "NOT",
+            "x": -3,
+            "y": 7.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-1kpoid",
+            "type": "NOT",
+            "x": -3,
+            "y": 13.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-i5blit",
+            "type": "NOT",
+            "x": -3,
+            "y": 11.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-e0zn8a",
+            "type": "NOT",
+            "x": -3,
+            "y": 17.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-o4cmn2",
+            "type": "NOT",
+            "x": -3,
+            "y": 15.5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "bus_to_cable-4y50j7",
+            "type": "BUS_TO_CABLE",
+            "x": 18,
+            "y": -12,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_output-gkqm8w",
+            "type": "CABLE_OUTPUT",
+            "x": 26,
+            "y": -5,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_pin-0goui1",
+            "type": "CABLE_PIN",
+            "x": 33,
+            "y": 2,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "junction-nnoprw",
+            "type": "JUNCTION",
+            "x": 28.5,
+            "y": 3.5
+          }
+        ],
+        "wires": [
+          {
+            "id": "wire-l3fxke",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_test_switch-ufcrz4",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-2qe88y",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-2lb1vz",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-2qe88y",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "cable_pin-02fxbj",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-vwy27v",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-2qe88y",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "in",
+              "direction": "input",
+              "bitLength": 16
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-wqf8zc",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_pin-0goui1",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-nnoprw",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-hmec2z",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-nnoprw",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "cable_output-gkqm8w",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-j9fel4",
+            "from": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-nnoprw",
+              "port": "in",
+              "direction": "input",
+              "bitLength": 16
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-3qbg63",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit15",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-e0zn8a",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-fdhmlj",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit14",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-o4cmn2",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-5p9c07",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit13",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-1kpoid",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-ft14f7",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit12",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-i5blit",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-f19r5k",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit11",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-c15k8m",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-4iz3yq",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit10",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-xpc28p",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-vxta3s",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit9",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-whmfk5",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-7wx7f8",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit8",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-onmhq2",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-dn5ezt",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit7",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-i0zmgs",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-ouj9af",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit6",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-hysfet",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-lo856i",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit5",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-9rlm50",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-iozyda",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit4",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-qy1hsd",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-7japa5",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit3",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-c7lusm",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-z2ozh9",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit2",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-kmar8q",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-3v0vct",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit1",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-b8z98h",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-b5qmtb",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-vuivbw",
+              "port": "bit0",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "not-bg8jhn",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-vepedz",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-e0zn8a",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit15",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-en3sem",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-o4cmn2",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit14",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-iaew33",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-1kpoid",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit13",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-glfyk9",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-i5blit",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit12",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-m9gw5u",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-c15k8m",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit11",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-lfumip",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-xpc28p",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit10",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-mwxs95",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-whmfk5",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit9",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-m49n56",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-onmhq2",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit8",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-4qc8b8",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-i0zmgs",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit7",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-lvh9t6",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-hysfet",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit6",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-385izm",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-9rlm50",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit5",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-4jx61e",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-qy1hsd",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit4",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-0eurqt",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-c7lusm",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit3",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-qlaa7c",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-kmar8q",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit2",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-mul610",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-b8z98h",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit1",
+              "direction": "input"
+            },
+            "points": []
+          },
+          {
+            "id": "wire-bvtfiv",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-bg8jhn",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-4y50j7",
+              "port": "bit0",
+              "direction": "input"
+            },
+            "points": []
+          }
+        ],
+        "settings": {
+          "wireHotColor": "#ff1900",
+          "wireColdColor": "#969696",
+          "inputHotColor": "#ff1900",
+          "outputHotColor": "#ff1900",
+          "orderArrowColor": "#ff1900",
+          "dataArrowColor": "#0000ff",
+          "orderArrowDirection": "lsb-to-msb",
+          "dataArrowDirection": "left-to-right",
+          "arrowScale": 1,
+          "textDefaults": {
+            "text": "Text",
+            "w": 4,
+            "h": 2,
+            "align": "center",
+            "verticalAlign": "middle",
+            "fontSize": 48,
+            "fontFamily": "Arial, sans-serif",
+            "color": "#20231f"
+          }
+        },
+        "macros": []
+      },
+      "paletteVisible": false
+    }
+  ],
+  "templateWorkspace": {
+    "polygon": [
+      {
+        "x": 46,
+        "y": 30
+      },
+      {
+        "x": 58,
+        "y": 30
+      },
+      {
+        "x": 58,
+        "y": 36
+      },
+      {
+        "x": 46,
+        "y": 36
+      }
+    ],
+    "draft": [],
+    "pins": [
+      {
+        "id": "template-pin-c0a28g",
+        "label": "",
+        "direction": "input",
+        "kind": "cable",
+        "bitLength": 16,
+        "x": 46,
+        "y": 33,
+        "sourcePinId": "cable_pin-02fxbj",
+        "sourcePort": ""
+      },
+      {
+        "id": "template-pin-tz90te",
+        "label": "",
+        "direction": "input",
+        "kind": "cable",
+        "bitLength": 16,
+        "x": 58,
+        "y": 33,
+        "sourcePinId": "cable_pin-0goui1",
+        "sourcePort": ""
+      }
+    ],
+    "texts": [
+      {
+        "id": "template-text-rfg020",
+        "x": 50,
+        "y": 32,
+        "text": "16-bit NOT",
+        "w": 4,
+        "h": 2,
+        "align": "center",
+        "verticalAlign": "middle",
+        "fontSize": 48,
+        "fontFamily": "Arial, sans-serif",
+        "color": "#20231f"
+      }
+    ],
+    "tool": "select",
+    "pendingOptions": {},
+    "sourcePinId": null,
+    "multiPinBits": null,
+    "cablePinBits": 16
+  }
+}

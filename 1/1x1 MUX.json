@@ -3,29 +3,9 @@
   "name": "Untitled Design",
   "nodes": [
     {
-      "id": "test_input-ulin2z",
+      "id": "test_input-3zd96j",
       "type": "TEST_INPUT",
-      "x": 3,
-      "y": -19,
-      "value": false,
-      "onColor": "#ff1900",
-      "rotation": 0,
-      "mirrorX": false,
-      "mirrorY": false
-    },
-    {
-      "id": "pin-7xo3wd",
-      "type": "PIN",
-      "x": 1.2,
-      "y": -16.8,
-      "rotation": 0,
-      "mirrorX": false,
-      "mirrorY": false
-    },
-    {
-      "id": "test_input-6m9nhf",
-      "type": "TEST_INPUT",
-      "x": 3,
+      "x": -1,
       "y": -7,
       "value": false,
       "onColor": "#ff1900",
@@ -34,121 +14,155 @@
       "mirrorY": false
     },
     {
-      "id": "pin-x3irmv",
+      "id": "pin-qdrff3",
       "type": "PIN",
-      "x": 1.2,
+      "x": -2.8,
       "y": -4.8,
       "rotation": 0,
       "mirrorX": false,
       "mirrorY": false
     },
     {
-      "id": "and-ocyg6v",
+      "id": "test_input-xcfdsu",
+      "type": "TEST_INPUT",
+      "x": -1,
+      "y": 9,
+      "value": false,
+      "onColor": "#ff1900",
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "pin-4uik7v",
+      "type": "PIN",
+      "x": -2.8,
+      "y": 11.2,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "test_input-q5caip",
+      "type": "TEST_INPUT",
+      "x": 15,
+      "y": -23,
+      "value": false,
+      "onColor": "#ff1900",
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "pin-agy64z",
+      "type": "PIN",
+      "x": 13.2,
+      "y": -20.8,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "not-7o1ldk",
+      "type": "NOT",
+      "x": 13,
+      "y": -14.5,
+      "rotation": 3,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "and-udwmdg",
       "type": "AND",
-      "x": 16,
-      "y": -17,
+      "x": 24,
+      "y": -5,
       "rotation": 0,
       "mirrorX": false,
       "mirrorY": false,
       "fanIn": 2
     },
     {
-      "id": "xor-4gty6c",
-      "type": "XOR",
-      "x": 16,
-      "y": -9,
+      "id": "and-i3w5s5",
+      "type": "AND",
+      "x": 24,
+      "y": 11,
       "rotation": 0,
       "mirrorX": false,
       "mirrorY": false,
       "fanIn": 2
     },
     {
-      "id": "output-lfuoge",
+      "id": "or-qvax19",
+      "type": "OR",
+      "x": 40,
+      "y": 3,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "output-e1k9i8",
       "type": "OUTPUT",
-      "x": 31,
-      "y": -17,
+      "x": 55,
+      "y": 3,
       "rotation": 0,
       "mirrorX": false,
       "mirrorY": false,
       "onColor": "#ff1900"
     },
     {
-      "id": "pin-rr1m91",
+      "id": "pin-hgign9",
       "type": "PIN",
-      "x": 33.2,
-      "y": -14.8,
+      "x": 57.2,
+      "y": 5.2,
       "rotation": 0,
       "mirrorX": false,
       "mirrorY": false
     },
     {
-      "id": "output-nn8ala",
-      "type": "OUTPUT",
-      "x": 31,
-      "y": -9,
-      "rotation": 0,
-      "mirrorX": false,
-      "mirrorY": false,
-      "onColor": "#ff1900"
-    },
-    {
-      "id": "pin-qcbzfk",
-      "type": "PIN",
-      "x": 33.2,
-      "y": -6.8,
-      "rotation": 0,
-      "mirrorX": false,
-      "mirrorY": false
-    },
-    {
-      "id": "junction-b2yv52",
+      "id": "junction-cmb2bh",
       "type": "JUNCTION",
-      "x": 3.5,
-      "y": -16.5
-    },
-    {
-      "id": "junction-ra6us7",
-      "type": "JUNCTION",
-      "x": 3.5,
+      "x": -0.5,
       "y": -4.5
     },
     {
-      "id": "junction-qyq455",
+      "id": "junction-wx1y49",
       "type": "JUNCTION",
-      "x": 7.5,
-      "y": -4.5
+      "x": -0.5,
+      "y": 11.5
     },
     {
-      "id": "junction-n18r0m",
+      "id": "junction-iwqrou",
       "type": "JUNCTION",
-      "x": 7.5,
-      "y": -16.5
+      "x": 55.5,
+      "y": 5.5
     },
     {
-      "id": "junction-hobiq1",
+      "id": "junction-efddqf",
       "type": "JUNCTION",
-      "x": 31.5,
-      "y": -14.5
+      "x": 15.5,
+      "y": -20.5
     },
     {
-      "id": "junction-0eu82z",
+      "id": "junction-dl0sb3",
       "type": "JUNCTION",
-      "x": 31.5,
-      "y": -6.5
+      "x": 15.5,
+      "y": -18.5
     }
   ],
   "wires": [
     {
-      "id": "wire-9vwteg",
+      "id": "wire-i5b2ju",
       "from": {
         "kind": "port",
-        "nodeId": "test_input-ulin2z",
+        "nodeId": "test_input-3zd96j",
         "port": "out",
         "direction": "output"
       },
       "to": {
         "kind": "port",
-        "nodeId": "junction-b2yv52",
+        "nodeId": "junction-cmb2bh",
         "port": "in",
         "direction": "input"
       },
@@ -156,16 +170,16 @@
       "bitLength": 1
     },
     {
-      "id": "wire-w826ai",
+      "id": "wire-3z8rzg",
       "from": {
         "kind": "port",
-        "nodeId": "junction-b2yv52",
+        "nodeId": "junction-cmb2bh",
         "port": "out",
         "direction": "output"
       },
       "to": {
         "kind": "port",
-        "nodeId": "pin-7xo3wd",
+        "nodeId": "pin-qdrff3",
         "port": "in",
         "direction": "input"
       },
@@ -173,123 +187,17 @@
       "bitLength": 1
     },
     {
-      "id": "wire-scuu73",
+      "id": "wire-16t0lq",
       "from": {
         "kind": "port",
-        "nodeId": "test_input-6m9nhf",
-        "port": "out",
-        "direction": "output"
-      },
-      "to": {
-        "kind": "port",
-        "nodeId": "junction-ra6us7",
-        "port": "in",
-        "direction": "input"
-      },
-      "points": [],
-      "bitLength": 1
-    },
-    {
-      "id": "wire-steczl",
-      "from": {
-        "kind": "port",
-        "nodeId": "junction-ra6us7",
-        "port": "out",
-        "direction": "output"
-      },
-      "to": {
-        "kind": "port",
-        "nodeId": "pin-x3irmv",
-        "port": "in",
-        "direction": "input"
-      },
-      "points": [],
-      "bitLength": 1
-    },
-    {
-      "id": "wire-hh336p",
-      "from": {
-        "kind": "port",
-        "nodeId": "junction-ra6us7",
+        "nodeId": "junction-cmb2bh",
         "port": "out",
         "direction": "output",
         "bitLength": 1
       },
       "to": {
         "kind": "port",
-        "nodeId": "junction-qyq455",
-        "port": "in",
-        "direction": "input"
-      },
-      "points": [],
-      "bitLength": 1
-    },
-    {
-      "id": "wire-3irjkw",
-      "from": {
-        "kind": "port",
-        "nodeId": "junction-qyq455",
-        "port": "out",
-        "direction": "output"
-      },
-      "to": {
-        "kind": "port",
-        "nodeId": "xor-4gty6c",
-        "port": "b",
-        "direction": "input",
-        "bitLength": 1
-      },
-      "points": [],
-      "bitLength": 1
-    },
-    {
-      "id": "wire-dmk6qo",
-      "from": {
-        "kind": "port",
-        "nodeId": "and-ocyg6v",
-        "port": "b",
-        "direction": "input",
-        "bitLength": 1
-      },
-      "to": {
-        "kind": "port",
-        "nodeId": "junction-qyq455",
-        "port": "in",
-        "direction": "input",
-        "bitLength": 1
-      },
-      "points": [],
-      "bitLength": 1
-    },
-    {
-      "id": "wire-nw0xvo",
-      "from": {
-        "kind": "port",
-        "nodeId": "junction-b2yv52",
-        "port": "out",
-        "direction": "output",
-        "bitLength": 1
-      },
-      "to": {
-        "kind": "port",
-        "nodeId": "junction-n18r0m",
-        "port": "in",
-        "direction": "input"
-      },
-      "points": [],
-      "bitLength": 1
-    },
-    {
-      "id": "wire-f7ka3n",
-      "from": {
-        "kind": "port",
-        "nodeId": "junction-n18r0m",
-        "port": "out",
-        "direction": "output"
-      },
-      "to": {
-        "kind": "port",
-        "nodeId": "and-ocyg6v",
+        "nodeId": "and-udwmdg",
         "port": "a",
         "direction": "input",
         "bitLength": 1
@@ -298,17 +206,160 @@
       "bitLength": 1
     },
     {
-      "id": "wire-gml1uj",
+      "id": "wire-xb8u9t",
       "from": {
         "kind": "port",
-        "nodeId": "xor-4gty6c",
+        "nodeId": "test_input-xcfdsu",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-wx1y49",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-1whnz9",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-wx1y49",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "pin-4uik7v",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-u8eq9g",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-wx1y49",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "and-i3w5s5",
         "port": "a",
         "direction": "input",
         "bitLength": 1
       },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-3t0mud",
+      "from": {
+        "kind": "port",
+        "nodeId": "and-i3w5s5",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
       "to": {
         "kind": "port",
-        "nodeId": "junction-n18r0m",
+        "nodeId": "or-qvax19",
+        "port": "b",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [
+        {
+          "x": 38,
+          "y": 14
+        },
+        {
+          "x": 38,
+          "y": 8
+        }
+      ],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-t7eqyn",
+      "from": {
+        "kind": "port",
+        "nodeId": "and-udwmdg",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-qvax19",
+        "port": "a",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [
+        {
+          "x": 38,
+          "y": -2
+        },
+        {
+          "x": 38,
+          "y": 4
+        }
+      ],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-b9rt7w",
+      "from": {
+        "kind": "port",
+        "nodeId": "pin-hgign9",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-iwqrou",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-dyy1tr",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-iwqrou",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "output-e1k9i8",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-04epyy",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-qvax19",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-iwqrou",
         "port": "in",
         "direction": "input",
         "bitLength": 1
@@ -317,16 +368,16 @@
       "bitLength": 1
     },
     {
-      "id": "wire-f2dikp",
+      "id": "wire-784so6",
       "from": {
         "kind": "port",
-        "nodeId": "pin-rr1m91",
+        "nodeId": "test_input-q5caip",
         "port": "out",
         "direction": "output"
       },
       "to": {
         "kind": "port",
-        "nodeId": "junction-hobiq1",
+        "nodeId": "junction-efddqf",
         "port": "in",
         "direction": "input"
       },
@@ -334,16 +385,16 @@
       "bitLength": 1
     },
     {
-      "id": "wire-nvjz4q",
+      "id": "wire-0etkrx",
       "from": {
         "kind": "port",
-        "nodeId": "junction-hobiq1",
+        "nodeId": "junction-efddqf",
         "port": "out",
         "direction": "output"
       },
       "to": {
         "kind": "port",
-        "nodeId": "output-lfuoge",
+        "nodeId": "pin-agy64z",
         "port": "in",
         "direction": "input"
       },
@@ -351,17 +402,58 @@
       "bitLength": 1
     },
     {
-      "id": "wire-4vipc0",
+      "id": "wire-svv48v",
       "from": {
         "kind": "port",
-        "nodeId": "and-ocyg6v",
+        "nodeId": "junction-efddqf",
         "port": "out",
         "direction": "output",
         "bitLength": 1
       },
       "to": {
         "kind": "port",
-        "nodeId": "junction-hobiq1",
+        "nodeId": "junction-dl0sb3",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-caagas",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-dl0sb3",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "and-i3w5s5",
+        "port": "b",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "points": [
+        {
+          "x": 16,
+          "y": 16
+        }
+      ],
+      "bitLength": 1
+    },
+    {
+      "id": "wire-cqnd0p",
+      "from": {
+        "kind": "port",
+        "nodeId": "not-7o1ldk",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 1
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-dl0sb3",
         "port": "in",
         "direction": "input",
         "bitLength": 1
@@ -370,56 +462,27 @@
       "bitLength": 1
     },
     {
-      "id": "wire-3nlqg4",
+      "id": "wire-4r4h2r",
       "from": {
         "kind": "port",
-        "nodeId": "pin-qcbzfk",
-        "port": "out",
-        "direction": "output"
-      },
-      "to": {
-        "kind": "port",
-        "nodeId": "junction-0eu82z",
-        "port": "in",
-        "direction": "input"
-      },
-      "points": [],
-      "bitLength": 1
-    },
-    {
-      "id": "wire-1q7yth",
-      "from": {
-        "kind": "port",
-        "nodeId": "junction-0eu82z",
-        "port": "out",
-        "direction": "output"
-      },
-      "to": {
-        "kind": "port",
-        "nodeId": "output-nn8ala",
-        "port": "in",
-        "direction": "input"
-      },
-      "points": [],
-      "bitLength": 1
-    },
-    {
-      "id": "wire-zrunvv",
-      "from": {
-        "kind": "port",
-        "nodeId": "junction-0eu82z",
+        "nodeId": "not-7o1ldk",
         "port": "out",
         "direction": "output",
         "bitLength": 1
       },
       "to": {
         "kind": "port",
-        "nodeId": "xor-4gty6c",
-        "port": "out",
-        "direction": "output",
+        "nodeId": "and-udwmdg",
+        "port": "b",
+        "direction": "input",
         "bitLength": 1
       },
-      "points": [],
+      "points": [
+        {
+          "x": 18,
+          "y": 0
+        }
+      ],
       "bitLength": 1
     }
   ],
@@ -447,10 +510,10 @@
   "macros": [
     {
       "kind": "digital-works-macro",
-      "id": "macrodef-nnq1la",
+      "id": "macrodef-u8xt3x",
       "name": "Untitled Design",
       "size": {
-        "w": 12,
+        "w": 8,
         "h": 6
       },
       "polygon": [
@@ -459,11 +522,11 @@
           "y": 0
         },
         {
-          "x": 12,
+          "x": 8,
           "y": 0
         },
         {
-          "x": 12,
+          "x": 8,
           "y": 6
         },
         {
@@ -473,62 +536,10 @@
       ],
       "texts": [
         {
-          "id": "template-text-rmpn22",
-          "x": 1,
-          "y": 0,
-          "text": "A",
-          "w": 4,
-          "h": 2,
-          "align": "left",
-          "verticalAlign": "middle",
-          "fontSize": 48,
-          "fontFamily": "Arial, sans-serif",
-          "color": "#20231f"
-        },
-        {
-          "id": "template-text-3eqzaj",
-          "x": 1,
-          "y": 4,
-          "text": "B",
-          "w": 4,
-          "h": 2,
-          "align": "left",
-          "verticalAlign": "middle",
-          "fontSize": 48,
-          "fontFamily": "Arial, sans-serif",
-          "color": "#20231f"
-        },
-        {
-          "id": "template-text-3hx692",
-          "x": 7,
-          "y": 0,
-          "text": "Cout",
-          "w": 4,
-          "h": 2,
-          "align": "right",
-          "verticalAlign": "middle",
-          "fontSize": 48,
-          "fontFamily": "Arial, sans-serif",
-          "color": "#20231f"
-        },
-        {
-          "id": "template-text-uwaff5",
-          "x": 7,
-          "y": 4,
-          "text": "S",
-          "w": 4,
-          "h": 2,
-          "align": "right",
-          "verticalAlign": "middle",
-          "fontSize": 48,
-          "fontFamily": "Arial, sans-serif",
-          "color": "#20231f"
-        },
-        {
-          "id": "template-text-q0ucs8",
-          "x": 4,
+          "id": "template-text-fk2tdq",
+          "x": 2,
           "y": 2,
-          "text": "HA",
+          "text": "MUX",
           "w": 4,
           "h": 2,
           "align": "center",
@@ -541,126 +552,74 @@
       "template": {
         "polygon": [
           {
-            "x": 46,
-            "y": 30
+            "x": 48,
+            "y": 28
           },
           {
-            "x": 58,
-            "y": 30
+            "x": 56,
+            "y": 28
           },
           {
-            "x": 58,
-            "y": 36
+            "x": 56,
+            "y": 34
           },
           {
-            "x": 46,
-            "y": 36
+            "x": 48,
+            "y": 34
           }
         ],
         "pins": [
           {
-            "id": "template-pin-llwn11",
+            "id": "template-pin-s21c7s",
             "label": "",
             "direction": "input",
             "kind": "pin",
             "bitLength": 1,
-            "x": 46,
+            "x": 48,
+            "y": 29,
+            "sourcePinId": "pin-qdrff3",
+            "sourcePort": ""
+          },
+          {
+            "id": "template-pin-gengow",
+            "label": "",
+            "direction": "input",
+            "kind": "pin",
+            "bitLength": 1,
+            "x": 48,
+            "y": 33,
+            "sourcePinId": "pin-4uik7v",
+            "sourcePort": ""
+          },
+          {
+            "id": "template-pin-r96qpj",
+            "label": "",
+            "direction": "input",
+            "kind": "pin",
+            "bitLength": 1,
+            "x": 52,
+            "y": 28,
+            "sourcePinId": "pin-agy64z",
+            "sourcePort": ""
+          },
+          {
+            "id": "template-pin-pkre0x",
+            "label": "",
+            "direction": "input",
+            "kind": "pin",
+            "bitLength": 1,
+            "x": 56,
             "y": 31,
-            "sourcePinId": "pin-7xo3wd",
-            "sourcePort": ""
-          },
-          {
-            "id": "template-pin-n29fjc",
-            "label": "",
-            "direction": "input",
-            "kind": "pin",
-            "bitLength": 1,
-            "x": 46,
-            "y": 35,
-            "sourcePinId": "pin-x3irmv",
-            "sourcePort": ""
-          },
-          {
-            "id": "template-pin-qqezen",
-            "label": "",
-            "direction": "input",
-            "kind": "pin",
-            "bitLength": 1,
-            "x": 58,
-            "y": 31,
-            "sourcePinId": "pin-rr1m91",
-            "sourcePort": ""
-          },
-          {
-            "id": "template-pin-g9845i",
-            "label": "",
-            "direction": "input",
-            "kind": "pin",
-            "bitLength": 1,
-            "x": 58,
-            "y": 35,
-            "sourcePinId": "pin-qcbzfk",
+            "sourcePinId": "pin-hgign9",
             "sourcePort": ""
           }
         ],
         "texts": [
           {
-            "id": "template-text-rmpn22",
-            "x": 47,
-            "y": 30,
-            "text": "A",
-            "w": 4,
-            "h": 2,
-            "align": "left",
-            "verticalAlign": "middle",
-            "fontSize": 48,
-            "fontFamily": "Arial, sans-serif",
-            "color": "#20231f"
-          },
-          {
-            "id": "template-text-3eqzaj",
-            "x": 47,
-            "y": 34,
-            "text": "B",
-            "w": 4,
-            "h": 2,
-            "align": "left",
-            "verticalAlign": "middle",
-            "fontSize": 48,
-            "fontFamily": "Arial, sans-serif",
-            "color": "#20231f"
-          },
-          {
-            "id": "template-text-3hx692",
-            "x": 53,
-            "y": 30,
-            "text": "Cout",
-            "w": 4,
-            "h": 2,
-            "align": "right",
-            "verticalAlign": "middle",
-            "fontSize": 48,
-            "fontFamily": "Arial, sans-serif",
-            "color": "#20231f"
-          },
-          {
-            "id": "template-text-uwaff5",
-            "x": 53,
-            "y": 34,
-            "text": "S",
-            "w": 4,
-            "h": 2,
-            "align": "right",
-            "verticalAlign": "middle",
-            "fontSize": 48,
-            "fontFamily": "Arial, sans-serif",
-            "color": "#20231f"
-          },
-          {
-            "id": "template-text-q0ucs8",
+            "id": "template-text-fk2tdq",
             "x": 50,
-            "y": 32,
-            "text": "HA",
+            "y": 30,
+            "text": "MUX",
             "w": 4,
             "h": 2,
             "align": "center",
@@ -673,72 +632,52 @@
       },
       "pins": [
         {
-          "id": "template-pin-llwn11",
+          "id": "template-pin-s21c7s",
           "label": "",
           "direction": "input",
-          "internalNodeId": "pin-7xo3wd",
+          "internalNodeId": "pin-qdrff3",
           "internalPort": "",
           "bitLength": 1,
           "x": 0,
           "y": 1
         },
         {
-          "id": "template-pin-n29fjc",
+          "id": "template-pin-gengow",
           "label": "",
           "direction": "input",
-          "internalNodeId": "pin-x3irmv",
+          "internalNodeId": "pin-4uik7v",
           "internalPort": "",
           "bitLength": 1,
           "x": 0,
           "y": 5
         },
         {
-          "id": "template-pin-qqezen",
+          "id": "template-pin-r96qpj",
           "label": "",
-          "direction": "output",
-          "internalNodeId": "pin-rr1m91",
+          "direction": "input",
+          "internalNodeId": "pin-agy64z",
           "internalPort": "",
           "bitLength": 1,
-          "x": 12,
-          "y": 1
+          "x": 4,
+          "y": 0
         },
         {
-          "id": "template-pin-g9845i",
+          "id": "template-pin-pkre0x",
           "label": "",
           "direction": "output",
-          "internalNodeId": "pin-qcbzfk",
+          "internalNodeId": "pin-hgign9",
           "internalPort": "",
           "bitLength": 1,
-          "x": 12,
-          "y": 5
+          "x": 8,
+          "y": 3
         }
       ],
       "circuit": {
         "nodes": [
           {
-            "id": "test_input-ulin2z",
+            "id": "test_input-3zd96j",
             "type": "TEST_INPUT",
-            "x": 3,
-            "y": -19,
-            "value": false,
-            "onColor": "#ff1900",
-            "rotation": 0,
-            "mirrorX": false,
-            "mirrorY": false
-          },
-          {
-            "id": "pin-7xo3wd",
-            "type": "PIN",
-            "x": 1.2,
-            "y": -16.8,
-            "rotation": 0,
-            "mirrorX": false,
-            "mirrorY": false
-          },
-          {
-            "id": "test_input-6m9nhf",
-            "type": "TEST_INPUT",
-            "x": 3,
+            "x": -1,
             "y": -7,
             "value": false,
             "onColor": "#ff1900",
@@ -747,121 +686,155 @@
             "mirrorY": false
           },
           {
-            "id": "pin-x3irmv",
+            "id": "pin-qdrff3",
             "type": "PIN",
-            "x": 1.2,
+            "x": -2.8,
             "y": -4.8,
             "rotation": 0,
             "mirrorX": false,
             "mirrorY": false
           },
           {
-            "id": "and-ocyg6v",
+            "id": "test_input-xcfdsu",
+            "type": "TEST_INPUT",
+            "x": -1,
+            "y": 9,
+            "value": false,
+            "onColor": "#ff1900",
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "pin-4uik7v",
+            "type": "PIN",
+            "x": -2.8,
+            "y": 11.2,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "test_input-q5caip",
+            "type": "TEST_INPUT",
+            "x": 15,
+            "y": -23,
+            "value": false,
+            "onColor": "#ff1900",
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "pin-agy64z",
+            "type": "PIN",
+            "x": 13.2,
+            "y": -20.8,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "not-7o1ldk",
+            "type": "NOT",
+            "x": 13,
+            "y": -14.5,
+            "rotation": 3,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "and-udwmdg",
             "type": "AND",
-            "x": 16,
-            "y": -17,
+            "x": 24,
+            "y": -5,
             "rotation": 0,
             "mirrorX": false,
             "mirrorY": false,
             "fanIn": 2
           },
           {
-            "id": "xor-4gty6c",
-            "type": "XOR",
-            "x": 16,
-            "y": -9,
+            "id": "and-i3w5s5",
+            "type": "AND",
+            "x": 24,
+            "y": 11,
             "rotation": 0,
             "mirrorX": false,
             "mirrorY": false,
             "fanIn": 2
           },
           {
-            "id": "output-lfuoge",
+            "id": "or-qvax19",
+            "type": "OR",
+            "x": 40,
+            "y": 3,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "output-e1k9i8",
             "type": "OUTPUT",
-            "x": 31,
-            "y": -17,
+            "x": 55,
+            "y": 3,
             "rotation": 0,
             "mirrorX": false,
             "mirrorY": false,
             "onColor": "#ff1900"
           },
           {
-            "id": "pin-rr1m91",
+            "id": "pin-hgign9",
             "type": "PIN",
-            "x": 33.2,
-            "y": -14.8,
+            "x": 57.2,
+            "y": 5.2,
             "rotation": 0,
             "mirrorX": false,
             "mirrorY": false
           },
           {
-            "id": "output-nn8ala",
-            "type": "OUTPUT",
-            "x": 31,
-            "y": -9,
-            "rotation": 0,
-            "mirrorX": false,
-            "mirrorY": false,
-            "onColor": "#ff1900"
-          },
-          {
-            "id": "pin-qcbzfk",
-            "type": "PIN",
-            "x": 33.2,
-            "y": -6.8,
-            "rotation": 0,
-            "mirrorX": false,
-            "mirrorY": false
-          },
-          {
-            "id": "junction-b2yv52",
+            "id": "junction-cmb2bh",
             "type": "JUNCTION",
-            "x": 3.5,
-            "y": -16.5
-          },
-          {
-            "id": "junction-ra6us7",
-            "type": "JUNCTION",
-            "x": 3.5,
+            "x": -0.5,
             "y": -4.5
           },
           {
-            "id": "junction-qyq455",
+            "id": "junction-wx1y49",
             "type": "JUNCTION",
-            "x": 7.5,
-            "y": -4.5
+            "x": -0.5,
+            "y": 11.5
           },
           {
-            "id": "junction-n18r0m",
+            "id": "junction-iwqrou",
             "type": "JUNCTION",
-            "x": 7.5,
-            "y": -16.5
+            "x": 55.5,
+            "y": 5.5
           },
           {
-            "id": "junction-hobiq1",
+            "id": "junction-efddqf",
             "type": "JUNCTION",
-            "x": 31.5,
-            "y": -14.5
+            "x": 15.5,
+            "y": -20.5
           },
           {
-            "id": "junction-0eu82z",
+            "id": "junction-dl0sb3",
             "type": "JUNCTION",
-            "x": 31.5,
-            "y": -6.5
+            "x": 15.5,
+            "y": -18.5
           }
         ],
         "wires": [
           {
-            "id": "wire-9vwteg",
+            "id": "wire-i5b2ju",
             "from": {
               "kind": "port",
-              "nodeId": "test_input-ulin2z",
+              "nodeId": "test_input-3zd96j",
               "port": "out",
               "direction": "output"
             },
             "to": {
               "kind": "port",
-              "nodeId": "junction-b2yv52",
+              "nodeId": "junction-cmb2bh",
               "port": "in",
               "direction": "input"
             },
@@ -869,16 +842,16 @@
             "bitLength": 1
           },
           {
-            "id": "wire-w826ai",
+            "id": "wire-3z8rzg",
             "from": {
               "kind": "port",
-              "nodeId": "junction-b2yv52",
+              "nodeId": "junction-cmb2bh",
               "port": "out",
               "direction": "output"
             },
             "to": {
               "kind": "port",
-              "nodeId": "pin-7xo3wd",
+              "nodeId": "pin-qdrff3",
               "port": "in",
               "direction": "input"
             },
@@ -886,123 +859,17 @@
             "bitLength": 1
           },
           {
-            "id": "wire-scuu73",
+            "id": "wire-16t0lq",
             "from": {
               "kind": "port",
-              "nodeId": "test_input-6m9nhf",
-              "port": "out",
-              "direction": "output"
-            },
-            "to": {
-              "kind": "port",
-              "nodeId": "junction-ra6us7",
-              "port": "in",
-              "direction": "input"
-            },
-            "points": [],
-            "bitLength": 1
-          },
-          {
-            "id": "wire-steczl",
-            "from": {
-              "kind": "port",
-              "nodeId": "junction-ra6us7",
-              "port": "out",
-              "direction": "output"
-            },
-            "to": {
-              "kind": "port",
-              "nodeId": "pin-x3irmv",
-              "port": "in",
-              "direction": "input"
-            },
-            "points": [],
-            "bitLength": 1
-          },
-          {
-            "id": "wire-hh336p",
-            "from": {
-              "kind": "port",
-              "nodeId": "junction-ra6us7",
+              "nodeId": "junction-cmb2bh",
               "port": "out",
               "direction": "output",
               "bitLength": 1
             },
             "to": {
               "kind": "port",
-              "nodeId": "junction-qyq455",
-              "port": "in",
-              "direction": "input"
-            },
-            "points": [],
-            "bitLength": 1
-          },
-          {
-            "id": "wire-3irjkw",
-            "from": {
-              "kind": "port",
-              "nodeId": "junction-qyq455",
-              "port": "out",
-              "direction": "output"
-            },
-            "to": {
-              "kind": "port",
-              "nodeId": "xor-4gty6c",
-              "port": "b",
-              "direction": "input",
-              "bitLength": 1
-            },
-            "points": [],
-            "bitLength": 1
-          },
-          {
-            "id": "wire-dmk6qo",
-            "from": {
-              "kind": "port",
-              "nodeId": "and-ocyg6v",
-              "port": "b",
-              "direction": "input",
-              "bitLength": 1
-            },
-            "to": {
-              "kind": "port",
-              "nodeId": "junction-qyq455",
-              "port": "in",
-              "direction": "input",
-              "bitLength": 1
-            },
-            "points": [],
-            "bitLength": 1
-          },
-          {
-            "id": "wire-nw0xvo",
-            "from": {
-              "kind": "port",
-              "nodeId": "junction-b2yv52",
-              "port": "out",
-              "direction": "output",
-              "bitLength": 1
-            },
-            "to": {
-              "kind": "port",
-              "nodeId": "junction-n18r0m",
-              "port": "in",
-              "direction": "input"
-            },
-            "points": [],
-            "bitLength": 1
-          },
-          {
-            "id": "wire-f7ka3n",
-            "from": {
-              "kind": "port",
-              "nodeId": "junction-n18r0m",
-              "port": "out",
-              "direction": "output"
-            },
-            "to": {
-              "kind": "port",
-              "nodeId": "and-ocyg6v",
+              "nodeId": "and-udwmdg",
               "port": "a",
               "direction": "input",
               "bitLength": 1
@@ -1011,17 +878,160 @@
             "bitLength": 1
           },
           {
-            "id": "wire-gml1uj",
+            "id": "wire-xb8u9t",
             "from": {
               "kind": "port",
-              "nodeId": "xor-4gty6c",
+              "nodeId": "test_input-xcfdsu",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-wx1y49",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-1whnz9",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-wx1y49",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "pin-4uik7v",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-u8eq9g",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-wx1y49",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 1
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "and-i3w5s5",
               "port": "a",
               "direction": "input",
               "bitLength": 1
             },
+            "points": [],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-3t0mud",
+            "from": {
+              "kind": "port",
+              "nodeId": "and-i3w5s5",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 1
+            },
             "to": {
               "kind": "port",
-              "nodeId": "junction-n18r0m",
+              "nodeId": "or-qvax19",
+              "port": "b",
+              "direction": "input",
+              "bitLength": 1
+            },
+            "points": [
+              {
+                "x": 38,
+                "y": 14
+              },
+              {
+                "x": 38,
+                "y": 8
+              }
+            ],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-t7eqyn",
+            "from": {
+              "kind": "port",
+              "nodeId": "and-udwmdg",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 1
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-qvax19",
+              "port": "a",
+              "direction": "input",
+              "bitLength": 1
+            },
+            "points": [
+              {
+                "x": 38,
+                "y": -2
+              },
+              {
+                "x": 38,
+                "y": 4
+              }
+            ],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-b9rt7w",
+            "from": {
+              "kind": "port",
+              "nodeId": "pin-hgign9",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-iwqrou",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-dyy1tr",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-iwqrou",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "output-e1k9i8",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-04epyy",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-qvax19",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 1
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-iwqrou",
               "port": "in",
               "direction": "input",
               "bitLength": 1
@@ -1030,16 +1040,16 @@
             "bitLength": 1
           },
           {
-            "id": "wire-f2dikp",
+            "id": "wire-784so6",
             "from": {
               "kind": "port",
-              "nodeId": "pin-rr1m91",
+              "nodeId": "test_input-q5caip",
               "port": "out",
               "direction": "output"
             },
             "to": {
               "kind": "port",
-              "nodeId": "junction-hobiq1",
+              "nodeId": "junction-efddqf",
               "port": "in",
               "direction": "input"
             },
@@ -1047,16 +1057,16 @@
             "bitLength": 1
           },
           {
-            "id": "wire-nvjz4q",
+            "id": "wire-0etkrx",
             "from": {
               "kind": "port",
-              "nodeId": "junction-hobiq1",
+              "nodeId": "junction-efddqf",
               "port": "out",
               "direction": "output"
             },
             "to": {
               "kind": "port",
-              "nodeId": "output-lfuoge",
+              "nodeId": "pin-agy64z",
               "port": "in",
               "direction": "input"
             },
@@ -1064,17 +1074,58 @@
             "bitLength": 1
           },
           {
-            "id": "wire-4vipc0",
+            "id": "wire-svv48v",
             "from": {
               "kind": "port",
-              "nodeId": "and-ocyg6v",
+              "nodeId": "junction-efddqf",
               "port": "out",
               "direction": "output",
               "bitLength": 1
             },
             "to": {
               "kind": "port",
-              "nodeId": "junction-hobiq1",
+              "nodeId": "junction-dl0sb3",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-caagas",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-dl0sb3",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "and-i3w5s5",
+              "port": "b",
+              "direction": "input",
+              "bitLength": 1
+            },
+            "points": [
+              {
+                "x": 16,
+                "y": 16
+              }
+            ],
+            "bitLength": 1
+          },
+          {
+            "id": "wire-cqnd0p",
+            "from": {
+              "kind": "port",
+              "nodeId": "not-7o1ldk",
+              "port": "in",
+              "direction": "input",
+              "bitLength": 1
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-dl0sb3",
               "port": "in",
               "direction": "input",
               "bitLength": 1
@@ -1083,56 +1134,27 @@
             "bitLength": 1
           },
           {
-            "id": "wire-3nlqg4",
+            "id": "wire-4r4h2r",
             "from": {
               "kind": "port",
-              "nodeId": "pin-qcbzfk",
-              "port": "out",
-              "direction": "output"
-            },
-            "to": {
-              "kind": "port",
-              "nodeId": "junction-0eu82z",
-              "port": "in",
-              "direction": "input"
-            },
-            "points": [],
-            "bitLength": 1
-          },
-          {
-            "id": "wire-1q7yth",
-            "from": {
-              "kind": "port",
-              "nodeId": "junction-0eu82z",
-              "port": "out",
-              "direction": "output"
-            },
-            "to": {
-              "kind": "port",
-              "nodeId": "output-nn8ala",
-              "port": "in",
-              "direction": "input"
-            },
-            "points": [],
-            "bitLength": 1
-          },
-          {
-            "id": "wire-zrunvv",
-            "from": {
-              "kind": "port",
-              "nodeId": "junction-0eu82z",
+              "nodeId": "not-7o1ldk",
               "port": "out",
               "direction": "output",
               "bitLength": 1
             },
             "to": {
               "kind": "port",
-              "nodeId": "xor-4gty6c",
-              "port": "out",
-              "direction": "output",
+              "nodeId": "and-udwmdg",
+              "port": "b",
+              "direction": "input",
               "bitLength": 1
             },
-            "points": [],
+            "points": [
+              {
+                "x": 18,
+                "y": 0
+              }
+            ],
             "bitLength": 1
           }
         ],
@@ -1161,5 +1183,92 @@
       },
       "paletteVisible": false
     }
-  ]
+  ],
+  "templateWorkspace": {
+    "polygon": [
+      {
+        "x": 48,
+        "y": 28
+      },
+      {
+        "x": 56,
+        "y": 28
+      },
+      {
+        "x": 56,
+        "y": 34
+      },
+      {
+        "x": 48,
+        "y": 34
+      }
+    ],
+    "draft": [],
+    "pins": [
+      {
+        "id": "template-pin-s21c7s",
+        "label": "",
+        "direction": "input",
+        "kind": "pin",
+        "bitLength": 1,
+        "x": 48,
+        "y": 29,
+        "sourcePinId": "pin-qdrff3",
+        "sourcePort": ""
+      },
+      {
+        "id": "template-pin-gengow",
+        "label": "",
+        "direction": "input",
+        "kind": "pin",
+        "bitLength": 1,
+        "x": 48,
+        "y": 33,
+        "sourcePinId": "pin-4uik7v",
+        "sourcePort": ""
+      },
+      {
+        "id": "template-pin-r96qpj",
+        "label": "",
+        "direction": "input",
+        "kind": "pin",
+        "bitLength": 1,
+        "x": 52,
+        "y": 28,
+        "sourcePinId": "pin-agy64z",
+        "sourcePort": ""
+      },
+      {
+        "id": "template-pin-pkre0x",
+        "label": "",
+        "direction": "input",
+        "kind": "pin",
+        "bitLength": 1,
+        "x": 56,
+        "y": 31,
+        "sourcePinId": "pin-hgign9",
+        "sourcePort": ""
+      }
+    ],
+    "texts": [
+      {
+        "id": "template-text-fk2tdq",
+        "x": 50,
+        "y": 30,
+        "text": "MUX",
+        "w": 4,
+        "h": 2,
+        "align": "center",
+        "verticalAlign": "middle",
+        "fontSize": 48,
+        "fontFamily": "Arial, sans-serif",
+        "color": "#20231f"
+      }
+    ],
+    "tool": "select",
+    "pendingOptions": {},
+    "sourcePinId": "pin-hgign9",
+    "multiPinBits": null,
+    "cablePinBits": null
+  }
 }

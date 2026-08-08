@@ -1,0 +1,3294 @@
+{
+  "kind": "digital-works-design",
+  "name": "Untitled Design",
+  "nodes": [
+    {
+      "id": "cable_test_switch-7vhb58",
+      "type": "CABLE_TEST_SWITCH",
+      "x": -47,
+      "y": -29,
+      "bits": 16,
+      "data": 0,
+      "onColor": "#ff1900",
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_pin-hnd3fr",
+      "type": "CABLE_PIN",
+      "x": -50,
+      "y": -22,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_test_switch-frl3u9",
+      "type": "CABLE_TEST_SWITCH",
+      "x": -7,
+      "y": -29,
+      "bits": 16,
+      "data": 0,
+      "onColor": "#ff1900",
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_pin-0hlp0j",
+      "type": "CABLE_PIN",
+      "x": -10,
+      "y": -22,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_to_bus-723ppf",
+      "type": "CABLE_TO_BUS",
+      "x": -47,
+      "y": -25,
+      "bits": 16,
+      "rotation": 3,
+      "mirrorX": true,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_to_bus-hygmxl",
+      "type": "CABLE_TO_BUS",
+      "x": -7,
+      "y": -25,
+      "bits": 16,
+      "rotation": 3,
+      "mirrorX": true,
+      "mirrorY": false
+    },
+    {
+      "id": "junction-06j5dy",
+      "type": "JUNCTION",
+      "x": -44.5,
+      "y": -20.5
+    },
+    {
+      "id": "junction-2qy3jw",
+      "type": "JUNCTION",
+      "x": -4.5,
+      "y": -20.5
+    },
+    {
+      "id": "bus_to_cable-k86yxf",
+      "type": "BUS_TO_CABLE",
+      "x": 114,
+      "y": 42,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_output-vci6du",
+      "type": "CABLE_OUTPUT",
+      "x": 121,
+      "y": 49,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "cable_pin-6xacy9",
+      "type": "CABLE_PIN",
+      "x": 128,
+      "y": 56,
+      "bits": 16,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false
+    },
+    {
+      "id": "junction-c1fs1p",
+      "type": "JUNCTION",
+      "x": 123.5,
+      "y": 57.5
+    },
+    {
+      "id": "or-zx2cbh",
+      "type": "OR",
+      "x": 36,
+      "y": -5,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-xtbl0b",
+      "type": "OR",
+      "x": 36,
+      "y": 3,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-0q0xmy",
+      "type": "OR",
+      "x": 36,
+      "y": 11,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-18rljn",
+      "type": "OR",
+      "x": 36,
+      "y": 19,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-42xpkz",
+      "type": "OR",
+      "x": 36,
+      "y": 27,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-dbsu2g",
+      "type": "OR",
+      "x": 36,
+      "y": 35,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-i0ta92",
+      "type": "OR",
+      "x": 36,
+      "y": 43,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-hjild8",
+      "type": "OR",
+      "x": 36,
+      "y": 51,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-aseanu",
+      "type": "OR",
+      "x": 36,
+      "y": 59,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-i4lg56",
+      "type": "OR",
+      "x": 36,
+      "y": 67,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-jr1ay3",
+      "type": "OR",
+      "x": 36,
+      "y": 75,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-x95vjc",
+      "type": "OR",
+      "x": 36,
+      "y": 83,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-bng6ti",
+      "type": "OR",
+      "x": 36,
+      "y": 91,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-2i5wac",
+      "type": "OR",
+      "x": 36,
+      "y": 99,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-8h5ct3",
+      "type": "OR",
+      "x": 36,
+      "y": 107,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    },
+    {
+      "id": "or-6thsdb",
+      "type": "OR",
+      "x": 36,
+      "y": 115,
+      "rotation": 0,
+      "mirrorX": false,
+      "mirrorY": false,
+      "fanIn": 2
+    }
+  ],
+  "wires": [
+    {
+      "id": "wire-r8mq4n",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_pin-hnd3fr",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-06j5dy",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-6ew7xa",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-06j5dy",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "cable_test_switch-7vhb58",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-lk645s",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-06j5dy",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 16
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-brywtq",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_pin-0hlp0j",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-2qy3jw",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-9ks7q7",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-2qy3jw",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "cable_test_switch-frl3u9",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-5qpk16",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-2qy3jw",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 16
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-vhb5cs",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_pin-6xacy9",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-c1fs1p",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-9soljk",
+      "from": {
+        "kind": "port",
+        "nodeId": "junction-c1fs1p",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "cable_output-vci6du",
+        "port": "in",
+        "direction": "input"
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-buhu3f",
+      "from": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "out",
+        "direction": "output",
+        "bitLength": 16
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "junction-c1fs1p",
+        "port": "in",
+        "direction": "input",
+        "bitLength": 16
+      },
+      "points": [],
+      "bitLength": 16
+    },
+    {
+      "id": "wire-pik2o7",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit15",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-6thsdb",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -29,
+          "y": 116
+        }
+      ]
+    },
+    {
+      "id": "wire-dqg98z",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit14",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-8h5ct3",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -31,
+          "y": 108
+        }
+      ]
+    },
+    {
+      "id": "wire-mjz39h",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit13",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-2i5wac",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -33,
+          "y": 100
+        }
+      ]
+    },
+    {
+      "id": "wire-rejb9t",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit12",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-bng6ti",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -35,
+          "y": 92
+        }
+      ]
+    },
+    {
+      "id": "wire-8o0y9m",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit11",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-x95vjc",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -37,
+          "y": 84
+        }
+      ]
+    },
+    {
+      "id": "wire-uusbh0",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit10",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-jr1ay3",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -39,
+          "y": 76
+        }
+      ]
+    },
+    {
+      "id": "wire-ivy03o",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit9",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-i4lg56",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -41,
+          "y": 68
+        }
+      ]
+    },
+    {
+      "id": "wire-nst2bo",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit8",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-aseanu",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -43,
+          "y": 60
+        }
+      ]
+    },
+    {
+      "id": "wire-5quoxp",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit7",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-hjild8",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -45,
+          "y": 52
+        }
+      ]
+    },
+    {
+      "id": "wire-1e2ban",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit6",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-i0ta92",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -47,
+          "y": 44
+        }
+      ]
+    },
+    {
+      "id": "wire-09pj1o",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit5",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-dbsu2g",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -49,
+          "y": 36
+        }
+      ]
+    },
+    {
+      "id": "wire-f6lq73",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit4",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-42xpkz",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -51,
+          "y": 28
+        }
+      ]
+    },
+    {
+      "id": "wire-65tiar",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit3",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-18rljn",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -53,
+          "y": 20
+        }
+      ]
+    },
+    {
+      "id": "wire-sj4j6n",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit2",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-0q0xmy",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -55,
+          "y": 12
+        }
+      ]
+    },
+    {
+      "id": "wire-x1lovt",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit1",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-xtbl0b",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -57,
+          "y": 4
+        }
+      ]
+    },
+    {
+      "id": "wire-5rdtth",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-723ppf",
+        "port": "bit0",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-zx2cbh",
+        "port": "a",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -59,
+          "y": -4
+        }
+      ]
+    },
+    {
+      "id": "wire-9toemn",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit15",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-6thsdb",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 11,
+          "y": 120
+        }
+      ]
+    },
+    {
+      "id": "wire-qtyr3u",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit14",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-8h5ct3",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 9,
+          "y": 112
+        }
+      ]
+    },
+    {
+      "id": "wire-r0w48q",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit13",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-2i5wac",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 7,
+          "y": 104
+        }
+      ]
+    },
+    {
+      "id": "wire-dbs8z7",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit12",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-bng6ti",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 5,
+          "y": 96
+        }
+      ]
+    },
+    {
+      "id": "wire-xonk5m",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit11",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-x95vjc",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 3,
+          "y": 88
+        }
+      ]
+    },
+    {
+      "id": "wire-vdwrfa",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit10",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-jr1ay3",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 1,
+          "y": 80
+        }
+      ]
+    },
+    {
+      "id": "wire-0dzo2t",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit9",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-i4lg56",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -1,
+          "y": 72
+        }
+      ]
+    },
+    {
+      "id": "wire-4dbran",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit8",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-aseanu",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -3,
+          "y": 64
+        }
+      ]
+    },
+    {
+      "id": "wire-zu17zz",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit7",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-hjild8",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -5,
+          "y": 56
+        }
+      ]
+    },
+    {
+      "id": "wire-idn9o1",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit6",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-i0ta92",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -7,
+          "y": 48
+        }
+      ]
+    },
+    {
+      "id": "wire-xewyio",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit5",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-dbsu2g",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -9,
+          "y": 40
+        }
+      ]
+    },
+    {
+      "id": "wire-tztu77",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit4",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-42xpkz",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -11,
+          "y": 32
+        }
+      ]
+    },
+    {
+      "id": "wire-thgs3u",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit3",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-18rljn",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -13,
+          "y": 24
+        }
+      ]
+    },
+    {
+      "id": "wire-xreuhz",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit2",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-0q0xmy",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -15,
+          "y": 16
+        }
+      ]
+    },
+    {
+      "id": "wire-c2io83",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit1",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-xtbl0b",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -17,
+          "y": 8
+        }
+      ]
+    },
+    {
+      "id": "wire-wxo16h",
+      "from": {
+        "kind": "port",
+        "nodeId": "cable_to_bus-hygmxl",
+        "port": "bit0",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "or-zx2cbh",
+        "port": "b",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": -19,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "id": "wire-yluihe",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-hjild8",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit7",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 94,
+          "y": 54
+        },
+        {
+          "x": 94,
+          "y": 57
+        }
+      ]
+    },
+    {
+      "id": "wire-bqrxe6",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-i0ta92",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit6",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 96,
+          "y": 46
+        },
+        {
+          "x": 96,
+          "y": 55
+        }
+      ]
+    },
+    {
+      "id": "wire-k84plz",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-dbsu2g",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit5",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 98,
+          "y": 38
+        },
+        {
+          "x": 98,
+          "y": 53
+        }
+      ]
+    },
+    {
+      "id": "wire-azujvw",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-42xpkz",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit4",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 100,
+          "y": 30
+        },
+        {
+          "x": 100,
+          "y": 51
+        }
+      ]
+    },
+    {
+      "id": "wire-yyuvlx",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-18rljn",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit3",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 102,
+          "y": 22
+        },
+        {
+          "x": 102,
+          "y": 49
+        }
+      ]
+    },
+    {
+      "id": "wire-grdcik",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-0q0xmy",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit2",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 104,
+          "y": 14
+        },
+        {
+          "x": 104,
+          "y": 47
+        }
+      ]
+    },
+    {
+      "id": "wire-zi6dhx",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-xtbl0b",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit1",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 106,
+          "y": 6
+        },
+        {
+          "x": 106,
+          "y": 45
+        }
+      ]
+    },
+    {
+      "id": "wire-s3g9pm",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-zx2cbh",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit0",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 108,
+          "y": -2
+        },
+        {
+          "x": 108,
+          "y": 43
+        }
+      ]
+    },
+    {
+      "id": "wire-jd0pnf",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-6thsdb",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit15",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 108,
+          "y": 118
+        },
+        {
+          "x": 108,
+          "y": 73
+        }
+      ]
+    },
+    {
+      "id": "wire-h4oefa",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-8h5ct3",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit14",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 106,
+          "y": 110
+        },
+        {
+          "x": 106,
+          "y": 71
+        }
+      ]
+    },
+    {
+      "id": "wire-wft2jd",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-2i5wac",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit13",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 104,
+          "y": 102
+        },
+        {
+          "x": 104,
+          "y": 69
+        }
+      ]
+    },
+    {
+      "id": "wire-gzryrr",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-bng6ti",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit12",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 102,
+          "y": 94
+        },
+        {
+          "x": 102,
+          "y": 67
+        }
+      ]
+    },
+    {
+      "id": "wire-wsubgr",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-x95vjc",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit11",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 100,
+          "y": 86
+        },
+        {
+          "x": 100,
+          "y": 65
+        }
+      ]
+    },
+    {
+      "id": "wire-sa1h04",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-jr1ay3",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit10",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 98,
+          "y": 78
+        },
+        {
+          "x": 98,
+          "y": 63
+        }
+      ]
+    },
+    {
+      "id": "wire-u30u58",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-i4lg56",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit9",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 96,
+          "y": 70
+        },
+        {
+          "x": 96,
+          "y": 61
+        }
+      ]
+    },
+    {
+      "id": "wire-jkut50",
+      "from": {
+        "kind": "port",
+        "nodeId": "or-aseanu",
+        "port": "out",
+        "direction": "output"
+      },
+      "to": {
+        "kind": "port",
+        "nodeId": "bus_to_cable-k86yxf",
+        "port": "bit8",
+        "direction": "input"
+      },
+      "points": [
+        {
+          "x": 94,
+          "y": 62
+        },
+        {
+          "x": 94,
+          "y": 59
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "wireHotColor": "#ff1900",
+    "wireColdColor": "#969696",
+    "inputHotColor": "#ff1900",
+    "outputHotColor": "#ff1900",
+    "orderArrowColor": "#ff1900",
+    "dataArrowColor": "#0000ff",
+    "orderArrowDirection": "lsb-to-msb",
+    "dataArrowDirection": "left-to-right",
+    "arrowScale": 1,
+    "textDefaults": {
+      "text": "Text",
+      "w": 4,
+      "h": 2,
+      "align": "center",
+      "verticalAlign": "middle",
+      "fontSize": 48,
+      "fontFamily": "Arial, sans-serif",
+      "color": "#20231f"
+    }
+  },
+  "macros": [
+    {
+      "kind": "digital-works-macro",
+      "id": "macrodef-o80ujg",
+      "name": "Untitled Design",
+      "size": {
+        "w": 12,
+        "h": 8
+      },
+      "polygon": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 12,
+          "y": 0
+        },
+        {
+          "x": 12,
+          "y": 8
+        },
+        {
+          "x": 0,
+          "y": 8
+        }
+      ],
+      "texts": [
+        {
+          "id": "template-text-7kfcj4",
+          "x": 4,
+          "y": 3,
+          "text": "16-bit OR",
+          "w": 4,
+          "h": 2,
+          "align": "center",
+          "verticalAlign": "middle",
+          "fontSize": 48,
+          "fontFamily": "Arial, sans-serif",
+          "color": "#20231f"
+        }
+      ],
+      "template": {
+        "polygon": [
+          {
+            "x": 44,
+            "y": 20
+          },
+          {
+            "x": 56,
+            "y": 20
+          },
+          {
+            "x": 56,
+            "y": 28
+          },
+          {
+            "x": 44,
+            "y": 28
+          }
+        ],
+        "pins": [
+          {
+            "id": "template-pin-4s4u74",
+            "label": "",
+            "direction": "input",
+            "kind": "cable",
+            "bitLength": 16,
+            "x": 44,
+            "y": 22,
+            "sourcePinId": "cable_pin-hnd3fr",
+            "sourcePort": ""
+          },
+          {
+            "id": "template-pin-xiudvh",
+            "label": "",
+            "direction": "input",
+            "kind": "cable",
+            "bitLength": 16,
+            "x": 44,
+            "y": 26,
+            "sourcePinId": "cable_pin-0hlp0j",
+            "sourcePort": ""
+          },
+          {
+            "id": "template-pin-viz3yv",
+            "label": "",
+            "direction": "input",
+            "kind": "cable",
+            "bitLength": 16,
+            "x": 56,
+            "y": 24,
+            "sourcePinId": "cable_pin-6xacy9",
+            "sourcePort": ""
+          }
+        ],
+        "texts": [
+          {
+            "id": "template-text-7kfcj4",
+            "x": 48,
+            "y": 23,
+            "text": "16-bit OR",
+            "w": 4,
+            "h": 2,
+            "align": "center",
+            "verticalAlign": "middle",
+            "fontSize": 48,
+            "fontFamily": "Arial, sans-serif",
+            "color": "#20231f"
+          }
+        ]
+      },
+      "pins": [
+        {
+          "id": "template-pin-4s4u74",
+          "label": "",
+          "direction": "input",
+          "internalNodeId": "cable_pin-hnd3fr",
+          "internalPort": "",
+          "bitLength": 16,
+          "x": 0,
+          "y": 2
+        },
+        {
+          "id": "template-pin-xiudvh",
+          "label": "",
+          "direction": "input",
+          "internalNodeId": "cable_pin-0hlp0j",
+          "internalPort": "",
+          "bitLength": 16,
+          "x": 0,
+          "y": 6
+        },
+        {
+          "id": "template-pin-viz3yv",
+          "label": "",
+          "direction": "output",
+          "internalNodeId": "cable_pin-6xacy9",
+          "internalPort": "",
+          "bitLength": 16,
+          "x": 12,
+          "y": 4
+        }
+      ],
+      "circuit": {
+        "nodes": [
+          {
+            "id": "cable_test_switch-7vhb58",
+            "type": "CABLE_TEST_SWITCH",
+            "x": -47,
+            "y": -29,
+            "bits": 16,
+            "data": 0,
+            "onColor": "#ff1900",
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_pin-hnd3fr",
+            "type": "CABLE_PIN",
+            "x": -50,
+            "y": -22,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_test_switch-frl3u9",
+            "type": "CABLE_TEST_SWITCH",
+            "x": -7,
+            "y": -29,
+            "bits": 16,
+            "data": 0,
+            "onColor": "#ff1900",
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_pin-0hlp0j",
+            "type": "CABLE_PIN",
+            "x": -10,
+            "y": -22,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_to_bus-723ppf",
+            "type": "CABLE_TO_BUS",
+            "x": -47,
+            "y": -25,
+            "bits": 16,
+            "rotation": 3,
+            "mirrorX": true,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_to_bus-hygmxl",
+            "type": "CABLE_TO_BUS",
+            "x": -7,
+            "y": -25,
+            "bits": 16,
+            "rotation": 3,
+            "mirrorX": true,
+            "mirrorY": false
+          },
+          {
+            "id": "junction-06j5dy",
+            "type": "JUNCTION",
+            "x": -44.5,
+            "y": -20.5
+          },
+          {
+            "id": "junction-2qy3jw",
+            "type": "JUNCTION",
+            "x": -4.5,
+            "y": -20.5
+          },
+          {
+            "id": "bus_to_cable-k86yxf",
+            "type": "BUS_TO_CABLE",
+            "x": 114,
+            "y": 42,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_output-vci6du",
+            "type": "CABLE_OUTPUT",
+            "x": 121,
+            "y": 49,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "cable_pin-6xacy9",
+            "type": "CABLE_PIN",
+            "x": 128,
+            "y": 56,
+            "bits": 16,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false
+          },
+          {
+            "id": "junction-c1fs1p",
+            "type": "JUNCTION",
+            "x": 123.5,
+            "y": 57.5
+          },
+          {
+            "id": "or-zx2cbh",
+            "type": "OR",
+            "x": 36,
+            "y": -5,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-xtbl0b",
+            "type": "OR",
+            "x": 36,
+            "y": 3,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-0q0xmy",
+            "type": "OR",
+            "x": 36,
+            "y": 11,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-18rljn",
+            "type": "OR",
+            "x": 36,
+            "y": 19,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-42xpkz",
+            "type": "OR",
+            "x": 36,
+            "y": 27,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-dbsu2g",
+            "type": "OR",
+            "x": 36,
+            "y": 35,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-i0ta92",
+            "type": "OR",
+            "x": 36,
+            "y": 43,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-hjild8",
+            "type": "OR",
+            "x": 36,
+            "y": 51,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-aseanu",
+            "type": "OR",
+            "x": 36,
+            "y": 59,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-i4lg56",
+            "type": "OR",
+            "x": 36,
+            "y": 67,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-jr1ay3",
+            "type": "OR",
+            "x": 36,
+            "y": 75,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-x95vjc",
+            "type": "OR",
+            "x": 36,
+            "y": 83,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-bng6ti",
+            "type": "OR",
+            "x": 36,
+            "y": 91,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-2i5wac",
+            "type": "OR",
+            "x": 36,
+            "y": 99,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-8h5ct3",
+            "type": "OR",
+            "x": 36,
+            "y": 107,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          },
+          {
+            "id": "or-6thsdb",
+            "type": "OR",
+            "x": 36,
+            "y": 115,
+            "rotation": 0,
+            "mirrorX": false,
+            "mirrorY": false,
+            "fanIn": 2
+          }
+        ],
+        "wires": [
+          {
+            "id": "wire-r8mq4n",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_pin-hnd3fr",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-06j5dy",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-6ew7xa",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-06j5dy",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "cable_test_switch-7vhb58",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-lk645s",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-06j5dy",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "in",
+              "direction": "input",
+              "bitLength": 16
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-brywtq",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_pin-0hlp0j",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-2qy3jw",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-9ks7q7",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-2qy3jw",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "cable_test_switch-frl3u9",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-5qpk16",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-2qy3jw",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "in",
+              "direction": "input",
+              "bitLength": 16
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-vhb5cs",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_pin-6xacy9",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-c1fs1p",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-9soljk",
+            "from": {
+              "kind": "port",
+              "nodeId": "junction-c1fs1p",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "cable_output-vci6du",
+              "port": "in",
+              "direction": "input"
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-buhu3f",
+            "from": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "out",
+              "direction": "output",
+              "bitLength": 16
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "junction-c1fs1p",
+              "port": "in",
+              "direction": "input",
+              "bitLength": 16
+            },
+            "points": [],
+            "bitLength": 16
+          },
+          {
+            "id": "wire-pik2o7",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit15",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-6thsdb",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -29,
+                "y": 116
+              }
+            ]
+          },
+          {
+            "id": "wire-dqg98z",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit14",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-8h5ct3",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -31,
+                "y": 108
+              }
+            ]
+          },
+          {
+            "id": "wire-mjz39h",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit13",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-2i5wac",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -33,
+                "y": 100
+              }
+            ]
+          },
+          {
+            "id": "wire-rejb9t",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit12",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-bng6ti",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -35,
+                "y": 92
+              }
+            ]
+          },
+          {
+            "id": "wire-8o0y9m",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit11",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-x95vjc",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -37,
+                "y": 84
+              }
+            ]
+          },
+          {
+            "id": "wire-uusbh0",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit10",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-jr1ay3",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -39,
+                "y": 76
+              }
+            ]
+          },
+          {
+            "id": "wire-ivy03o",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit9",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-i4lg56",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -41,
+                "y": 68
+              }
+            ]
+          },
+          {
+            "id": "wire-nst2bo",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit8",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-aseanu",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -43,
+                "y": 60
+              }
+            ]
+          },
+          {
+            "id": "wire-5quoxp",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit7",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-hjild8",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -45,
+                "y": 52
+              }
+            ]
+          },
+          {
+            "id": "wire-1e2ban",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit6",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-i0ta92",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -47,
+                "y": 44
+              }
+            ]
+          },
+          {
+            "id": "wire-09pj1o",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit5",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-dbsu2g",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -49,
+                "y": 36
+              }
+            ]
+          },
+          {
+            "id": "wire-f6lq73",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit4",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-42xpkz",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -51,
+                "y": 28
+              }
+            ]
+          },
+          {
+            "id": "wire-65tiar",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit3",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-18rljn",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -53,
+                "y": 20
+              }
+            ]
+          },
+          {
+            "id": "wire-sj4j6n",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit2",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-0q0xmy",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -55,
+                "y": 12
+              }
+            ]
+          },
+          {
+            "id": "wire-x1lovt",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit1",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-xtbl0b",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -57,
+                "y": 4
+              }
+            ]
+          },
+          {
+            "id": "wire-5rdtth",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-723ppf",
+              "port": "bit0",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-zx2cbh",
+              "port": "a",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -59,
+                "y": -4
+              }
+            ]
+          },
+          {
+            "id": "wire-9toemn",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit15",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-6thsdb",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 11,
+                "y": 120
+              }
+            ]
+          },
+          {
+            "id": "wire-qtyr3u",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit14",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-8h5ct3",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 9,
+                "y": 112
+              }
+            ]
+          },
+          {
+            "id": "wire-r0w48q",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit13",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-2i5wac",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 7,
+                "y": 104
+              }
+            ]
+          },
+          {
+            "id": "wire-dbs8z7",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit12",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-bng6ti",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 5,
+                "y": 96
+              }
+            ]
+          },
+          {
+            "id": "wire-xonk5m",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit11",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-x95vjc",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 3,
+                "y": 88
+              }
+            ]
+          },
+          {
+            "id": "wire-vdwrfa",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit10",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-jr1ay3",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 1,
+                "y": 80
+              }
+            ]
+          },
+          {
+            "id": "wire-0dzo2t",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit9",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-i4lg56",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -1,
+                "y": 72
+              }
+            ]
+          },
+          {
+            "id": "wire-4dbran",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit8",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-aseanu",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -3,
+                "y": 64
+              }
+            ]
+          },
+          {
+            "id": "wire-zu17zz",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit7",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-hjild8",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -5,
+                "y": 56
+              }
+            ]
+          },
+          {
+            "id": "wire-idn9o1",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit6",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-i0ta92",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -7,
+                "y": 48
+              }
+            ]
+          },
+          {
+            "id": "wire-xewyio",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit5",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-dbsu2g",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -9,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "id": "wire-tztu77",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit4",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-42xpkz",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -11,
+                "y": 32
+              }
+            ]
+          },
+          {
+            "id": "wire-thgs3u",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit3",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-18rljn",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -13,
+                "y": 24
+              }
+            ]
+          },
+          {
+            "id": "wire-xreuhz",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit2",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-0q0xmy",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -15,
+                "y": 16
+              }
+            ]
+          },
+          {
+            "id": "wire-c2io83",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit1",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-xtbl0b",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -17,
+                "y": 8
+              }
+            ]
+          },
+          {
+            "id": "wire-wxo16h",
+            "from": {
+              "kind": "port",
+              "nodeId": "cable_to_bus-hygmxl",
+              "port": "bit0",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "or-zx2cbh",
+              "port": "b",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": -19,
+                "y": 0
+              }
+            ]
+          },
+          {
+            "id": "wire-yluihe",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-hjild8",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit7",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 94,
+                "y": 54
+              },
+              {
+                "x": 94,
+                "y": 57
+              }
+            ]
+          },
+          {
+            "id": "wire-bqrxe6",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-i0ta92",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit6",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 96,
+                "y": 46
+              },
+              {
+                "x": 96,
+                "y": 55
+              }
+            ]
+          },
+          {
+            "id": "wire-k84plz",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-dbsu2g",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit5",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 98,
+                "y": 38
+              },
+              {
+                "x": 98,
+                "y": 53
+              }
+            ]
+          },
+          {
+            "id": "wire-azujvw",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-42xpkz",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit4",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 100,
+                "y": 30
+              },
+              {
+                "x": 100,
+                "y": 51
+              }
+            ]
+          },
+          {
+            "id": "wire-yyuvlx",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-18rljn",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit3",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 102,
+                "y": 22
+              },
+              {
+                "x": 102,
+                "y": 49
+              }
+            ]
+          },
+          {
+            "id": "wire-grdcik",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-0q0xmy",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit2",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 104,
+                "y": 14
+              },
+              {
+                "x": 104,
+                "y": 47
+              }
+            ]
+          },
+          {
+            "id": "wire-zi6dhx",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-xtbl0b",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit1",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 106,
+                "y": 6
+              },
+              {
+                "x": 106,
+                "y": 45
+              }
+            ]
+          },
+          {
+            "id": "wire-s3g9pm",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-zx2cbh",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit0",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 108,
+                "y": -2
+              },
+              {
+                "x": 108,
+                "y": 43
+              }
+            ]
+          },
+          {
+            "id": "wire-jd0pnf",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-6thsdb",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit15",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 108,
+                "y": 118
+              },
+              {
+                "x": 108,
+                "y": 73
+              }
+            ]
+          },
+          {
+            "id": "wire-h4oefa",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-8h5ct3",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit14",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 106,
+                "y": 110
+              },
+              {
+                "x": 106,
+                "y": 71
+              }
+            ]
+          },
+          {
+            "id": "wire-wft2jd",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-2i5wac",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit13",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 104,
+                "y": 102
+              },
+              {
+                "x": 104,
+                "y": 69
+              }
+            ]
+          },
+          {
+            "id": "wire-gzryrr",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-bng6ti",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit12",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 102,
+                "y": 94
+              },
+              {
+                "x": 102,
+                "y": 67
+              }
+            ]
+          },
+          {
+            "id": "wire-wsubgr",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-x95vjc",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit11",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 100,
+                "y": 86
+              },
+              {
+                "x": 100,
+                "y": 65
+              }
+            ]
+          },
+          {
+            "id": "wire-sa1h04",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-jr1ay3",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit10",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 98,
+                "y": 78
+              },
+              {
+                "x": 98,
+                "y": 63
+              }
+            ]
+          },
+          {
+            "id": "wire-u30u58",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-i4lg56",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit9",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 96,
+                "y": 70
+              },
+              {
+                "x": 96,
+                "y": 61
+              }
+            ]
+          },
+          {
+            "id": "wire-jkut50",
+            "from": {
+              "kind": "port",
+              "nodeId": "or-aseanu",
+              "port": "out",
+              "direction": "output"
+            },
+            "to": {
+              "kind": "port",
+              "nodeId": "bus_to_cable-k86yxf",
+              "port": "bit8",
+              "direction": "input"
+            },
+            "points": [
+              {
+                "x": 94,
+                "y": 62
+              },
+              {
+                "x": 94,
+                "y": 59
+              }
+            ]
+          }
+        ],
+        "settings": {
+          "wireHotColor": "#ff1900",
+          "wireColdColor": "#969696",
+          "inputHotColor": "#ff1900",
+          "outputHotColor": "#ff1900",
+          "orderArrowColor": "#ff1900",
+          "dataArrowColor": "#0000ff",
+          "orderArrowDirection": "lsb-to-msb",
+          "dataArrowDirection": "left-to-right",
+          "arrowScale": 1,
+          "textDefaults": {
+            "text": "Text",
+            "w": 4,
+            "h": 2,
+            "align": "center",
+            "verticalAlign": "middle",
+            "fontSize": 48,
+            "fontFamily": "Arial, sans-serif",
+            "color": "#20231f"
+          }
+        },
+        "macros": []
+      },
+      "paletteVisible": false
+    }
+  ],
+  "templateWorkspace": {
+    "polygon": [
+      {
+        "x": 44,
+        "y": 20
+      },
+      {
+        "x": 56,
+        "y": 20
+      },
+      {
+        "x": 56,
+        "y": 28
+      },
+      {
+        "x": 44,
+        "y": 28
+      }
+    ],
+    "draft": [],
+    "pins": [
+      {
+        "id": "template-pin-4s4u74",
+        "label": "",
+        "direction": "input",
+        "kind": "cable",
+        "bitLength": 16,
+        "x": 44,
+        "y": 22,
+        "sourcePinId": "cable_pin-hnd3fr",
+        "sourcePort": ""
+      },
+      {
+        "id": "template-pin-xiudvh",
+        "label": "",
+        "direction": "input",
+        "kind": "cable",
+        "bitLength": 16,
+        "x": 44,
+        "y": 26,
+        "sourcePinId": "cable_pin-0hlp0j",
+        "sourcePort": ""
+      },
+      {
+        "id": "template-pin-viz3yv",
+        "label": "",
+        "direction": "input",
+        "kind": "cable",
+        "bitLength": 16,
+        "x": 56,
+        "y": 24,
+        "sourcePinId": "cable_pin-6xacy9",
+        "sourcePort": ""
+      }
+    ],
+    "texts": [
+      {
+        "id": "template-text-7kfcj4",
+        "x": 48,
+        "y": 23,
+        "text": "16-bit OR",
+        "w": 4,
+        "h": 2,
+        "align": "center",
+        "verticalAlign": "middle",
+        "fontSize": 48,
+        "fontFamily": "Arial, sans-serif",
+        "color": "#20231f"
+      }
+    ],
+    "tool": "select",
+    "pendingOptions": {},
+    "sourcePinId": null,
+    "multiPinBits": null,
+    "cablePinBits": 16
+  }
+}

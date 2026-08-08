@@ -711,6 +711,29 @@ button.active svg {
   pointer-events: none;
 }
 
+.template-clock-marker,
+.macro-clock-marker {
+  fill: none;
+  stroke: var(--part-stroke);
+  stroke-width: 3;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+
+.template-clock-marker {
+  cursor: move;
+  pointer-events: all;
+}
+
+.template-clock-marker.selected {
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+
+.template-clock-marker.template-pending-shadow {
+  pointer-events: none;
+}
+
 #status {
   border: 1px solid var(--line);
   background: color-mix(in srgb, var(--panel) 92%, transparent);

@@ -211,6 +211,7 @@ const state = {
     draft: [],
     pins: [],
     texts: [],
+    markers: [],
     tool: "select",
     pendingOptions: {},
     sourcePinId: null,
@@ -4025,6 +4026,9 @@ function renderNodeShape(group, node) {
       }));
       group.lastChild.textContent = text.text || "";
     }
+    for (const marker of macro?.markers || []) {
+      appendClockMarker(group, marker, { x: node.x, y: node.y }, "macro-clock-marker");
+    }
     for (const pin of macro?.pins || []) {
       const position = macroPinPosition(pin, nodeSize(node));
       const pinX = px + position.x * GRID;
@@ -4850,6 +4854,16 @@ function normalizeTemplatePin(pin) {
     kind: pin?.kind === "cable" || bitLength > 1 ? "cable" : "pin",
     bitLength,
     shape: templatePinKind({ ...pin, bitLength }) === "cable" ? "box" : templatePinShape(pin),
+  };
+}
+
+function normalizeTemplateMarker(marker) {
+  return {
+    id: marker?.id || uid("template-marker"),
+    type: marker?.type === "clock" ? "clock" : "clock",
+    x: Number.isFinite(Number(marker?.x)) ? Number(marker.x) : 0,
+    y: Number.isFinite(Number(marker?.y)) ? Number(marker.y) : 0,
+    rotation: normalizeRotationOption(marker?.rotation || 0),
   };
 }
 
@@ -6254,6 +6268,7 @@ function resetTemplateState() {
   state.template.draft = [];
   state.template.pins = [];
   state.template.texts = [];
+  state.template.markers = [];
   state.template.tool = "select";
   state.template.pendingOptions = {};
   state.template.sourcePinId = null;
@@ -6273,6 +6288,7 @@ function templateWorkspacePayload() {
     draft: cloneData(state.template.draft || []),
     pins: cloneData(state.template.pins || []),
     texts: cloneData(state.template.texts || []),
+    markers: cloneData(state.template.markers || []),
     tool: state.template.tool || "select",
     pendingOptions: cloneData(state.template.pendingOptions || {}),
     sourcePinId: state.template.sourcePinId || null,
@@ -6288,6 +6304,7 @@ function restoreTemplateWorkspace(payload = null) {
   state.template.draft = cloneData(Array.isArray(payload.draft) ? payload.draft : []);
   state.template.pins = cloneData(Array.isArray(payload.pins) ? payload.pins : []).map(normalizeTemplatePin);
   state.template.texts = cloneData(Array.isArray(payload.texts) ? payload.texts : []);
+  state.template.markers = cloneData(Array.isArray(payload.markers) ? payload.markers : []).map(normalizeTemplateMarker);
   state.template.tool = typeof payload.tool === "string" ? payload.tool : "select";
   state.template.pendingOptions = cloneData(payload.pendingOptions || {});
   state.template.sourcePinId = payload.sourcePinId || null;
@@ -6299,7 +6316,8 @@ function templateWorkspaceHasContent() {
   return state.template.polygon.length
     || state.template.draft.length
     || state.template.pins.length
-    || state.template.texts.length;
+    || state.template.texts.length
+    || state.template.markers.length;
 }
 
 function editorSnapshot() {
@@ -6476,6 +6494,7 @@ function restoreTemplateFromCachedMacro() {
     state.template.draft = [];
     state.template.pins = cloneData(macro.template.pins || []).map(normalizeTemplatePin);
     state.template.texts = cloneData(macro.template.texts || []);
+    state.template.markers = cloneData(macro.template.markers || []).map(normalizeTemplateMarker);
   } else {
     state.template.polygon = cloneData(macro.polygon || []);
     state.template.pins = (macro.pins || []).map((pin) => ({
@@ -6491,6 +6510,7 @@ function restoreTemplateFromCachedMacro() {
       sourcePort: pin.internalPort || "",
     })).map(normalizeTemplatePin);
     state.template.texts = cloneData(macro.texts || []);
+    state.template.markers = cloneData(macro.markers || []).map(normalizeTemplateMarker);
   }
   state.template.draft = [];
   state.template.tool = "select";
@@ -6572,8 +6592,10 @@ function deleteSelectedTemplateObject() {
   }
   const pinIds = new Set(items.filter((item) => item.type === "pin").map((item) => item.id));
   const textIds = new Set(items.filter((item) => item.type === "text").map((item) => item.id));
+  const markerIds = new Set(items.filter((item) => item.type === "marker").map((item) => item.id));
   state.template.pins = state.template.pins.filter((pin) => !pinIds.has(pin.id));
   state.template.texts = state.template.texts.filter((text) => !textIds.has(text.id));
+  state.template.markers = state.template.markers.filter((marker) => !markerIds.has(marker.id));
   state.template.selected = null;
   renderTemplateEditor();
 }
@@ -6595,6 +6617,7 @@ function templateSnapshot() {
     draft: state.template.draft,
     pins: state.template.pins,
     texts: state.template.texts,
+    markers: state.template.markers,
     selected: state.template.selected,
   });
 }
@@ -6604,6 +6627,7 @@ function restoreTemplateSnapshot(snapshot) {
   state.template.draft = cloneData(snapshot.draft || []);
   state.template.pins = cloneData(snapshot.pins || []);
   state.template.texts = cloneData(snapshot.texts || []);
+  state.template.markers = cloneData(snapshot.markers || []).map(normalizeTemplateMarker);
   state.template.selected = cloneData(snapshot.selected || null);
   renderTemplateEditor();
 }
@@ -6644,6 +6668,11 @@ function selectedTemplateData() {
         .map((item) => state.template.texts.find((text) => text.id === item.id))
         .filter(Boolean)
         .map(cloneData),
+      markers: items
+        .filter((item) => item.type === "marker")
+        .map((item) => state.template.markers.find((marker) => marker.id === item.id))
+        .filter(Boolean)
+        .map(cloneData),
     };
   }
   if (selected.type === "polygon") return { type: "polygon", polygon: cloneData(state.template.polygon) };
@@ -6654,6 +6683,10 @@ function selectedTemplateData() {
   if (selected.type === "text") {
     const text = state.template.texts.find((item) => item.id === selected.id);
     return text ? { type: "text", text: cloneData(text) } : null;
+  }
+  if (selected.type === "marker") {
+    const marker = state.template.markers.find((item) => item.id === selected.id);
+    return marker ? { type: "marker", marker: cloneData(marker) } : null;
   }
   return null;
 }
@@ -6692,6 +6725,11 @@ async function pasteTemplateSelection() {
     state.template.texts.push(text);
     state.template.selected = { type: "text", id: text.id };
   }
+  if (data.type === "marker") {
+    const marker = normalizeTemplateMarker({ ...data.marker, id: uid("template-marker"), x: data.marker.x + 1, y: data.marker.y + 1 });
+    state.template.markers.push(marker);
+    state.template.selected = { type: "marker", id: marker.id };
+  }
   if (data.type === "multi") {
     const items = [];
     const groupIds = new Map();
@@ -6726,6 +6764,11 @@ async function pasteTemplateSelection() {
       state.template.texts.push(text);
       items.push({ type: "text", id: text.id });
     }
+    for (const sourceMarker of data.markers || []) {
+      const marker = normalizeTemplateMarker({ ...sourceMarker, id: uid("template-marker"), x: sourceMarker.x + 1, y: sourceMarker.y + 1 });
+      state.template.markers.push(marker);
+      items.push({ type: "marker", id: marker.id });
+    }
     state.template.selected = templateSelectionFromItems(items);
   }
   renderTemplateEditor();
@@ -6756,6 +6799,13 @@ function moveSelectedTemplateObject(dx, dy) {
     if (text) {
       text.x += dx;
       text.y += dy;
+    }
+  }
+  for (const selectedMarker of items.filter((item) => item.type === "marker")) {
+    const marker = state.template.markers.find((item) => item.id === selectedMarker.id);
+    if (marker) {
+      marker.x += dx;
+      marker.y += dy;
     }
   }
 }
@@ -6835,6 +6885,15 @@ function rotateSelectedTemplateObject(quarters) {
     const text = state.template.texts.find((item) => item.id === selectedText.id);
     if (text) rotateTemplateTextBox(text, center, quarters);
   }
+  for (const selectedMarker of items.filter((item) => item.type === "marker")) {
+    const marker = state.template.markers.find((item) => item.id === selectedMarker.id);
+    if (marker) {
+      const point = snapPointToGrid(rotatePointByQuarters(marker, center, quarters));
+      marker.x = point.x;
+      marker.y = point.y;
+      marker.rotation = normalizeRotationOption((marker.rotation || 0) + quarters);
+    }
+  }
   renderTemplateEditor();
   return true;
 }
@@ -6880,6 +6939,15 @@ function mirrorSelectedTemplateObject(axis) {
     const text = state.template.texts.find((item) => item.id === selectedText.id);
     if (text) mirrorTemplateTextBox(text, center, axis);
   }
+  for (const selectedMarker of items.filter((item) => item.type === "marker")) {
+    const marker = state.template.markers.find((item) => item.id === selectedMarker.id);
+    if (marker) {
+      const point = snapPointToGrid(mirrorPoint(marker, center, axis));
+      marker.x = point.x;
+      marker.y = point.y;
+      marker.rotation = normalizeRotationOption((axis === "vertical" ? 2 - marker.rotation : -marker.rotation));
+    }
+  }
   renderTemplateEditor();
   return true;
 }
@@ -6887,6 +6955,7 @@ function mirrorSelectedTemplateObject(axis) {
 function templateHasPendingShadow() {
   return state.template.tool === "pin"
     || state.template.tool === "line-pin"
+    || state.template.tool === "clock-marker"
     || state.template.tool === "multi-pin"
     || state.template.tool === "cable-pin";
 }
@@ -6932,6 +7001,17 @@ function templateObjectBoundsGrid(item) {
       maxY: bounds.maxY / GRID,
     };
   }
+  if (item.type === "marker") {
+    const marker = state.template.markers.find((candidate) => candidate.id === item.id);
+    if (!marker) return null;
+    const bounds = clockMarkerPixelBounds(marker);
+    return {
+      minX: bounds.minX / GRID,
+      minY: bounds.minY / GRID,
+      maxX: bounds.maxX / GRID,
+      maxY: bounds.maxY / GRID,
+    };
+  }
   return null;
 }
 
@@ -6949,6 +7029,10 @@ function selectTemplateInBounds(bounds) {
     const textBounds = templateObjectBoundsGrid({ type: "text", id: text.id });
     if (textBounds && boundsContains(bounds, textBounds)) items.push({ type: "text", id: text.id });
   }
+  for (const marker of state.template.markers) {
+    const markerBounds = templateObjectBoundsGrid({ type: "marker", id: marker.id });
+    if (markerBounds && boundsContains(bounds, markerBounds)) items.push({ type: "marker", id: marker.id });
+  }
   state.template.selected = templateSelectionFromItems(items);
 }
 
@@ -6960,6 +7044,41 @@ function templatePolygonPixelBounds(points) {
     maxX: Math.max(...points.map((point) => point.x)) * GRID,
     maxY: Math.max(...points.map((point) => point.y)) * GRID,
   };
+}
+
+function clockMarkerLocalPoints(marker) {
+  const points = [
+    { x: -1.4, y: 0 },
+    { x: 0, y: -1.8 },
+    { x: 1.4, y: 0 },
+  ];
+  return points.map((point) => rotatePointByQuarters(point, { x: 0, y: 0 }, normalizeRotationOption(marker?.rotation || 0)));
+}
+
+function clockMarkerPoints(marker, origin = { x: 0, y: 0 }) {
+  return clockMarkerLocalPoints(marker).map((point) => ({
+    x: (origin.x + marker.x + point.x) * GRID,
+    y: (origin.y + marker.y + point.y) * GRID,
+  }));
+}
+
+function clockMarkerPixelBounds(marker, origin = { x: 0, y: 0 }) {
+  const points = clockMarkerPoints(marker, origin);
+  return {
+    minX: Math.min(...points.map((point) => point.x)),
+    minY: Math.min(...points.map((point) => point.y)),
+    maxX: Math.max(...points.map((point) => point.x)),
+    maxY: Math.max(...points.map((point) => point.y)),
+  };
+}
+
+function appendClockMarker(parent, marker, origin = { x: 0, y: 0 }, className = "template-clock-marker") {
+  const points = clockMarkerPoints(marker, origin);
+  parent.appendChild(createSvg("polyline", {
+    class: className,
+    points: points.map((point) => `${point.x},${point.y}`).join(" "),
+    "data-template-marker-id": marker.id || "",
+  }));
 }
 
 function appendTemplateMultiPinArrow(parent, orderedPins) {
@@ -7166,6 +7285,21 @@ function appendTemplatePendingShadow() {
     );
     return;
   }
+  if (state.template.tool === "clock-marker") {
+    appendClockMarker(
+      templateCanvas,
+      normalizeTemplateMarker({
+        id: "",
+        type: "clock",
+        x: state.template.pointer.x,
+        y: state.template.pointer.y,
+        rotation: state.template.pendingOptions?.rotation || 0,
+      }),
+      { x: 0, y: 0 },
+      "template-clock-marker template-pending-shadow",
+    );
+    return;
+  }
   if (state.template.tool === "pin") {
     templateCanvas.appendChild(createSvg("rect", {
       class: "template-pin template-pending-shadow",
@@ -7363,6 +7497,17 @@ function renderTemplateEditor() {
       selectedBounds.push(bounds);
     }
   }
+  for (const marker of state.template.markers) {
+    appendClockMarker(
+      templateCanvas,
+      marker,
+      { x: 0, y: 0 },
+      `template-clock-marker ${templateSelectionHas("marker", marker.id) ? "selected" : ""}`,
+    );
+    if (templateSelectionHas("marker", marker.id)) {
+      selectedBounds.push(clockMarkerPixelBounds(marker));
+    }
+  }
   if (state.template.drag?.kind === "box-select") {
     const bounds = normalizedBounds(state.template.drag.startGrid, state.template.pointer || state.template.drag.startGrid);
     templateCanvas.appendChild(createSvg("rect", {
@@ -7386,6 +7531,7 @@ function updateTemplateToolButtons() {
     "template-tool-rectangle": "rectangle",
     "template-tool-pin": "pin",
     "template-tool-line-pin": "line-pin",
+    "template-tool-clock-marker": "clock-marker",
     "template-tool-multi-pin": "multi-pin",
     "template-tool-cable-pin": "cable-pin",
     "template-tool-text": "text",
@@ -7530,6 +7676,21 @@ function templateTextAtEvent(event) {
     ) {
       return text.id;
     }
+  }
+  return "";
+}
+
+function templateMarkerAtEvent(event) {
+  const target = event.target.closest?.("[data-template-marker-id]");
+  if (target) return target.dataset.templateMarkerId;
+  const point = templateRawPointFromEvent(event);
+  for (let index = state.template.markers.length - 1; index >= 0; index -= 1) {
+    const marker = state.template.markers[index];
+    const bounds = clockMarkerPixelBounds(marker);
+    if (point.x >= bounds.minX - GRID * 0.35
+      && point.x <= bounds.maxX + GRID * 0.35
+      && point.y >= bounds.minY - GRID * 0.35
+      && point.y <= bounds.maxY + GRID * 0.35) return marker.id;
   }
   return "";
 }
@@ -7810,6 +7971,11 @@ function loadCircuitData(data, file = null, handle = null) {
   state.macros = Array.isArray(data.macros)
     ? data.macros.map((macro) => ({
       ...macro,
+      markers: Array.isArray(macro.markers) ? macro.markers.map(normalizeTemplateMarker) : [],
+      template: macro.template ? {
+        ...macro.template,
+        markers: Array.isArray(macro.template.markers) ? macro.template.markers.map(normalizeTemplateMarker) : [],
+      } : macro.template,
       loadedAsPaletteMacro: Boolean(macro.paletteVisible),
       paletteVisible: false,
     }))
@@ -7924,10 +8090,12 @@ function macroFromCircuit(options = {}) {
     size: { w: width, h: height },
     polygon: state.template.polygon.map((point) => ({ x: point.x - bounds.minX, y: point.y - bounds.minY })),
     texts: state.template.texts.map((text) => ({ ...text, x: text.x - bounds.minX, y: text.y - bounds.minY })),
+    markers: state.template.markers.map((marker) => normalizeTemplateMarker({ ...marker, x: marker.x - bounds.minX, y: marker.y - bounds.minY })),
     template: {
       polygon: cloneData(state.template.polygon),
       pins: cloneData(state.template.pins),
       texts: cloneData(state.template.texts),
+      markers: cloneData(state.template.markers),
     },
     pins,
     circuit: {
@@ -7966,6 +8134,11 @@ function addMacroDefinition(macro, options = {}) {
     pins: normalizeMacroPinDirections(positionedMacroPins(Array.isArray(macro.pins) ? macro.pins : [], size), size),
     polygon: Array.isArray(macro.polygon) ? macro.polygon : [],
     texts: Array.isArray(macro.texts) ? macro.texts : [],
+    markers: Array.isArray(macro.markers) ? macro.markers.map(normalizeTemplateMarker) : [],
+    template: macro.template ? {
+      ...macro.template,
+      markers: Array.isArray(macro.template.markers) ? macro.template.markers.map(normalizeTemplateMarker) : [],
+    } : macro.template,
     paletteVisible: options.paletteVisible ?? existing?.paletteVisible ?? false,
   };
   state.macros = state.macros.filter((item) => item.id !== normalized.id);
@@ -8649,6 +8822,11 @@ document.getElementById("template-tool-line-pin").addEventListener("click", () =
   state.template.pendingOptions = {};
   renderTemplateEditor();
 });
+document.getElementById("template-tool-clock-marker").addEventListener("click", () => {
+  state.template.tool = "clock-marker";
+  state.template.pendingOptions = {};
+  renderTemplateEditor();
+});
 document.getElementById("template-tool-multi-pin").addEventListener("click", async () => {
   const source = findNode(state.template.sourcePinId);
   const defaultBits = source?.type === "MULTI_PIN" ? multiBitCount(source) : 4;
@@ -8737,6 +8915,22 @@ templateCanvas.addEventListener("pointerdown", async (event) => {
     renderTemplateEditor();
     return;
   }
+  if (state.template.tool === "clock-marker") {
+    recordTemplateUndo();
+    const marker = normalizeTemplateMarker({
+      id: uid("template-marker"),
+      type: "clock",
+      x: point.x,
+      y: point.y,
+      rotation: state.template.pendingOptions?.rotation || 0,
+    });
+    state.template.markers.push(marker);
+    state.template.selected = { type: "marker", id: marker.id };
+    state.template.tool = "select";
+    state.template.pendingOptions = {};
+    renderTemplateEditor();
+    return;
+  }
   if (state.template.tool === "cable-pin") {
     recordTemplateUndo();
     const bits = Math.min(32, Math.max(1, Math.round(Number(state.template.cablePinBits || 4))));
@@ -8788,11 +8982,13 @@ templateCanvas.addEventListener("pointerdown", async (event) => {
     return;
   }
   const textId = templateTextAtEvent(event);
+  const markerId = templateMarkerAtEvent(event);
   const pinTarget = event.target.closest?.(".template-pin");
   const pinId = pinTarget?.dataset.templatePinId || "";
   const bodyTarget = event.target.closest?.(".template-body");
   const hitsCurrentSelection = Boolean(state.template.selected) && (
     (textId && templateSelectionHas("text", textId))
+    || (markerId && templateSelectionHas("marker", markerId))
     || (pinId && templateSelectionHas("pin", pinId))
     || (bodyTarget && templateSelectionHas("polygon"))
     || templatePointInSelectedBounds(point)
@@ -8806,6 +9002,14 @@ templateCanvas.addEventListener("pointerdown", async (event) => {
   }
   if (textId) {
     state.template.selected = { type: "text", id: textId };
+    recordTemplateUndo();
+    state.template.drag = { pointerId: event.pointerId, start: point, moved: false };
+    templateCanvas.setPointerCapture(event.pointerId);
+    renderTemplateEditor();
+    return;
+  }
+  if (markerId) {
+    state.template.selected = { type: "marker", id: markerId };
     recordTemplateUndo();
     state.template.drag = { pointerId: event.pointerId, start: point, moved: false };
     templateCanvas.setPointerCapture(event.pointerId);

@@ -675,7 +675,6 @@ button.active svg {
 }
 
 .template-line-pin.selected {
-  stroke: var(--part-stroke);
   stroke-width: 4;
   stroke-dasharray: 8 6;
 }
